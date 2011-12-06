@@ -1,0 +1,17 @@
+Demoiselle Contrib
+==================
+
+    O repositório Demoiselle Contrib tem objetivo de armazenar projetos em
+desenvolvimento que evoluem o core ou componentes ao Framework Demoiselle,
+porém que ainda não estão formalmente sobre a responsabilidade da equipe de
+desenvolvimento do SERPRO.
+
+
+Repositório Maven
+=================
+
+    Os projetos atualmente estão disponíveis através do sistema de controle
+de versão, devem ser importados através de git e exportados para o pacote
+JAR.
+
+
