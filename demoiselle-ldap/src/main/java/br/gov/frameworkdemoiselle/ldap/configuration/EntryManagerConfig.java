@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "EntryManager", prefix = "LdapFacility")
+@Configuration(resource = "EntryManager", prefix = "EntryManager")
 public class EntryManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -61,8 +61,12 @@ public class EntryManagerConfig implements Serializable {
 		return bindpwStr;
 	}
 
-	public byte[] getBindpw() throws UnsupportedEncodingException {
-		return getBindpwStr().getBytes("UTF8");
+	public byte[] getBindpw() {
+		try {
+			return getBindpwStr().getBytes("UTF8");
+		} catch (UnsupportedEncodingException e) {
+			return new byte[0];
+		}
 	}
 
 	public Integer getSearchSizelimit() {
