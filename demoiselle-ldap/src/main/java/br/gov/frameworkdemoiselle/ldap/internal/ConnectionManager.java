@@ -97,12 +97,26 @@ public class ConnectionManager {
 	 * @param bindpw
 	 */
 	public boolean bind(String binddn, String bindpw) {
-		this.binddn = binddn;
+		byte[] bindpwutf;
 		try {
-			this.bindpw = bindpw.getBytes("UTF8");
+			bindpwutf = bindpw.getBytes("UTF8");
 		} catch (Exception e) {
-			this.bindpw = new byte[0];
+			return false;
 		}
+		return bind(binddn, bindpwutf);
+	}
+
+	/**
+	 * Authenticate by user information; if already connected then reconnect and
+	 * authenticate; Don't use this method unless necessary, make resource
+	 * configuration;
+	 * 
+	 * @param binddn
+	 * @param bindpw
+	 */
+	public boolean bind(String binddn, byte[] bindpw) {
+		this.binddn = binddn;
+		this.bindpw = bindpw;
 		try {
 			bind();
 			return true;
@@ -139,8 +153,7 @@ public class ConnectionManager {
 	 */
 	public boolean authenticate(String binddn, String bindpw) {
 		String searchFilter = null;
-		EntryManager entryManager = new EntryManager();
-		EntryQuery query = entryManager.createQuery();
+		EntryQuery query = new EntryQuery(this);
 
 		if (binddn != null && !binddn.contains("=")) {
 			searchFilter = authenticateSearchFilter.replaceAll("%u", binddn);
@@ -148,21 +161,8 @@ public class ConnectionManager {
 		}
 
 		if (binddn != null) {
-			try {
-				LDAPConnection lc2bind = new LDAPConnection();
-				lc2bind.connect(host, port);
-				lc2bind.bind(3, binddn, bindpw.getBytes("UTF8"));
-				lc2bind.disconnect();
-				return true;
-			} catch (LDAPException e) {
-				if (e.getResultCode() == LDAPException.INVALID_CREDENTIALS) {
-					System.out.println("[LDAP FACILITY] Wrong user or password [Info: filter=" + searchFilter + ", dn=" + binddn + "]");
-				} else {
-					e.printStackTrace();
-				}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+			EntryManager entryManager = new EntryManager();
+			return entryManager.bind(this.binddn, this.bindpw);
 		}
 		return false;
 	}
