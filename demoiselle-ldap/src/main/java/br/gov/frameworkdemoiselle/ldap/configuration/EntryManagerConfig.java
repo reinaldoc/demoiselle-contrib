@@ -12,10 +12,10 @@ public class EntryManagerConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Name("host")
-	private String host;
+	private String host = "127.0.0.1";
 
 	@Name("port")
-	private Integer port;
+	private Integer port = 389;
 
 	@Name("basedn")
 	private String basedn;
@@ -25,6 +25,9 @@ public class EntryManagerConfig implements Serializable {
 
 	@Name("bindpw")
 	private String bindpwStr;
+
+	@Name("authenticate.searchFilter")
+	private String authenticateSearchFilter = "(samAccountName=%u)";
 
 	@Name("search.sizeLimit")
 	private Integer searchSizelimit;
@@ -38,8 +41,6 @@ public class EntryManagerConfig implements Serializable {
 	@Name("searchOneEntry.searchFilter")
 	private String searchOneEntrySearchFilter;
 
-	@Name("authenticate.searchFilter")
-	private String authenticateSearchFilter;
 
 	public String getHost() {
 		return host;

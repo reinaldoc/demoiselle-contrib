@@ -1,6 +1,5 @@
 package br.gov.frameworkdemoiselle.ldap.core;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.ietf.ldap.LDAPAttribute;
@@ -19,14 +19,39 @@ import org.ietf.ldap.LDAPSearchConstraints;
 import org.ietf.ldap.LDAPSearchResults;
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
 
 public class EntryQuery {
 
 	@Inject
 	private Logger logger;
+	@Inject
+	private EntryManagerConfig entryManagerConfig;
 	private ConnectionManager conn;
 	private String[] resultAttributes;
+	private String searchcnSearchFilter = "(&(cn=*%s*)(objectClass=inetOrgPerson))";
+	private String[] searchcnResultattributes = new String[] { "cn" };
+	private Integer searchSizeLimit = new Integer(10);
+	private String searchBaseDn = "dc=nodomain";
+	private String searchOneEntrySearchFilter = "(cn=%s)";
+
+	public EntryQuery(ConnectionManager conn) {
+		this.conn = conn;
+	}
+
+	@PostConstruct
+	public void init() {
+		searchBaseDn = entryManagerConfig.getBasedn();
+		searchSizeLimit = entryManagerConfig.getSearchSizelimit();
+		searchcnSearchFilter = entryManagerConfig.getSearchcnSearchfilter();
+		searchcnResultattributes = entryManagerConfig.getSearchcnResultattributes();
+		searchOneEntrySearchFilter = entryManagerConfig.getSearchOneEntrySearchFilter();
+	}
+
+	private LDAPConnection getConnection() {
+		return conn.initialized();
+	}
 
 	public Map<String, Map<String, String[]>> getResult() {
 		return new HashMap<String, Map<String, String[]>>();
@@ -90,7 +115,6 @@ public class EntryQuery {
 	private Map<String, LDAPEntry> search_priv(String searchFilter, String[] resultAttributes) {
 		Map<String, LDAPEntry> mapResult = new HashMap<String, LDAPEntry>();
 		try {
-			initialize();
 			LDAPSearchConstraints ldapConstraints = new LDAPSearchConstraints();
 			ldapConstraints.setMaxResults(searchSizeLimit);
 			LDAPSearchResults searchResults = getConnection().search(searchBaseDn, LDAPConnection.SCOPE_SUB, searchFilter, resultAttributes, false, ldapConstraints);
@@ -108,8 +132,6 @@ public class EntryQuery {
 				}
 			}
 		} catch (LDAPException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return mapResult;
