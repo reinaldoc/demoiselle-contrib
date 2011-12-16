@@ -48,6 +48,20 @@ public class EntryManager {
 	public boolean bind(String binddn, byte[] bindpw) {
 		return connectionManager.bind(binddn, bindpw);
 	}
+	
+	/**
+	 * Update not implemented
+	 */
+	private void update() {
+
+	}
+
+	/**
+	 * Insert not implemented
+	 */
+	private void insert() {
+
+	}
 
 	/**
 	 * 

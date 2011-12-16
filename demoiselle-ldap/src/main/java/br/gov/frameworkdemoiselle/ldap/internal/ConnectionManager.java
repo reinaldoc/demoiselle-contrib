@@ -27,8 +27,9 @@ public class ConnectionManager {
 	private int protocol = 3;
 	private String authenticateSearchFilter;
 
+	@SuppressWarnings("unused")
 	@PostConstruct
-	public void init() {
+	private void init() {
 		host = entryManagerConfig.getHost();
 		port = entryManagerConfig.getPort();
 		binddn = entryManagerConfig.getBinddn();
