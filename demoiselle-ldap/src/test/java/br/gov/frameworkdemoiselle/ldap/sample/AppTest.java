@@ -36,56 +36,63 @@
  */
 package br.gov.frameworkdemoiselle.ldap.sample;
 
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import br.gov.frameworkdemoiselle.util.DemoiselleRunner;
 
 /**
  * Descreva aqui seu caso de teste.
  */
-public class AppTest{
-	
+@RunWith(DemoiselleRunner.class)
+public class AppTest {
+
+	@Inject
 	private App app;
-	
+
 	/**
-	 * Qualquer método anotado com <code>@Before</code> será executado antes
-	 * da execução de cada teste;
+	 * Qualquer método anotado com <code>@Before</code> será executado antes da
+	 * execução de cada teste;
 	 * 
 	 * Propício para o carregamento de dados independentes de outros testes.
 	 */
 	@Before
 	public void setUp() {
-		app = new App();
+		// app = new App();
 	}
-	
+
 	/**
-	 * Qualquer método anotado com <code>@After</code> será executado após
-	 * da execução de cada teste;
+	 * Qualquer método anotado com <code>@After</code> será executado após da
+	 * execução de cada teste;
 	 */
 	@After
 	public void tearDown() {
 		app = null;
 	}
-	
-	
+
 	/**
-	 * O nome dos métodos devem ser auto-explicativos, indicando exatamente o que será testado. Isto
-	 * faz com que a documentação aqui se torne opcional ou redundante.
+	 * O nome dos métodos devem ser auto-explicativos, indicando exatamente o
+	 * que será testado. Isto faz com que a documentação aqui se torne opcional
+	 * ou redundante.
 	 */
 	@Test
 	public void test1Mais1() {
-		Assert.assertEquals(2,app.soma(1,1));
+		Assert.assertEquals(2, app.soma(1, 1));
 	}
-	
+
 	@Test
 	public void test1Mais2() {
-		Assert.assertEquals(3,app.soma(1,2));
+		Assert.assertEquals(3, app.soma(1, 2));
 	}
-	
+
 	@Test
 	public void test2Mais2() {
-		Assert.assertEquals(4,app.soma(2,2));
+		Assert.assertEquals(4, app.soma(2, 2));
 	}
 
 }

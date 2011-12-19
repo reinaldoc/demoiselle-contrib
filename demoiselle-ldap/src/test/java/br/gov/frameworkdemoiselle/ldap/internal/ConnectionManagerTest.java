@@ -25,12 +25,13 @@ public class ConnectionManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
+		cm = new ConnectionManager();
 	}
 
 	@Test
 	public void testConnect() {
 		LDAPConnection conn = cm.initialized();
-		Assert.assertTrue(conn.isBound());
+		Assert.assertTrue(conn.isConnected());
 	}
 
 	@Test
