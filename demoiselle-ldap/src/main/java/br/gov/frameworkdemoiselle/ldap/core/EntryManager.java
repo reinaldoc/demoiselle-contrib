@@ -48,10 +48,18 @@ public class EntryManager {
 	public boolean bind(String binddn, byte[] bindpw) {
 		return connectionManager.bind(binddn, bindpw);
 	}
-	
+
+	public ConnectionManager getConnectionManager() {
+		return connectionManager;
+	}
+
+	public void setConnectionManager(ConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
+	}
 	/**
 	 * Update not implemented
 	 */
+	@SuppressWarnings("unused")
 	private void update() {
 
 	}
@@ -59,6 +67,7 @@ public class EntryManager {
 	/**
 	 * Insert not implemented
 	 */
+	@SuppressWarnings("unused")
 	private void insert() {
 
 	}
@@ -67,8 +76,8 @@ public class EntryManager {
 	 * 
 	 * @return
 	 */
-	public EntryQuery createQuery() {
-		return new EntryQuery(connectionManager);
+	public EntryQuery createQuery(String ldapSearchFilter) {
+		return new EntryQuery(connectionManager, ldapSearchFilter);
 	}
 
 }

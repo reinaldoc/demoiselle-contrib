@@ -162,12 +162,9 @@ public class ConnectionManager {
 	 * @return
 	 */
 	public boolean authenticate(String binddn, String bindpw) {
-		String searchFilter = null;
-		EntryQuery query = new EntryQuery(this);
-
 		if (binddn != null && !binddn.contains("=")) {
-			searchFilter = authenticateSearchFilter.replaceAll("%u", binddn);
-			binddn = query.searchOneDN(searchFilter);
+			EntryQuery query = new EntryQuery(this, authenticateSearchFilter.replaceAll("%u", binddn));
+			binddn = query.getSingleDn();
 		}
 
 		if (binddn != null) {

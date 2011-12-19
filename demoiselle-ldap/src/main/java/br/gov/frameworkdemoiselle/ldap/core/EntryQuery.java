@@ -1,7 +1,6 @@
 package br.gov.frameworkdemoiselle.ldap.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,101 +28,60 @@ public class EntryQuery {
 	@Inject
 	private EntryManagerConfig entryManagerConfig;
 	private ConnectionManager conn;
+	private String ldapFilter;
 	private String[] resultAttributes;
-	private String searchcnSearchFilter = "(&(cn=*%s*)(objectClass=inetOrgPerson))";
-	private String[] searchcnResultattributes = new String[] { "cn" };
-	private Integer searchSizeLimit = new Integer(10);
-	private String searchBaseDn = "dc=nodomain";
-	private String searchOneEntrySearchFilter = "(cn=%s)";
+	private Integer sizeLimit;
+	private String basedn;
+	private int scope;
+	private LDAPSearchConstraints ldapConstraints = new LDAPSearchConstraints();
 
-	public EntryQuery(ConnectionManager conn) {
+	public EntryQuery(ConnectionManager conn, String searchFilter) {
 		this.conn = conn;
+		if (searchFilter != null)
+			this.ldapFilter = searchFilter;
 	}
 
 	@PostConstruct
 	public void init() {
-		searchBaseDn = entryManagerConfig.getBasedn();
-		searchSizeLimit = entryManagerConfig.getSearchSizelimit();
-		searchcnSearchFilter = entryManagerConfig.getSearchcnSearchfilter();
-		searchcnResultattributes = entryManagerConfig.getSearchcnResultattributes();
-		searchOneEntrySearchFilter = entryManagerConfig.getSearchOneEntrySearchFilter();
+		ldapFilter = "(objectClass=*)";
+		basedn = entryManagerConfig.getBasedn();
+		scope = LDAPConnection.SCOPE_SUB;
+		sizeLimit = entryManagerConfig.getSearchSizelimit();
+		ldapConstraints.setMaxResults(sizeLimit);
 	}
 
 	private LDAPConnection getConnection() {
-		return conn.initialized();
+		return this.conn.initialized();
 	}
 
-	public Map<String, Map<String, String[]>> getResult() {
-		return new HashMap<String, Map<String, String[]>>();
+	public void setMaxResults(int maxResult) {
+		this.ldapConstraints.setMaxResults(maxResult);
 	}
 
-	public Map<String, String[]> getSingleResult() {
-		return new HashMap<String, String[]>();
+	public void setResultAttributes(String... resultAttributes) {
+		this.resultAttributes = resultAttributes;
 	}
 
-	public Map<String, String> getSingleResultSingleAttributes() {
-		return new HashMap<String, String>();
+	public void setBaseDn(String basedn) {
+		this.basedn = basedn;
 	}
 
-	public String getSingleResultSingleAttribute() {
-		return new String();
-	}
-
-	public String searchOneDN(String searchFilter) {
-		List<String> dns = searchDN(searchFilter);
-		if (dns.size() == 1) {
-			return dns.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	public List<String> searchDN(String searchFilter) {
-		Map<String, LDAPEntry> searchResult = new HashMap<String, LDAPEntry>();
-		List<String> dnList = new ArrayList<String>();
-
-		searchResult = search_priv(searchFilter, new String[] { "objectClass" });
-
-		Iterator<String> itr = searchResult.keySet().iterator();
-		while (itr.hasNext() == true) {
-			dnList.add(itr.next());
-		}
-		return dnList;
-	}
-
-	public List<String> searchCN(String queryCN) {
-		Map<String, LDAPEntry> searchResult = new HashMap<String, LDAPEntry>();
-		List<String> returnResult = new ArrayList<String>();
-
-		searchResult = search_priv(searchcnSearchFilter.replaceAll("%s", queryCN), searchcnResultattributes);
-
-		Collection<LDAPEntry> c = searchResult.values();
-		Iterator<LDAPEntry> itr = c.iterator();
-		while (itr.hasNext() == true) {
-			LDAPEntry entry = itr.next();
-			for (int i = 0; i != searchcnResultattributes.length; i++) {
-				LDAPAttribute attr = entry.getAttribute(searchcnResultattributes[i]);
-				String[] attrArray = attr.getStringValueArray();
-				for (int y = 0; y != attrArray.length; y++) {
-					returnResult.add(attrArray[y]);
-				}
-			}
-		}
-		return returnResult;
-	}
-
-	private Map<String, LDAPEntry> search_priv(String searchFilter, String[] resultAttributes) {
-		Map<String, LDAPEntry> mapResult = new HashMap<String, LDAPEntry>();
+	/**
+	 * 
+	 * @param searchFilter
+	 * @param resultAttributes
+	 * @return
+	 */
+	private Map<String, LDAPEntry> find() {
+		Map<String, LDAPEntry> resultMap = new HashMap<String, LDAPEntry>();
 		try {
-			LDAPSearchConstraints ldapConstraints = new LDAPSearchConstraints();
-			ldapConstraints.setMaxResults(searchSizeLimit);
-			LDAPSearchResults searchResults = getConnection().search(searchBaseDn, LDAPConnection.SCOPE_SUB, searchFilter, resultAttributes, false, ldapConstraints);
+			LDAPSearchResults searchResults = getConnection().search(basedn, scope, ldapFilter, resultAttributes, false, ldapConstraints);
 			while (searchResults != null && searchResults.hasMore()) {
 				try {
 					LDAPEntry entry = searchResults.next();
-					mapResult.put(entry.getDN(), entry);
+					resultMap.put(entry.getDN(), entry);
 				} catch (LDAPReferralException e) {
-					// Ignore referral;
+					// Ignore referrals;
 				} catch (LDAPException e) {
 					// Catch size limit exceeded;
 					if (e.getResultCode() != LDAPException.SIZE_LIMIT_EXCEEDED) {
@@ -134,17 +92,18 @@ public class EntryQuery {
 		} catch (LDAPException e) {
 			e.printStackTrace();
 		}
-		return mapResult;
+		return resultMap;
 	}
 
-	public Map<String, Map<String, String[]>> search(String searchFilter, String[] resultAttributes) {
-
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<String, Map<String, String[]>> getResult() {
 		Map<String, LDAPEntry> searchResult = new HashMap<String, LDAPEntry>();
-		Map<String, Map<String, String[]>> returnResult = new HashMap<String, Map<String, String[]>>();
+		Map<String, Map<String, String[]>> resultMap = new HashMap<String, Map<String, String[]>>();
 
-		searchResult = search_priv(searchFilter, resultAttributes);
-
-		Iterator<String> itrDn = searchResult.keySet().iterator();
+		Iterator<String> itrDn = find().keySet().iterator();
 		while (itrDn.hasNext()) {
 			String dn = itrDn.next();
 			Map<String, String[]> entryMap = new HashMap<String, String[]>();
@@ -154,23 +113,20 @@ public class EntryQuery {
 				LDAPAttribute attr = itrAttr.next();
 				entryMap.put(attr.getName(), attr.getStringValueArray());
 			}
-			returnResult.put(dn, entryMap);
+			resultMap.put(dn, entryMap);
 		}
-		return returnResult;
+		return resultMap;
 	}
 
-	public Map<String, Map<String, String[]>> search(String searchFilter) {
-		return search(searchFilter, null);
-	}
-
-	public Map<String, String[]> searchOneEntry(String searchFilter, String[] resultAttributes) {
-
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<String, String[]> getSingleResult() {
 		Map<String, LDAPEntry> searchResult = new HashMap<String, LDAPEntry>();
 		Map<String, String[]> returnResult = new HashMap<String, String[]>();
 
-		searchFilter = getSearchFilter(searchOneEntrySearchFilter, searchFilter);
-		searchResult = search_priv(searchFilter, resultAttributes);
-
+		searchResult = find();
 		if (searchResult.size() == 1) {
 			Iterator<LDAPEntry> itr = searchResult.values().iterator();
 			while (itr.hasNext() == true) {
@@ -185,12 +141,12 @@ public class EntryQuery {
 		return returnResult;
 	}
 
-	public Map<String, String[]> searchOneEntry(String searchFilter) {
-		return searchOneEntry(searchFilter, null);
-	}
-
-	public Map<String, String> searchOneEntrySingleAttributes(String searchFilter, String[] resultAttributes) {
-		Map<String, String[]> searchResult = searchOneEntry(searchFilter, resultAttributes);
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<String, String> getSingleAttributesResult() {
+		Map<String, String[]> searchResult = getSingleResult();
 		Map<String, String> returnResult = new HashMap<String, String>();
 		Iterator<String> iter = searchResult.keySet().iterator();
 		while (iter.hasNext()) {
@@ -202,18 +158,88 @@ public class EntryQuery {
 		return returnResult;
 	}
 
-	public String searchOneEntrySingleAttribute(String searchFilter, String resultAttribute) {
-		String returnResult = "";
-		Map<String, String[]> searchResult = searchOneEntry(searchFilter, new String[] { resultAttribute });
+	/**
+	 * Set result attributes is required.
+	 * 
+	 * @return
+	 */
+	public String getSingleAttributeResult() {
+		String result = new String();
+		if (resultAttributes == null || resultAttributes.length == 0)
+			return result;
 
-		if (searchResult.containsKey(resultAttribute)) {
-			String[] valuesList = searchResult.get(resultAttribute);
-			if (valuesList.length > 0)
-				returnResult = valuesList[0];
+		Map<String, String> resultMap = getSingleAttributesResult();
+		for (String attr : resultAttributes) {
+			if (resultMap.containsKey(attr)) {
+				return resultMap.get(attr);
+			}
 		}
-		return returnResult;
+		return result;
 	}
 
+	/**
+	 * Execute a LDAP SEARCH query and return a single Distinguished Name or
+	 * null none or multiples results.
+	 * 
+	 * @return the result
+	 */
+	public String getSingleDn() {
+		List<String> dnList = getDnList();
+		if (dnList.size() == 1) {
+			return dnList.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Execute a LDAP SEARCH query and return a List of Distinguished Names.
+	 * 
+	 * @return a list of the Distinguished Names
+	 */
+	public List<String> getDnList() {
+		List<String> dnList = new ArrayList<String>();
+		resultAttributes = new String[] { "objectClass" };
+		Iterator<String> itr = find().keySet().iterator();
+		while (itr.hasNext() == true) {
+			dnList.add(itr.next());
+		}
+		resultAttributes = null;
+		return dnList;
+	}
+
+	/**
+	 * Execute a LDAP SEARCH query and return a List of Attributes values. Set
+	 * result attributes is required.
+	 * 
+	 * @return a list of the Attributes values
+	 */
+	public List<String> getAttributeList() {
+		if (resultAttributes == null || resultAttributes.length == 0)
+			return new ArrayList<String>();
+
+		List<String> resultList = new ArrayList<String>();
+		Iterator<LDAPEntry> itr = find().values().iterator();
+		while (itr.hasNext()) {
+			LDAPEntry entry = itr.next();
+			for (int i = 0; i != resultAttributes.length; i++) {
+				LDAPAttribute attr = entry.getAttribute(resultAttributes[i]);
+				String[] attrArray = attr.getStringValueArray();
+				for (int y = 0; y != attrArray.length; y++) {
+					resultList.add(attrArray[y]);
+				}
+			}
+		}
+		return resultList;
+	}
+
+	/**
+	 * if isn't a search filter, convert to a valid search filter by template.
+	 * @param searchFilterTemplate
+	 * @param maybeSearchFilter
+	 * @return
+	 */
+	@SuppressWarnings("unused")
 	private String getSearchFilter(String searchFilterTemplate, String maybeSearchFilter) {
 		String searchFilter = "(invalidFilter=*)";
 		if (maybeSearchFilter == null || !maybeSearchFilter.contains("=")) {
@@ -226,26 +252,6 @@ public class EntryQuery {
 			searchFilter = maybeSearchFilter;
 		}
 		return searchFilter;
-	}
-
-	/*
-	 * Getters and Setters
-	 */
-
-	public String[] getResultAttributes() {
-		return resultAttributes;
-	}
-
-	public void setResultAttributes(String[] resultAttributes) {
-		this.resultAttributes = resultAttributes;
-	}
-
-	public ConnectionManager getConn() {
-		return conn;
-	}
-
-	public void setConn(ConnectionManager conn) {
-		this.conn = conn;
 	}
 
 }
