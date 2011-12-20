@@ -1,19 +1,21 @@
 package br.gov.frameworkdemoiselle.ldap.core;
 
-import javax.annotation.PostConstruct;
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 
 import org.ietf.ldap.LDAPException;
 
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
 
-public class EntryManager {
+@SessionScoped
+public class EntryManager implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	@Inject
 	private ConnectionManager connectionManager;
-
-	@PostConstruct
-	public void init() {
-		connectionManager = new ConnectionManager();
-	}
 
 	/**
 	 * Make a LDAP Connection with user values; Don't use this method unless
@@ -26,9 +28,9 @@ public class EntryManager {
 	}
 
 	/**
-	 * Authenticate by user information; if already connected then reconnect and
-	 * authenticate; Don't use this method unless necessary, make resource
-	 * configuration;
+	 * Authenticate by user information; if already authenticated then
+	 * reconnect and authenticate; Don't use this method unless necessary,
+	 * make resource configuration;
 	 * 
 	 * @param binddn
 	 * @param bindpw
@@ -38,9 +40,9 @@ public class EntryManager {
 	}
 
 	/**
-	 * Authenticate by user information; if already connected then reconnect and
-	 * authenticate; Don't use this method unless necessary, make resource
-	 * configuration;
+	 * Authenticate by user information; if already authenticated then
+	 * reconnect and authenticate; Don't use this method unless necessary,
+	 * make resource configuration;
 	 * 
 	 * @param binddn
 	 * @param bindpw
@@ -49,13 +51,6 @@ public class EntryManager {
 		return connectionManager.bind(binddn, bindpw);
 	}
 
-	public ConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
-
-	public void setConnectionManager(ConnectionManager connectionManager) {
-		this.connectionManager = connectionManager;
-	}
 	/**
 	 * Update not implemented
 	 */
