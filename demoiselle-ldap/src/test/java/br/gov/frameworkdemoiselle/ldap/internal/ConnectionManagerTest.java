@@ -25,7 +25,6 @@ public class ConnectionManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		cm = new ConnectionManager();
 	}
 
 	@Test
