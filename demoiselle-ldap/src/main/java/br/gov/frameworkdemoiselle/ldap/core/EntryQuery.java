@@ -18,15 +18,16 @@ import org.ietf.ldap.LDAPSearchConstraints;
 import org.ietf.ldap.LDAPSearchResults;
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
 
 public class EntryQuery {
 
-	@Inject
-	private Logger logger;
+	private Logger logger = LoggerProducer.create(EntryQuery.class);
 	@Inject
 	private EntryManagerConfig entryManagerConfig;
+	@Inject
 	private ConnectionManager conn;
 	private String ldapFilter;
 	private String[] resultAttributes;
@@ -35,35 +36,33 @@ public class EntryQuery {
 	private int scope;
 	private LDAPSearchConstraints ldapConstraints = new LDAPSearchConstraints();
 
-	public EntryQuery(ConnectionManager conn, String searchFilter) {
-		this.conn = conn;
-		if (searchFilter != null)
-			this.ldapFilter = searchFilter;
-	}
-
 	@PostConstruct
 	public void init() {
 		ldapFilter = "(objectClass=*)";
-		basedn = entryManagerConfig.getBasedn();
 		scope = LDAPConnection.SCOPE_SUB;
-		sizeLimit = entryManagerConfig.getSearchSizelimit();
 		ldapConstraints.setMaxResults(sizeLimit);
-	}
-
-	private LDAPConnection getConnection() {
-		return this.conn.initialized();
+		basedn = entryManagerConfig.getBasedn();
+		sizeLimit = entryManagerConfig.getSearchSizelimit();
 	}
 
 	public void setMaxResults(int maxResult) {
 		this.ldapConstraints.setMaxResults(maxResult);
 	}
 
+	public void setBaseDn(String basedn) {
+		this.basedn = basedn;
+	}
+
+	public void setSearchFilter(String searchFilter) {
+		this.ldapFilter = searchFilter;
+	}
+
 	public void setResultAttributes(String... resultAttributes) {
 		this.resultAttributes = resultAttributes;
 	}
 
-	public void setBaseDn(String basedn) {
-		this.basedn = basedn;
+	private LDAPConnection getConnection() {
+		return this.conn.initialized();
 	}
 
 	/**
@@ -75,7 +74,8 @@ public class EntryQuery {
 	private Map<String, LDAPEntry> find() {
 		Map<String, LDAPEntry> resultMap = new HashMap<String, LDAPEntry>();
 		try {
-			LDAPSearchResults searchResults = getConnection().search(basedn, scope, ldapFilter, resultAttributes, false, ldapConstraints);
+			LDAPSearchResults searchResults = getConnection().search(basedn, scope, ldapFilter, resultAttributes,
+					false, ldapConstraints);
 			while (searchResults != null && searchResults.hasMore()) {
 				try {
 					LDAPEntry entry = searchResults.next();
@@ -235,6 +235,7 @@ public class EntryQuery {
 
 	/**
 	 * if isn't a search filter, convert to a valid search filter by template.
+	 * 
 	 * @param searchFilterTemplate
 	 * @param maybeSearchFilter
 	 * @return

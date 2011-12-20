@@ -1,8 +1,11 @@
 package br.gov.frameworkdemoiselle.ldap.internal;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.ietf.ldap.LDAPConnection;
@@ -13,10 +16,17 @@ import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
 
-public class ConnectionManager {
+@SessionScoped
+public class ConnectionManager implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private EntryManagerConfig entryManagerConfig;
+
+	@Inject
+	@RequestScoped
+	private EntryQuery query;
 
 	private LDAPConnection lc;
 	private String host;
@@ -91,6 +101,7 @@ public class ConnectionManager {
 
 	/**
 	 * Try get a authenticated connection, bind fails silently;
+	 * 
 	 * @return
 	 */
 	public LDAPConnection initialized() {
@@ -163,7 +174,7 @@ public class ConnectionManager {
 	 */
 	public boolean authenticate(String binddn, String bindpw) {
 		if (binddn != null && !binddn.contains("=")) {
-			EntryQuery query = new EntryQuery(this, authenticateSearchFilter.replaceAll("%u", binddn));
+			query.setSearchFilter(authenticateSearchFilter.replaceAll("%u", binddn));
 			binddn = query.getSingleDn();
 		}
 

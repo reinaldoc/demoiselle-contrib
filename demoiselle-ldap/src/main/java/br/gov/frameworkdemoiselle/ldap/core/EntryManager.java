@@ -2,6 +2,7 @@ package br.gov.frameworkdemoiselle.ldap.core;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -17,6 +18,10 @@ public class EntryManager implements Serializable {
 	@Inject
 	private ConnectionManager connectionManager;
 
+	@Inject
+	@RequestScoped
+	private EntryQuery query;
+
 	/**
 	 * Make a LDAP Connection with user values; Don't use this method unless
 	 * necessary, make resource configuration;
@@ -28,9 +33,9 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
-	 * Authenticate by user information; if already authenticated then
-	 * reconnect and authenticate; Don't use this method unless necessary,
-	 * make resource configuration;
+	 * Authenticate by user information; if already authenticated then reconnect
+	 * and authenticate; Don't use this method unless necessary, make resource
+	 * configuration;
 	 * 
 	 * @param binddn
 	 * @param bindpw
@@ -40,9 +45,9 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
-	 * Authenticate by user information; if already authenticated then
-	 * reconnect and authenticate; Don't use this method unless necessary,
-	 * make resource configuration;
+	 * Authenticate by user information; if already authenticated then reconnect
+	 * and authenticate; Don't use this method unless necessary, make resource
+	 * configuration;
 	 * 
 	 * @param binddn
 	 * @param bindpw
@@ -72,7 +77,8 @@ public class EntryManager implements Serializable {
 	 * @return
 	 */
 	public EntryQuery createQuery(String ldapSearchFilter) {
-		return new EntryQuery(connectionManager, ldapSearchFilter);
+		query.setSearchFilter(ldapSearchFilter);
+		return query;
 	}
 
 }
