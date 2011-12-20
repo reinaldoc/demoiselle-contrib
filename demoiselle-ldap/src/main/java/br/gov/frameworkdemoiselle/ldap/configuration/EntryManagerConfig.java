@@ -27,20 +27,10 @@ public class EntryManagerConfig implements Serializable {
 	private String bindpwStr;
 
 	@Name("authenticate.searchFilter")
-	private String authenticateSearchFilter = "(samAccountName=%u)";
+	private String authenticateSearchFilter = "(uid=%u)";
 
 	@Name("search.sizeLimit")
 	private Integer searchSizelimit;
-
-	@Name("searchCn.searchFilter")
-	private String searchcnSearchfilter;
-
-	@Name("searchCn.resultAttributes")
-	private String searchcnResultattributesStr;
-
-	@Name("searchOneEntry.searchFilter")
-	private String searchOneEntrySearchFilter;
-
 
 	public String getHost() {
 		return host;
@@ -72,27 +62,6 @@ public class EntryManagerConfig implements Serializable {
 
 	public Integer getSearchSizelimit() {
 		return searchSizelimit;
-	}
-
-	public String getSearchcnSearchfilter() {
-		return searchcnSearchfilter;
-	}
-
-	public String getSearchcnResultattributesStr() {
-		return searchcnResultattributesStr;
-	}
-
-	public String[] getSearchcnResultattributes() {
-		String[] searchCNresultAttributeArray = this.searchcnResultattributesStr.split(",");
-		String[] searchCNresultAttributeArrayNew = new String[searchCNresultAttributeArray.length];
-		for (int i = 0; i != searchCNresultAttributeArray.length; i++) {
-			searchCNresultAttributeArrayNew[i] = searchCNresultAttributeArray[i].trim();
-		}
-		return searchCNresultAttributeArrayNew;
-	}
-
-	public String getSearchOneEntrySearchFilter() {
-		return searchOneEntrySearchFilter;
 	}
 
 	public String getAuthenticateSearchFilter() {
