@@ -30,7 +30,7 @@
 		<relativePath>../</relativePath>
 	</parent>
 
-	<groupId>br.gov.frameworkdemoiselle.component</groupId>
+	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-ldap</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
