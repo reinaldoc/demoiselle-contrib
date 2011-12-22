@@ -2,7 +2,6 @@ package br.gov.frameworkdemoiselle.ldap.core;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -19,7 +18,6 @@ public class EntryManager implements Serializable {
 	private ConnectionManager connectionManager;
 
 	@Inject
-	@RequestScoped
 	private EntryQuery query;
 
 	/**

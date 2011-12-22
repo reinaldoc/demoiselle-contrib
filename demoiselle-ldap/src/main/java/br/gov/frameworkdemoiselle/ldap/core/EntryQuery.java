@@ -1,5 +1,6 @@
 package br.gov.frameworkdemoiselle.ldap.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.ietf.ldap.LDAPAttribute;
@@ -22,27 +24,36 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
 
-public class EntryQuery {
+@RequestScoped
+public class EntryQuery implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Logger logger = LoggerProducer.create(EntryQuery.class);
+
 	@Inject
 	private EntryManagerConfig entryManagerConfig;
+
 	@Inject
 	private ConnectionManager conn;
+
 	private String ldapFilter;
+
 	private String[] resultAttributes;
-	private Integer sizeLimit;
+
 	private String basedn;
+
 	private int scope;
-	private LDAPSearchConstraints ldapConstraints = new LDAPSearchConstraints();
+
+	private LDAPSearchConstraints ldapConstraints;
 
 	@PostConstruct
 	public void init() {
 		ldapFilter = "(objectClass=*)";
 		scope = LDAPConnection.SCOPE_SUB;
-		ldapConstraints.setMaxResults(sizeLimit);
+		ldapConstraints = new LDAPSearchConstraints();
+		ldapConstraints.setMaxResults(entryManagerConfig.getSizelimit());
 		basedn = entryManagerConfig.getBasedn();
-		sizeLimit = entryManagerConfig.getSearchSizelimit();
 	}
 
 	public void setMaxResults(int maxResult) {
