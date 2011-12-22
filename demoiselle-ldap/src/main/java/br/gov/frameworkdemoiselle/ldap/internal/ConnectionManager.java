@@ -2,19 +2,22 @@ package br.gov.frameworkdemoiselle.ldap.internal;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import org.ietf.ldap.LDAPConnection;
-import org.ietf.ldap.LDAPConstraints;
-import org.ietf.ldap.LDAPException;
-
 import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
+
+import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.LDAPConstraints;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPJSSESecureSocketFactory;
+import com.novell.ldap.LDAPJSSEStartTLSFactory;
 
 @SessionScoped
 public class ConnectionManager implements Serializable {
@@ -31,6 +34,7 @@ public class ConnectionManager implements Serializable {
 	private LDAPConnection lc;
 	private String host;
 	private int port;
+	private String tls;
 	private String binddn;
 	private byte[] bindpw;
 	private boolean referrals = false;
@@ -39,12 +43,13 @@ public class ConnectionManager implements Serializable {
 
 	@SuppressWarnings("unused")
 	@PostConstruct
-	private void init() {
+	private void init() throws URISyntaxException {
 		host = entryManagerConfig.getHost();
 		port = entryManagerConfig.getPort();
+		tls = entryManagerConfig.getTls();
 		binddn = entryManagerConfig.getBinddn();
-		bindpw = entryManagerConfig.getBindpw();
-		authenticateSearchFilter = entryManagerConfig.getAuthenticateSearchFilter();
+		bindpw = entryManagerConfig.getBindpwInBytes();
+		authenticateSearchFilter = entryManagerConfig.getAuthenticateFilter();
 	}
 
 	/**
@@ -53,8 +58,19 @@ public class ConnectionManager implements Serializable {
 	 * @throws LDAPException
 	 */
 	private void connect() throws LDAPException {
-		lc = new LDAPConnection();
+		if (tls.equals("ssl")) {
+			LDAPJSSESecureSocketFactory sslFactory = new LDAPJSSESecureSocketFactory();
+			lc = new LDAPConnection(sslFactory);
+		} else if (tls.equals("tls")) {
+			LDAPJSSEStartTLSFactory sslFactory = new LDAPJSSEStartTLSFactory();
+			lc = new LDAPConnection(sslFactory);
+		} else {
+			lc = new LDAPConnection();
+		}
 		lc.connect(host, port);
+		if (tls.equals("tls")) {
+			lc.startTLS();
+		}
 		LDAPConstraints ldapConstraints = new LDAPConstraints();
 		ldapConstraints.setReferralFollowing(referrals);
 		lc.setConstraints(ldapConstraints);
