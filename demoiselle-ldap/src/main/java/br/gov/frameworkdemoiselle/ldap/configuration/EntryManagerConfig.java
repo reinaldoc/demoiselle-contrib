@@ -1,8 +1,10 @@
 package br.gov.frameworkdemoiselle.ldap.configuration;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
@@ -11,33 +13,63 @@ public class EntryManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("host")
-	private String host = "127.0.0.1";
+	@Name("server")
+	private String server;
 
-	@Name("port")
-	private Integer port = 389;
+	@Ignore
+	private URI serverURI;
 
-	@Name("basedn")
-	private String basedn;
+	@Name("starttls")
+	private String starttls = "no";
 
 	@Name("binddn")
 	private String binddn;
 
 	@Name("bindpw")
-	private String bindpwStr;
+	private String bindpw;
 
-	@Name("authenticate.searchFilter")
-	private String authenticateSearchFilter = "(uid=%u)";
+	@Name("authenticate.filter")
+	private String authenticate_filter = "(uid=%u)";
 
-	@Name("search.sizeLimit")
-	private Integer searchSizelimit;
+	@Name("search.basedn")
+	private String basedn;
 
-	public String getHost() {
-		return host;
+	@Name("search.sizelimit")
+	private Integer sizelimit = 0;
+
+	private boolean isValueTrue(String value) {
+		if (value != null) {
+			String lowerValue = value.toLowerCase();
+			if ("yes".equals(lowerValue) || "true".equals(lowerValue) || "1".equals(lowerValue))
+				return true;
+		}
+		return false;
 	}
 
-	public Integer getPort() {
-		return port;
+	public String getServer() {
+		return server;
+	}
+
+	private URI getServerURI() throws URISyntaxException {
+		if (serverURI == null)
+			serverURI = new URI(server);
+		return serverURI;
+	}
+
+	public String getTls() throws URISyntaxException {
+		if ("ldaps".equals(getServerURI().getScheme()))
+			return "ssl";
+		if (isValueTrue(starttls))
+			return "tls";
+		return "none";
+	}
+
+	public String getHost() throws URISyntaxException {
+		return getServerURI().getHost();
+	}
+
+	public Integer getPort() throws URISyntaxException {
+		return getServerURI().getPort();
 	}
 
 	public String getBasedn() {
@@ -48,28 +80,24 @@ public class EntryManagerConfig implements Serializable {
 		return binddn;
 	}
 
-	public String getBindpwStr() {
-		return bindpwStr;
+	public String getBindpw() {
+		return bindpw;
 	}
 
-	public byte[] getBindpw() {
+	public byte[] getBindpwInBytes() {
 		try {
-			return getBindpwStr().getBytes("UTF8");
-		} catch (UnsupportedEncodingException e) {
+			return getBindpw().getBytes("UTF8");
+		} catch (Exception e) {
 			return new byte[0];
 		}
 	}
 
-	public Integer getSearchSizelimit() {
-		return searchSizelimit;
+	public Integer getSizelimit() {
+		return sizelimit;
 	}
 
-	public String getAuthenticateSearchFilter() {
-		return authenticateSearchFilter;
-	}
-
-	public void setAuthenticateSearchFilter(String authenticateSearchFilter) {
-		this.authenticateSearchFilter = authenticateSearchFilter;
+	public String getAuthenticateFilter() {
+		return authenticate_filter;
 	}
 
 }
