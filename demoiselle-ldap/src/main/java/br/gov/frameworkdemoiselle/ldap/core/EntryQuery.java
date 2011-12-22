@@ -11,18 +11,19 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.ietf.ldap.LDAPAttribute;
-import org.ietf.ldap.LDAPConnection;
-import org.ietf.ldap.LDAPEntry;
-import org.ietf.ldap.LDAPException;
-import org.ietf.ldap.LDAPReferralException;
-import org.ietf.ldap.LDAPSearchConstraints;
-import org.ietf.ldap.LDAPSearchResults;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
+
+import com.novell.ldap.LDAPAttribute;
+import com.novell.ldap.LDAPConnection;
+import com.novell.ldap.LDAPEntry;
+import com.novell.ldap.LDAPException;
+import com.novell.ldap.LDAPReferralException;
+import com.novell.ldap.LDAPSearchConstraints;
+import com.novell.ldap.LDAPSearchResults;
 
 @RequestScoped
 public class EntryQuery implements Serializable {
