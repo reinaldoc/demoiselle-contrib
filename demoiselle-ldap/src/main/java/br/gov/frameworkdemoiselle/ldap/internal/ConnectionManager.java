@@ -5,12 +5,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
-import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
 
 import com.novell.ldap.LDAPConnection;
@@ -24,51 +25,59 @@ public class ConnectionManager implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private Logger logger;
+
 	@Inject
 	private EntryManagerConfig entryManagerConfig;
 
 	@Inject
-	@RequestScoped
 	private EntryQuery query;
 
 	private LDAPConnection lc;
-	private String host;
-	private int port;
-	private String tls;
+
+	private ConnectionURI connURI;
+
 	private String binddn;
+
 	private byte[] bindpw;
-	private boolean referrals = false;
-	private int protocol = 3;
-	private String authenticateSearchFilter;
+
+	private boolean referrals;
+
+	private int protocol;
+
+	private String authenticateFilter;
 
 	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() throws URISyntaxException {
-		host = entryManagerConfig.getHost();
-		port = entryManagerConfig.getPort();
-		tls = entryManagerConfig.getTls();
+		if (entryManagerConfig.isLogger())
+			logger = LoggerProducer.create(ConnectionManager.class);
+		connURI = new ConnectionURI(entryManagerConfig.getServer(), entryManagerConfig.isStarttls());
 		binddn = entryManagerConfig.getBinddn();
 		bindpw = entryManagerConfig.getBindpwInBytes();
-		authenticateSearchFilter = entryManagerConfig.getAuthenticateFilter();
+		referrals = entryManagerConfig.isReferrals();
+		protocol = entryManagerConfig.getProtocol();
+		authenticateFilter = entryManagerConfig.getAuthenticateFilter();
 	}
 
 	/**
 	 * Make a LDAP Connection with configuration values;
 	 * 
 	 * @throws LDAPException
+	 * @throws URISyntaxException
 	 */
-	private void connect() throws LDAPException {
-		if (tls.equals("ssl")) {
-			LDAPJSSESecureSocketFactory sslFactory = new LDAPJSSESecureSocketFactory();
-			lc = new LDAPConnection(sslFactory);
-		} else if (tls.equals("tls")) {
-			LDAPJSSEStartTLSFactory sslFactory = new LDAPJSSEStartTLSFactory();
-			lc = new LDAPConnection(sslFactory);
+	private void connect() throws LDAPException, URISyntaxException {
+		if (connURI.getTls() == ConnectionURI.TlsEnum.SSL) {
+			LDAPJSSESecureSocketFactory connFactory = new LDAPJSSESecureSocketFactory();
+			lc = new LDAPConnection(connFactory);
+		} else if (connURI.getTls() == ConnectionURI.TlsEnum.TLS) {
+			LDAPJSSEStartTLSFactory connFactory = new LDAPJSSEStartTLSFactory();
+			lc = new LDAPConnection(connFactory);
 		} else {
 			lc = new LDAPConnection();
 		}
-		lc.connect(host, port);
-		if (tls.equals("tls")) {
+		lc.connect(connURI.getHost(), connURI.getPort());
+		if (connURI.getTls() == ConnectionURI.TlsEnum.TLS) {
 			lc.startTLS();
 		}
 		LDAPConstraints ldapConstraints = new LDAPConstraints();
@@ -82,13 +91,18 @@ public class ConnectionManager implements Serializable {
 	 * 
 	 * @throws LDAPException
 	 */
-	public boolean connect(String host, int port) {
-		this.host = host;
-		this.port = port;
+	public boolean connect(String serverURI, boolean useTLS) {
 		try {
+			connURI = new ConnectionURI(serverURI, useTLS);
 			connect();
 			return true;
 		} catch (LDAPException e) {
+			if (logger != null)
+				logger.info("LDAPException raised at connect()");
+			return false;
+		} catch (URISyntaxException e) {
+			if (logger != null)
+				logger.info("URISyntaxException raised at connect()");
 			return false;
 		}
 	}
@@ -107,9 +121,10 @@ public class ConnectionManager implements Serializable {
 	 * 
 	 * @return LDAPConnection
 	 * @throws LDAPException
+	 * @throws URISyntaxException
 	 */
-	private LDAPConnection getConnection() throws LDAPException {
-		if (lc == null || lc.isConnected() == false) {
+	private LDAPConnection getConnection() throws LDAPException, URISyntaxException {
+		if (lc == null || !lc.isConnected()) {
 			connect();
 		}
 		return lc;
@@ -121,7 +136,7 @@ public class ConnectionManager implements Serializable {
 	 * @return
 	 */
 	public LDAPConnection initialized() {
-		bind(this.binddn, this.bindpw);
+		bind(binddn, bindpw, protocol);
 		return lc;
 	}
 
@@ -133,14 +148,16 @@ public class ConnectionManager implements Serializable {
 	 * @param binddn
 	 * @param bindpw
 	 */
-	public boolean bind(String binddn, String bindpw) {
+	public boolean bind(String binddn, String bindpw, int protocol) {
 		byte[] bindpwutf;
 		try {
 			bindpwutf = bindpw.getBytes("UTF8");
 		} catch (Exception e) {
+			if (logger != null)
+				logger.info("Exception raised at bind()");
 			return false;
 		}
-		return bind(binddn, bindpwutf);
+		return bind(binddn, bindpwutf, protocol);
 	}
 
 	/**
@@ -151,13 +168,20 @@ public class ConnectionManager implements Serializable {
 	 * @param binddn
 	 * @param bindpw
 	 */
-	public boolean bind(String binddn, byte[] bindpw) {
+	public boolean bind(String binddn, byte[] bindpw, int protocol) {
 		this.binddn = binddn;
 		this.bindpw = bindpw;
+		this.protocol = protocol;
 		try {
 			bind();
 			return true;
 		} catch (LDAPException e) {
+			if (logger != null)
+				logger.info("LDAPException raised at bind()");
+			return false;
+		} catch (URISyntaxException e) {
+			if (logger != null)
+				logger.info("URISyntaxException raised at bind()");
 			return false;
 		}
 	}
@@ -167,9 +191,10 @@ public class ConnectionManager implements Serializable {
 	 * reconnect and authenticate;
 	 * 
 	 * @throws LDAPException
+	 * @throws URISyntaxException
 	 * @throws UnsupportedEncodingException
 	 */
-	private void bind() throws LDAPException {
+	private void bind() throws LDAPException, URISyntaxException {
 		if (getConnection().isBound()) {
 			if (!binddn.equals(getConnection().getAuthenticationDN())) {
 				disconnect();
@@ -188,15 +213,16 @@ public class ConnectionManager implements Serializable {
 	 * @param bindpw
 	 * @return
 	 */
-	public boolean authenticate(String binddn, String bindpw) {
+	public boolean authenticate(String binddn, String bindpw, int protocol) {
 		if (binddn != null && !binddn.contains("=")) {
-			query.setSearchFilter(authenticateSearchFilter.replaceAll("%u", binddn));
+			query.setSearchFilter(authenticateFilter.replaceAll("%u", binddn));
 			binddn = query.getSingleDn();
 		}
 
 		if (binddn != null) {
-			EntryManager entryManager = new EntryManager();
-			return entryManager.bind(this.binddn, this.bindpw);
+			ConnectionManager cm = new ConnectionManager();
+			cm.connect(connURI.getServerURI(), connURI.isStarttls());
+			return cm.bind(binddn, bindpw, protocol);
 		}
 		return false;
 	}

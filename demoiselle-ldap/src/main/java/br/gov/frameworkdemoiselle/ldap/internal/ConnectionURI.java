@@ -1,0 +1,106 @@
+package br.gov.frameworkdemoiselle.ldap.internal;
+
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
+import br.gov.frameworkdemoiselle.ldap.configuration.EntryManagerConfig;
+
+public class ConnectionURI implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public static enum TlsEnum {
+		SSL, TLS, NONE
+	};
+
+	@Inject
+	private EntryManagerConfig entryManagerConfig;
+
+	private URI serverURI;
+
+	private boolean starttls;
+
+	private TlsEnum useTLS;
+
+	public ConnectionURI(String serverURI, boolean starttls) throws URISyntaxException {
+		this.serverURI = new URI(serverURI);
+		this.starttls = starttls;
+		this.useTLS = getTls(starttls);
+	}
+
+	@SuppressWarnings("unused")
+	@PostConstruct
+	private void init() throws URISyntaxException {
+		this.serverURI = new URI(entryManagerConfig.getServer());
+		this.useTLS = getTls(entryManagerConfig.isStarttls());
+	}
+
+	/**
+	 * Returns the security layer at enumeration element: TlsEnum.SSL or
+	 * TlsEnum.TLS or TlsEnum.NONE;
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	private TlsEnum getTls(boolean useTLS) throws URISyntaxException {
+		if ("ldaps".equals(serverURI.getScheme()))
+			return TlsEnum.SSL;
+		if (useTLS)
+			return TlsEnum.TLS;
+		return TlsEnum.NONE;
+	}
+
+	/**
+	 * Returns the security layer at enumeration element: TlsEnum.SSL or
+	 * TlsEnum.TLS or TlsEnum.NONE;
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	public TlsEnum getTls() throws URISyntaxException {
+		return useTLS;
+	}
+
+	/**
+	 * Returns the host component of this URI;
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	public String getHost() throws URISyntaxException {
+		return serverURI.getHost();
+	}
+
+	/**
+	 * Returns the port number of this URI;
+	 * 
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	public Integer getPort() throws URISyntaxException {
+		return serverURI.getPort();
+	}
+
+	/**
+	 * Returns the content of this URI as a String. This string is equivalent to
+	 * the original input constructor string;
+	 * 
+	 * @return
+	 */
+	public String getServerURI() {
+		return serverURI.toString();
+	}
+
+	/**
+	 * Returns the starttls parameter used on constructor;
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	public boolean isStarttls() {
+		return starttls;
+	}
+}
