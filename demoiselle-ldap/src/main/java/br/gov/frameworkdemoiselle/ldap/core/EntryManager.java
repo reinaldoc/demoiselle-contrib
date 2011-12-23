@@ -20,14 +20,26 @@ public class EntryManager implements Serializable {
 	@Inject
 	private EntryQuery query;
 
+	private int protocol = 3;
+
 	/**
-	 * Make a LDAP Connection with user values; Don't use this method unless
+	 * Set LDAP Protocol for LDAP BIND operation when not using resource
+	 * configuration;
+	 * 
+	 * @param protocol
+	 */
+	public void setProtocol(int protocol) {
+		this.protocol = protocol;
+	}
+
+	/**
+	 * Make a LDAP Connection with user values; Avoid use this method unless
 	 * necessary, make resource configuration;
 	 * 
 	 * @throws LDAPException
 	 */
-	public boolean connect(String host, int port) {
-		return connectionManager.connect(host, port);
+	public boolean connect(String serverURI, boolean useTLS) {
+		return connectionManager.connect(serverURI, useTLS);
 	}
 
 	/**
@@ -39,7 +51,7 @@ public class EntryManager implements Serializable {
 	 * @param bindpw
 	 */
 	public boolean bind(String binddn, String bindpw) {
-		return connectionManager.bind(binddn, bindpw);
+		return connectionManager.bind(binddn, bindpw, protocol);
 	}
 
 	/**
@@ -51,7 +63,19 @@ public class EntryManager implements Serializable {
 	 * @param bindpw
 	 */
 	public boolean bind(String binddn, byte[] bindpw) {
-		return connectionManager.bind(binddn, bindpw);
+		return connectionManager.bind(binddn, bindpw, protocol);
+	}
+
+	/**
+	 * This is a isolated method that use a alternative connection to validate a
+	 * dn or user and a password. This method don't touch current connection.
+	 * 
+	 * @param binddn
+	 * @param bindpw
+	 * @return
+	 */
+	public boolean authenticate(String binddn, String bindpw) {
+		return connectionManager.authenticate(binddn, bindpw, protocol);
 	}
 
 	/**
