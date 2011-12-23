@@ -53,6 +53,7 @@ public class EntryQuery implements Serializable {
 		ldapFilter = "(objectClass=*)";
 		scope = LDAPConnection.SCOPE_SUB;
 		ldapConstraints = new LDAPSearchConstraints();
+		ldapConstraints.setReferralFollowing(entryManagerConfig.isReferrals());
 		ldapConstraints.setMaxResults(entryManagerConfig.getSizelimit());
 		basedn = entryManagerConfig.getBasedn();
 	}
@@ -109,13 +110,29 @@ public class EntryQuery implements Serializable {
 
 	/**
 	 * 
+	 * @param resultAttributes
+	 * @return
+	 */
+	private Map<String, LDAPEntry> find(String[] resultAttributes) {
+		String[] resultAttributesSaved = null;
+		if (this.resultAttributes != null)
+			resultAttributesSaved = this.resultAttributes.clone();
+		this.resultAttributes = resultAttributes;
+		Map<String, LDAPEntry> findResult = find();
+		this.resultAttributes = resultAttributesSaved;
+		return findResult;
+	}
+
+	/**
+	 * 
 	 * @return
 	 */
 	public Map<String, Map<String, String[]>> getResult() {
 		Map<String, LDAPEntry> searchResult = new HashMap<String, LDAPEntry>();
 		Map<String, Map<String, String[]>> resultMap = new HashMap<String, Map<String, String[]>>();
 
-		Iterator<String> itrDn = find().keySet().iterator();
+		searchResult = find();
+		Iterator<String> itrDn = searchResult.keySet().iterator();
 		while (itrDn.hasNext()) {
 			String dn = itrDn.next();
 			Map<String, String[]> entryMap = new HashMap<String, String[]>();
@@ -211,12 +228,10 @@ public class EntryQuery implements Serializable {
 	 */
 	public List<String> getDnList() {
 		List<String> dnList = new ArrayList<String>();
-		resultAttributes = new String[] { "objectClass" };
-		Iterator<String> itr = find().keySet().iterator();
+		Iterator<String> itr = find(new String[] { "-" }).keySet().iterator();
 		while (itr.hasNext() == true) {
 			dnList.add(itr.next());
 		}
-		resultAttributes = null;
 		return dnList;
 	}
 
