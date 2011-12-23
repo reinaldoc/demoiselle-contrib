@@ -29,14 +29,15 @@ public class ConnectionURI implements Serializable {
 	public ConnectionURI(String serverURI, boolean starttls) throws URISyntaxException {
 		this.serverURI = new URI(serverURI);
 		this.starttls = starttls;
-		this.useTLS = getTls(starttls);
+		setUseTLS();
 	}
 
 	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() throws URISyntaxException {
 		this.serverURI = new URI(entryManagerConfig.getServer());
-		this.useTLS = getTls(entryManagerConfig.isStarttls());
+		this.starttls = entryManagerConfig.isStarttls();
+		setUseTLS();
 	}
 
 	/**
@@ -46,12 +47,13 @@ public class ConnectionURI implements Serializable {
 	 * @return
 	 * @throws URISyntaxException
 	 */
-	private TlsEnum getTls(boolean useTLS) throws URISyntaxException {
+	private void setUseTLS() throws URISyntaxException {
 		if ("ldaps".equals(serverURI.getScheme()))
-			return TlsEnum.SSL;
-		if (useTLS)
-			return TlsEnum.TLS;
-		return TlsEnum.NONE;
+			useTLS = TlsEnum.SSL;
+		else if (starttls)
+			useTLS = TlsEnum.TLS;
+		else
+			useTLS = TlsEnum.NONE;
 	}
 
 	/**
@@ -97,6 +99,7 @@ public class ConnectionURI implements Serializable {
 
 	/**
 	 * Returns the starttls parameter used on constructor;
+	 * 
 	 * @return
 	 * @throws URISyntaxException
 	 */
