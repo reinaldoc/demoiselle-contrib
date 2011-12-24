@@ -99,7 +99,7 @@ public class EntryManager implements Serializable {
 	 * @return
 	 */
 	public EntryQuery createQuery(String ldapSearchFilter) {
-		query.setSearchFilter(ldapSearchFilter);
+		query.setFilter(ldapSearchFilter);
 		return query;
 	}
 

@@ -215,7 +215,7 @@ public class ConnectionManager implements Serializable {
 	 */
 	public boolean authenticate(String binddn, String bindpw, int protocol) {
 		if (binddn != null && !binddn.contains("=")) {
-			query.setSearchFilter(authenticateFilter.replaceAll("%u", binddn));
+			query.setFilter(authenticateFilter.replaceAll("%u", binddn));
 			binddn = query.getSingleDn();
 		}
 

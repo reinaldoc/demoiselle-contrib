@@ -66,8 +66,12 @@ public class EntryQuery implements Serializable {
 		this.basedn = basedn;
 	}
 
-	public void setSearchFilter(String searchFilter) {
-		this.ldapFilter = searchFilter;
+	public void setScope(int scope) {
+		this.scope = scope;
+	}
+	
+	public void setFilter(String ldapFilter) {
+		this.ldapFilter = ldapFilter;
 	}
 
 	public void setResultAttributes(String... resultAttributes) {
