@@ -1,11 +1,14 @@
 package br.gov.frameworkdemoiselle.ldap.core;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
+import br.gov.frameworkdemoiselle.ldap.internal.EntryCore;
+import br.gov.frameworkdemoiselle.ldap.internal.EntryCoreMap;
 
 import com.novell.ldap.LDAPException;
 
@@ -19,6 +22,12 @@ public class EntryManager implements Serializable {
 
 	@Inject
 	private EntryQuery query;
+
+	@Inject
+	private EntryCore core;
+
+	@Inject
+	private EntryCoreMap coreMap;
 
 	private int protocol = 3;
 
@@ -79,19 +88,96 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
-	 * Update not implemented
+	 * Persist a LDAP Entry. Use LDAP Add Operation
 	 */
-	@SuppressWarnings("unused")
-	private void update() {
-
+	public void persist(Map<String, String[]> entry, String dn) {
+		coreMap.persist(entry, dn);
 	}
 
 	/**
-	 * Insert not implemented
+	 * Update LDAP Entry from declared attributes only (ignore others) Use LDAP
+	 * Modify Operation
 	 */
-	@SuppressWarnings("unused")
-	private void insert() {
+	public void merge(Map<String, String[]> entry, String dn) {
+		coreMap.merge(entry, dn);
+	}
 
+	/**
+	 * Update LDAP Entry to declared attributes only (remove others). Use LDAP
+	 * Modify Operation
+	 */
+	public void update(Map<String, String[]> entry, String dn) {
+		coreMap.update(entry, dn);
+	}
+
+	/**
+	 * Remove LDAP Entry
+	 */
+	public void remove(String dn) {
+		coreMap.remove(dn);
+	}
+
+	/**
+	 * Find a LDAP Entry by LDAP Search Filter (RFC 4515)
+	 */
+	public Map<String, String[]> find(String searchFilter) {
+		return coreMap.find(searchFilter);
+	}
+
+	/**
+	 * Find a LDAP Entry DN by DN (RFC 1485)
+	 */
+	public Map<String, String[]> getReference(String dn) {
+		return coreMap.getReference(dn);
+	}
+
+	/**
+	 * Find a LDAP Entry DN by LDAP Search Filter (RFC 4515)
+	 */
+	public String findReference(String searchFilter) {
+		return coreMap.findReference(searchFilter);
+	}
+
+	/**
+	 * Future support for POJO. Not implemented.
+	 */
+	public void persist(Object entry) {
+		core.persist(entry);
+	}
+
+	/**
+	 * Future support for POJO. Not implemented.
+	 */
+	public void merge(Object entry) {
+		core.merge(entry);
+	}
+
+	/**
+	 * Future support for POJO. Not implemented.
+	 */
+	public void remove(Object entry) {
+		core.remove(entry);
+	}
+
+	/**
+	 * Future support for POJO. Not implemented.
+	 */
+	public <T> T find(Class<T> entryClass, Object dn) {
+		return core.find(entryClass, dn);
+	}
+
+	/**
+	 * Future support for POJO. Not implemented.
+	 */
+	public <T> T getReference(Class<T> entryClass, Object dn) {
+		return core.getReference(entryClass, dn);
+	}
+
+	/**
+	 * Future support for POJO. Not implemented.
+	 */
+	public String findReference(Object entry) {
+		return core.findReference(entry);
 	}
 
 	/**
