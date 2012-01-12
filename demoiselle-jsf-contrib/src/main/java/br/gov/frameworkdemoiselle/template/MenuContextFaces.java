@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.template;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
