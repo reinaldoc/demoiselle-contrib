@@ -45,7 +45,6 @@
 		<relativePath>../</relativePath>
 	</parent>
 	
-	<groupId>br.gov.frameworkdemoiselle.component</groupId>
 	<artifactId>demoiselle-core-contrib</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
