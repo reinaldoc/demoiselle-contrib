@@ -44,20 +44,20 @@
 		<version>2.0.5</version>
 		<relativePath>../</relativePath>
 	</parent>
-	
+
 	<artifactId>demoiselle-core-contrib</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
-	<name>demoiselle-core-contrib</name>	
-	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>	
+
+	<name>demoiselle-core-contrib</name>
+	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
 	<description>Descricao do component</description>
 
 	<properties>
 		<!-- Propriedade utilizada para categorizar o componente no portal
 			(http://demoiselle.sourceforge.net/component/) -->
 		<category>Outros</category>
-		
+
 	</properties>
 
 <!--
@@ -73,11 +73,18 @@
   mais de um component( versões distintas).
 -->
 	<dependencies>
+		<!-- Major Libraries -->
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-core</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
 
+		<!-- Support Tools -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -130,7 +137,7 @@
 			<url>${shell.htdocs}/component/${project.artifactId}/${project.version}</url>
 		</site>
 	</distributionManagement>
-	
+
 	<repositories>
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
