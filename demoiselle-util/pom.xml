@@ -56,6 +56,11 @@
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-jsf</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 
 		<!-- Support Tools -->
 		<dependency>
