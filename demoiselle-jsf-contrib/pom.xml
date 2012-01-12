@@ -44,21 +44,21 @@
 		<version>2.0.5</version>
 		<relativePath>../</relativePath>
 	</parent>
-	
+
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-jsf-contrib</artifactId>
 	<version>2.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
-	<name>demoiselle-jsf-contrib</name>	
-	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>	
+
+	<name>demoiselle-jsf-contrib</name>
+	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
 	<description>Descricao do component</description>
 
 	<properties>
 		<!-- Propriedade utilizada para categorizar o componente no portal
 			(http://demoiselle.sourceforge.net/component/) -->
 		<category>Outros</category>
-		
+
 	</properties>
 
 <!--
@@ -74,6 +74,12 @@
   mais de um component( versões distintas).
 -->
 	<dependencies>
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-jsf</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -131,7 +137,7 @@
 			<url>${shell.htdocs}/component/${project.artifactId}/${project.version}</url>
 		</site>
 	</distributionManagement>
-	
+
 	<repositories>
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
