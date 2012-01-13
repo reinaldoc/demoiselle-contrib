@@ -132,7 +132,8 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	protected void handleException(Throwable cause) throws Throwable {
 		if (cause instanceof TransactionRequiredException) {
-			String message = bundle.get().getString("no-transaction-active", "frameworkdemoiselle.transaction.class", Configuration.DEFAULT_RESOURCE);
+			String message = bundle.get().getString("no-transaction-active", "frameworkdemoiselle.transaction.class",
+					Configuration.DEFAULT_RESOURCE);
 			throw new DemoiselleException(message, cause);
 
 		} else {
@@ -325,7 +326,8 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 		for (Field field : fields) {
 
-			if (!field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Basic.class) && !field.isAnnotationPresent(Enumerated.class)) {
+			if (!field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Basic.class)
+					&& !field.isAnnotationPresent(Enumerated.class)) {
 				continue;
 			}
 
