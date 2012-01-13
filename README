@@ -10,8 +10,9 @@ desenvolvimento do SERPRO.
 Repositório Maven
 =================
 
-    Os projetos atualmente estão disponíveis através do sistema de controle
-de versão, devem ser importados através de git e exportados para o pacote
-JAR.
-
+	<repository>
+		<id>demoiselle-contrib</id>
+		<name>Demoiselle Contrib Maven Repository</name>
+		<url>http://reinaldoc.github.com/maven</url>
+	</repository>
 
