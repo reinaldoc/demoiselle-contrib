@@ -16,3 +16,64 @@ Repositório Maven
 		<url>http://reinaldoc.github.com/maven</url>
 	</repository>
 
+Componentes novos
+=================
+
+	demoiselle-fuselage (importa todos os demais)
+	=============================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-fuselage</artifactId>
+		<version>2.2.0</version>
+	</dependency>
+
+	demoiselle-ldap (não importa nenhum outro)
+	==========================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-ldap</artifactId>
+		<version>2.2.0</version>
+	</dependency>
+
+	demoiselle-primefaces (importa demoiselle-jsf-contrib)
+	======================================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-primefaces</artifactId>
+		<version>2.2.0</version>
+	</dependency>
+
+	demoiselle-util (não importa nenhum outro)
+	==========================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-util</artifactId>
+		<version>2.2.0</version>
+	</dependency>
+
+Evolução de componentes
+=======================
+
+	demoiselle-core-contrib (não importa nenhum outro)
+	==================================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-core-contrib</artifactId>
+		<version>2.2.0</version>
+	</dependency>
+
+	demoiselle-jsf-contrib (importa demoiselle-util)
+	================================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-jsf-contrib</artifactId>
+		<version>2.2.0</version>
+	</dependency>
+
+	demoiselle-jpa-contrib (importa demoiselle-core-contrib)
+	========================================================
+	<dependency>
+		<groupId>demoiselle-contrib</groupId>
+		<artifactId>demoiselle-jpa-contrib</artifactId>
+		<version>2.2.0</version>
+	</dependency>
