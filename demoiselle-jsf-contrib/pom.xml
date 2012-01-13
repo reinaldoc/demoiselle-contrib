@@ -47,7 +47,7 @@
 
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-jsf-contrib</artifactId>
-	<version>2.2.1-SNAPSHOT</version>
+	<version>2.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-jsf-contrib</name>
@@ -74,12 +74,28 @@
   mais de um component( versões distintas).
 -->
 	<dependencies>
+		<!-- Major Libraries -->
+		<dependency>
+			<groupId>demoiselle-contrib</groupId>
+			<artifactId>demoiselle-core-contrib</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>demoiselle-contrib</groupId>
+			<artifactId>demoiselle-util</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-jsf</artifactId>
 			<version>2.2.0</version>
 		</dependency>
 
+		<!-- Support Tools -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -142,6 +158,11 @@
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+		<repository>
+			<id>reinaldoc-repo</id>
+			<name>Reinaldo Github Maven Repository</name>
+			<url>http://reinaldoc.github.com/maven</url>
 		</repository>
 	</repositories>
 
