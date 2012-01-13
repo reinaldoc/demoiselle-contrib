@@ -41,13 +41,13 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle.component</groupId>
 		<artifactId>demoiselle-component-parent</artifactId>
-		<version>2.0.5</version>
+		<version>2.0.7</version>
 		<relativePath>../</relativePath>
 	</parent>
 
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-jpa-contrib</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-jpa-contrib</name>
@@ -75,6 +75,11 @@
 -->
 	<dependencies>
 		<!-- Major Libraries -->
+		<dependency>
+			<groupId>demoiselle-contrib</groupId>
+			<artifactId>demoiselle-core-contrib</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-core</artifactId>
@@ -148,6 +153,11 @@
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+		<repository>
+			<id>reinaldoc-repo</id>
+			<name>Reinaldo Github Maven Repository</name>
+			<url>http://reinaldoc.github.com/maven</url>
 		</repository>
 	</repositories>
 
