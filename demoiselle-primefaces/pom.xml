@@ -41,38 +41,22 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle.component</groupId>
 		<artifactId>demoiselle-component-parent</artifactId>
-		<version>2.0.5</version>
+		<version>2.0.7</version>
 		<relativePath>../</relativePath>
 	</parent>
 
-	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-primefaces</artifactId>
 	<version>2.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-primefaces</name>
 	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
-	<description>Descricao do component</description>
+	<description>Componente com classe que dependem do Primefaces</description>
 
 	<properties>
-		<!-- Propriedade utilizada para categorizar o componente no portal
-			(http://demoiselle.sourceforge.net/component/) -->
 		<category>Outros</category>
-
 	</properties>
 
-<!--
-  Dependências do projeto
-  
-  As versões das dependências estão declaradas no parent (demoiselle-component-parent)
-  
-  Quando necessário o uso de uma biblioteca nova ou um versão mais atual, deve-se
-  abrir uma demanda(http://tracker.frameworkdemoiselle.gov.br) para adicionar esta dependência
-  no parent dos componentes. 
-  
-  Esta ação serve para minimizar os problemas de conflitos de versões de uma mesma biblioteca em
-  mais de um component( versões distintas).
--->
 	<dependencies>
 		<!-- Major Libraries -->
 		<dependency>
@@ -88,10 +72,6 @@
 		</dependency>
 		
 		<!-- Support Tools -->
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
