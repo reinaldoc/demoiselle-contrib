@@ -47,7 +47,7 @@
 
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-primefaces</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-primefaces</name>
@@ -74,6 +74,11 @@
   mais de um component( versões distintas).
 -->
 	<dependencies>
+		<dependency>
+			<groupId>demoiselle-contrib</groupId>
+			<artifactId>demoiselle-core-contrib</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-jsf</artifactId>
@@ -155,6 +160,11 @@
 			<name>PrimeFaces Maven Repository</name>
 			<url>http://repository.primefaces.org</url>
 			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>reinaldoc-repo</id>
+			<name>Reinaldo Github Maven Repository</name>
+			<url>http://reinaldoc.github.com/maven</url>
 		</repository>
 	</repositories>
 
