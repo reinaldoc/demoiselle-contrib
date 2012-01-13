@@ -1,58 +1,61 @@
-<!-- Demoiselle Framework Copyright (C) 2010 SERPRO ============================================================================ 
-	This file is part of Demoiselle Framework. Demoiselle Framework is free software; 
-	you can redistribute it and/or modify it under the terms of the GNU Lesser 
-	General Public License version 3 as published by the Free Software Foundation. 
-	This program is distributed in the hope that it will be useful, but WITHOUT 
-	ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
-	FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
-	You should have received a copy of the GNU Lesser General Public License 
-	version 3 along with this program; if not, see <http://www.gnu.org/licenses 
-	/> or write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth 
-	Floor, Boston, MA 02110-1301, USA. ============================================================================ 
-	Este arquivo é parte do Framework Demoiselle. O Framework Demoiselle é um 
-	software livre; você pode redistribuí-lo e/ou modificá-lo dentro dos termos 
-	da GNU LGPL versão 3 como publicada pela Fundação do Software Livre (FSF). 
-	Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA 
-	GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou APLICAÇÃO 
-	EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português para maiores 
-	detalhes. Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título 
-	"LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses 
-	/> ou escreva para a Fundação do Software Livre (FSF) Inc., 51 Franklin St, 
-	Fifth Floor, Boston, MA 02111-1301, USA. -->
+<!--
+ Demoiselle Framework
+ Copyright (C) 2010 SERPRO
+ ============================================================================
+ This file is part of Demoiselle Framework.
+ 
+ Demoiselle Framework is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License version 3
+ as published by the Free Software Foundation.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License version 3
+ along with this program; if not,  see <http://www.gnu.org/licenses />
+ or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ Fifth Floor, Boston, MA  02110-1301, USA.
+ ============================================================================
+ Este arquivo é parte do Framework Demoiselle.
+ 
+ O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ do Software Livre (FSF).
+ 
+ Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ para maiores detalhes.
+ 
+ Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
+ ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>br.gov.frameworkdemoiselle.component</groupId>
-		<artifactId>demoiselle-component-parent</artifactId>
-		<version>2.0.5</version>
-		<relativePath>../</relativePath>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-extension-parent</artifactId>
+		<version>2.2.0</version>
 	</parent>
 
-	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-ldap</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-ldap</name>
 	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
-	<description>Descricao do component</description>
+	<description>Componente para o acesso a bases LDAP</description>
 
 	<properties>
-		<!-- Propriedade utilizada para categorizar o componente no portal (http://demoiselle.sourceforge.net/component/) -->
 		<category>Outros</category>
-
 	</properties>
 
-	<!-- Dependências do projeto As versões das dependências estão declaradas 
-		no parent (demoiselle-component-parent) Quando necessário o uso de uma biblioteca 
-		nova ou um versão mais atual, deve-se abrir uma demanda(http://tracker.frameworkdemoiselle.gov.br) 
-		para adicionar esta dependência no parent dos componentes. Esta ação serve 
-		para minimizar os problemas de conflitos de versões de uma mesma biblioteca 
-		em mais de um component( versões distintas). -->
 	<dependencies>
-
 		<!-- LDAP Java Implementation -->
 		<dependency>
 			<groupId>com.novell.ldap</groupId>
@@ -60,24 +63,10 @@
 			<version>4.3</version>
 		</dependency>
 
-		<!-- Major Libraries -->
-		<dependency>
-			<groupId>br.gov.frameworkdemoiselle</groupId>
-			<artifactId>demoiselle-core</artifactId>
-		</dependency>
-
 		<!-- Support Tools -->
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>br.gov.frameworkdemoiselle</groupId>
-			<artifactId>demoiselle-junit</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -131,6 +120,11 @@
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+		<repository>
+			<id>reinaldoc-repo</id>
+			<name>Reinaldo Github Maven Repository</name>
+			<url>http://reinaldoc.github.com/maven</url>
 		</repository>
 	</repositories>
 

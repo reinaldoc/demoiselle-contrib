@@ -3,8 +3,6 @@ package br.gov.frameworkdemoiselle.security;
 import java.io.Serializable;
 import java.util.List;
 
-import br.gov.frameworkdemoiselle.exception.NotLoggedInException;
-
 
 /**
  * Structure used to handle both authentication and authorizations mechanisms.

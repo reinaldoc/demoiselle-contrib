@@ -138,7 +138,6 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 		return new Long(0); // (Long) query.getSingleResult();
 	}
 
-	@Override
 	public List<T> findByExample(T example) {
 		// TODO Auto-generated method stub
 		return null;
