@@ -5,9 +5,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- * Require Parameter.class from demoiselle-jsf;
- */
+import br.gov.frameworkdemoiselle.util.MenuContext;
+import br.gov.frameworkdemoiselle.util.Parameter;
+
 @SessionScoped
 @Named
 public class MenuContextFaces extends MenuContext {
