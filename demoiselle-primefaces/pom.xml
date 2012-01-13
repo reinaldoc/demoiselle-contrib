@@ -74,35 +74,29 @@
   mais de um component( versões distintas).
 -->
 	<dependencies>
+		<!-- Major Libraries -->
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
-			<artifactId>demoiselle-core-contrib</artifactId>
+			<artifactId>demoiselle-jsf-contrib</artifactId>
 			<version>2.2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>br.gov.frameworkdemoiselle</groupId>
-			<artifactId>demoiselle-jsf</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>3.0</version><!--$NO-MVN-MAN-VER$ -->
+			<version>3.0</version>
 			<scope>compile</scope>
 		</dependency>
-
+		
+		<!-- Support Tools -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>
