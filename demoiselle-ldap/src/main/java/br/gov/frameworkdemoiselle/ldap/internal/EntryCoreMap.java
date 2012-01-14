@@ -37,11 +37,6 @@ public class EntryCoreMap implements Serializable {
 		return this.conn.initialized();
 	}
 
-	/**
-	 * Persist a LDAP Entry. Use LDAP Add Operation
-	 * 
-	 * @throws LDAPException
-	 */
 	public void persist(Map<String, String[]> entry, String dn) {
 		try {
 			LDAPAttributeSet attributeSet = new LDAPAttributeSet();
@@ -56,11 +51,6 @@ public class EntryCoreMap implements Serializable {
 		}
 	}
 
-	/**
-	 * Update LDAP Entry from declared attributes only. Undeclared attributes
-	 * will remain. Declared attributes will be replaced. Use LDAP Modify
-	 * Operation.
-	 */
 	public void merge(Map<String, String[]> entry, String dn) {
 		try {
 			List<LDAPModification> modList = new ArrayList<LDAPModification>();
@@ -77,11 +67,6 @@ public class EntryCoreMap implements Serializable {
 		}
 	}
 
-	/**
-	 * Update LDAP Entry to declared attributes only. Undeclared attributes will
-	 * be removed. Declared attributes will be replaced. You must declare all
-	 * required attributes. Use LDAP Modify Operation
-	 */
 	public void update(Map<String, String[]> entry, String dn) {
 		try {
 			throw new LDAPException();
@@ -91,11 +76,6 @@ public class EntryCoreMap implements Serializable {
 		}
 	}
 
-	/**
-	 * Remove LDAP Entry
-	 * 
-	 * @throws LDAPException
-	 */
 	public void remove(String dn) {
 		try {
 			getConnection().delete(dn);
@@ -105,17 +85,11 @@ public class EntryCoreMap implements Serializable {
 		}
 	}
 
-	/**
-	 * Find a LDAP Entry by LDAP Search Filter (RFC 4515)
-	 */
 	public Map<String, String[]> find(String searchFilter) {
 		query.setFilter(searchFilter);
 		return query.getSingleResult();
 	}
 
-	/**
-	 * Find a LDAP Entry by DN (RFC 1485)
-	 */
 	public Map<String, String[]> getReference(String dn) {
 		query.setBaseDn(dn);
 		query.setScope(LDAPConnection.SCOPE_BASE);
@@ -123,9 +97,6 @@ public class EntryCoreMap implements Serializable {
 		return query.getSingleResult();
 	}
 
-	/**
-	 * Find a DN by LDAP Search Filter (RFC 4515)
-	 */
 	public String findReference(String searchFilter) {
 		query.setFilter(searchFilter);
 		return query.getSingleDn();
