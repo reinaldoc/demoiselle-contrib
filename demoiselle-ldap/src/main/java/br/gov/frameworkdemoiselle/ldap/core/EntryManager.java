@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
+import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 import br.gov.frameworkdemoiselle.ldap.internal.ConnectionManager;
 import br.gov.frameworkdemoiselle.ldap.internal.EntryCore;
 import br.gov.frameworkdemoiselle.ldap.internal.EntryCoreMap;
@@ -36,6 +37,7 @@ public class EntryManager implements Serializable {
 	 * configuration;
 	 * 
 	 * @param protocol
+	 *            LDAP BIND Protocol commonly is 3
 	 */
 	public void setProtocol(int protocol) {
 		this.protocol = protocol;
@@ -45,6 +47,11 @@ public class EntryManager implements Serializable {
 	 * Make a LDAP Connection with user values; Avoid use this method unless
 	 * necessary, make resource configuration;
 	 * 
+	 * @param serverURI
+	 *            A DSA URI e.g. ldaps://ldap.example.com:636
+	 * @param useTLS
+	 *            Use STARTTLS, ignored if serverURI is ldaps
+	 * @return true if connections is succesfully, otherwise false
 	 * @throws LDAPException
 	 */
 	public boolean connect(String serverURI, boolean useTLS) {
@@ -57,7 +64,10 @@ public class EntryManager implements Serializable {
 	 * configuration;
 	 * 
 	 * @param binddn
+	 *            A binddn to pass to bind operation e.g. cn=admin,o=University
 	 * @param bindpw
+	 *            A binddn password
+	 * @return true if bind is succesfully, otherwise false
 	 */
 	public boolean bind(String binddn, String bindpw) {
 		return connectionManager.bind(binddn, bindpw, protocol);
@@ -69,7 +79,10 @@ public class EntryManager implements Serializable {
 	 * configuration;
 	 * 
 	 * @param binddn
+	 *            A binddn to pass to bind operation e.g. cn=admin,o=University
 	 * @param bindpw
+	 *            A binddn password
+	 * @return true if bind is succesfully, otherwise false
 	 */
 	public boolean bind(String binddn, byte[] bindpw) {
 		return connectionManager.bind(binddn, bindpw, protocol);
@@ -77,11 +90,15 @@ public class EntryManager implements Serializable {
 
 	/**
 	 * This is a isolated method that use a alternative connection to validate a
-	 * dn or user and a password. This method don't touch current connection.
+	 * dn or user and a password. This method don't touch current connection
+	 * authentication.
 	 * 
 	 * @param binddn
+	 *            A binddn to pass to bind operation in a new connection e.g.
+	 *            cn=admin,o=University
 	 * @param bindpw
-	 * @return
+	 *            A binddn password
+	 * @return true if bind is succesfully, otherwise false
 	 */
 	public boolean authenticate(String binddn, String bindpw) {
 		return connectionManager.authenticate(binddn, bindpw, protocol);
@@ -89,100 +106,185 @@ public class EntryManager implements Serializable {
 
 	/**
 	 * Persist a LDAP Entry. Use LDAP Add Operation
+	 * 
+	 * @param entry
+	 *            a MAP with key as attributes and values as attribute values
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @throws EntryException
 	 */
 	public void persist(Map<String, String[]> entry, String dn) {
 		coreMap.persist(entry, dn);
 	}
 
 	/**
-	 * Update LDAP Entry from declared attributes only (ignore others) Use LDAP
-	 * Modify Operation
+	 * Merge LDAP Entry from declared attributes only. Undeclared attributes
+	 * will remain. Declared attributes will be replaced. Use LDAP Modify
+	 * Operation.
+	 * 
+	 * @param entry
+	 *            a MAP with key as attributes and values as attribute values
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @throws EntryException
 	 */
 	public void merge(Map<String, String[]> entry, String dn) {
 		coreMap.merge(entry, dn);
 	}
 
 	/**
-	 * Update LDAP Entry to declared attributes only (remove others). Use LDAP
-	 * Modify Operation
+	 * Update LDAP Entry to declared attributes only. Undeclared attributes will
+	 * be removed. Declared attributes will be replaced. You must declare all
+	 * required attributes. Use LDAP Modify Operation
+	 * 
+	 * @param entry
+	 *            a MAP with key as attributes and values as attribute values
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @throws EntryException
 	 */
 	public void update(Map<String, String[]> entry, String dn) {
 		coreMap.update(entry, dn);
 	}
 
 	/**
-	 * Remove LDAP Entry
+	 * Remove a LDAP Entry. Use LDAP Del Operation
+	 * 
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @throws EntryException
 	 */
 	public void remove(String dn) {
 		coreMap.remove(dn);
 	}
 
 	/**
-	 * Find a LDAP Entry by LDAP Search Filter (RFC 4515)
+	 * Find a Entry by String Representation of Search Filters (RFC 4515)
+	 * 
+	 * @param searchFilter
+	 *            String Representation of Search Filters (RFC 4515)
+	 * @return a MAP with key as attributes and values as attribute values
 	 */
 	public Map<String, String[]> find(String searchFilter) {
 		return coreMap.find(searchFilter);
 	}
 
 	/**
-	 * Find a LDAP Entry DN by DN (RFC 1485)
+	 * Find a Entry by String Representation of Distinguished Names (RFC 1485)
+	 * 
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @return a MAP with key as attributes and values as attribute values
 	 */
 	public Map<String, String[]> getReference(String dn) {
 		return coreMap.getReference(dn);
 	}
 
 	/**
-	 * Find a LDAP Entry DN by LDAP Search Filter (RFC 4515)
+	 * Find a DN by String Representation of Search Filters (RFC 4515)
+	 * 
+	 * @param searchFilter
+	 *            String Representation of Search Filters (RFC 4515)
+	 * @return String Representation of Distinguished Name (RFC 1485)
 	 */
 	public String findReference(String searchFilter) {
 		return coreMap.findReference(searchFilter);
 	}
 
 	/**
-	 * Future support for POJO. Not implemented.
+	 * Persist a @LDAPEntry annotated object. Use LDAP Add Operation
+	 * 
+	 * @param a
+	 * @LDAPEntry annotated object
+	 * @throws EntryException
 	 */
 	public void persist(Object entry) {
 		core.persist(entry);
 	}
 
 	/**
-	 * Future support for POJO. Not implemented.
+	 * Merge LDAP Entry from not null attributes only. Null attributes will
+	 * remain in DSA. Not null attributes will be replaced. Use LDAP Modify
+	 * Operation.
+	 * 
+	 * @param a
+	 * @LDAPEntry annotated object
+	 * @throws EntryException
 	 */
 	public void merge(Object entry) {
 		core.merge(entry);
 	}
 
 	/**
-	 * Future support for POJO. Not implemented.
+	 * Update LDAP Entry to not null attributes only. Null attributes will be
+	 * removed from DSA. Not null attributes will be replaced. You must declare
+	 * all required attributes. Use LDAP Modify Operation
+	 * 
+	 * @param a
+	 * @LDAPEntry annotated object
+	 * @throws EntryException
+	 */
+	public void update(Object entry) {
+		core.update(entry);
+	}
+
+	/**
+	 * Remove a @LDAPEntry annotated object. Use LDAP Del Operation
+	 * 
+	 * @param a
+	 * @LDAPEntry annotated object
+	 * @throws EntryException
 	 */
 	public void remove(Object entry) {
 		core.remove(entry);
 	}
 
 	/**
-	 * Future support for POJO. Not implemented.
+	 * Find a Entry by String Representation of Search Filters (RFC 4515)
+	 * 
+	 * @Method not implemented yet
+	 * @param entryClass
+	 *            a entry class
+	 * @param searchFilter
+	 *            String Representation of Search Filters (RFC 4515)
+	 * @return a entry object
 	 */
-	public <T> T find(Class<T> entryClass, Object dn) {
-		return core.find(entryClass, dn);
+	public <T> T find(Class<T> entryClass, Object searchFilter) {
+		return core.find(entryClass, searchFilter);
 	}
 
 	/**
-	 * Future support for POJO. Not implemented.
+	 * Find a Entry by String Representation of Distinguished Names (RFC 1485)
+	 * 
+	 * @Method not implemented yet
+	 * @param entryClass
+	 *            a entry class
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @return a entry object
 	 */
 	public <T> T getReference(Class<T> entryClass, Object dn) {
 		return core.getReference(entryClass, dn);
 	}
 
 	/**
-	 * Future support for POJO. Not implemented.
+	 * Find a DN by String Representation of Search Filters (RFC 4515)
+	 * 
+	 * @param searchFilter
+	 *            String Representation of Search Filters (RFC 4515)
+	 * @return dn String Representation of Distinguished Name (RFC 1485)
 	 */
-	public String findReference(Object entry) {
-		return core.findReference(entry);
+	public String findReference(Object searchFilter) {
+		return core.findReference(searchFilter);
 	}
 
 	/**
+	 * Create an instance of EntryQuery for executing a String Representation of
+	 * Search Filters (RFC 4515)
 	 * 
-	 * @return
+	 * @param ldapSearchFilter
+	 *            LDAP Search Filter String (RFC 4515)
+	 * @return the new entry query instance
 	 */
 	public EntryQuery createQuery(String ldapSearchFilter) {
 		query.setFilter(ldapSearchFilter);
