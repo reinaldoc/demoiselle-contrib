@@ -38,18 +38,15 @@ package br.gov.frameworkdemoiselle.ldap.template;
 
 import java.util.List;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
-import br.gov.frameworkdemoiselle.pagination.Pagination;
-import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.template.Crud;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
 /**
- * JPA specific implementation for Crud interface.
+ * LDAP specific implementation for Crud interface.
  * 
  * @param <T>
  *            bean object type
@@ -65,11 +62,6 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	@Inject
 	private EntryManager entryManager;
 
-	@Inject
-	private Instance<PaginationContext> paginationContext;
-
-	private Pagination pagination;
-
 	private Class<T> beanClass;
 
 	protected Class<T> getBeanClass() {
@@ -81,14 +73,6 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 
 	protected EntryManager getEntryManager() {
 		return this.entryManager;
-	}
-
-	protected Pagination getPagination() {
-		if (pagination == null) {
-			PaginationContext context = paginationContext.get();
-			pagination = context.getPagination(getBeanClass());
-		}
-		return pagination;
 	}
 
 	protected EntryQuery createQuery(final String ql) {
@@ -113,33 +97,12 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	}
 
 	public List<T> findAll() {
-		final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
-		final EntryQuery query = getEntryManager().createQuery(jpql);
-
-		final Pagination pagination = getPagination();
-		if (pagination != null) {
-			pagination.setTotalResults(this.countAll().intValue());
-			// query.setFirstResult(pagination.getFirstResult());
-			query.setMaxResults(pagination.getPageSize());
-		}
-
+		//final EntryQuery query = getEntryManager().createQuery(beanClass.getSimpleName()+"=*");
 		List<T> lista = null; // query.getResultList();
 		return lista;
 	}
 
-	/**
-	 * Retrieves the number of persisted objects for the current class type.
-	 * 
-	 * @return the row count
-	 */
-	@SuppressWarnings("unused")
-	private Long countAll() {
-		final EntryQuery query = getEntryManager().createQuery("select count(this) from " + beanClass.getSimpleName() + " this");
-		return new Long(0); // (Long) query.getSingleResult();
-	}
-
 	public List<T> findByExample(T example) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
