@@ -25,7 +25,7 @@ public class ConnectionManager implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger;
+	private Logger logger = LoggerProducer.create(ConnectionManager.class);
 
 	@Inject
 	private EntryManagerConfig entryManagerConfig;
@@ -47,11 +47,13 @@ public class ConnectionManager implements Serializable {
 
 	private String authenticateFilter;
 
+	private boolean verbose = false;
+
 	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() throws URISyntaxException {
 		if (entryManagerConfig.isLogger())
-			logger = LoggerProducer.create(ConnectionManager.class);
+			verbose = true;
 		connURI = new ConnectionURI(entryManagerConfig.getServer(), entryManagerConfig.isStarttls());
 		binddn = entryManagerConfig.getBinddn();
 		bindpw = entryManagerConfig.getBindpwInBytes();
@@ -97,12 +99,10 @@ public class ConnectionManager implements Serializable {
 			connect();
 			return true;
 		} catch (LDAPException e) {
-			if (logger != null)
-				logger.info("LDAPException raised at connect()");
+			loggerInfo("LDAPException raised at connect()");
 			return false;
 		} catch (URISyntaxException e) {
-			if (logger != null)
-				logger.info("URISyntaxException raised at connect()");
+			loggerInfo("URISyntaxException raised at connect()");
 			return false;
 		}
 	}
@@ -153,8 +153,7 @@ public class ConnectionManager implements Serializable {
 		try {
 			bindpwutf = bindpw.getBytes("UTF8");
 		} catch (Exception e) {
-			if (logger != null)
-				logger.info("Exception raised at bind()");
+			loggerInfo("Exception raised at bind()");
 			return false;
 		}
 		return bind(binddn, bindpwutf, protocol);
@@ -176,12 +175,10 @@ public class ConnectionManager implements Serializable {
 			bind();
 			return true;
 		} catch (LDAPException e) {
-			if (logger != null)
-				logger.info("LDAPException raised at bind()");
+			loggerInfo("LDAPException raised at bind()");
 			return false;
 		} catch (URISyntaxException e) {
-			if (logger != null)
-				logger.info("URISyntaxException raised at bind()");
+			loggerInfo("URISyntaxException raised at bind()");
 			return false;
 		}
 	}
@@ -225,6 +222,20 @@ public class ConnectionManager implements Serializable {
 			return cm.bind(binddn, bindpw, protocol);
 		}
 		return false;
+	}
+
+	private void loggerInfo(String msg) {
+		if (verbose) {
+			this.logger.info(msg);
+		}
+	}
+
+	public boolean isVerbose() {
+		return verbose;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 }

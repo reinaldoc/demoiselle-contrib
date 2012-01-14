@@ -56,6 +56,8 @@ public class EntryQuery implements Serializable {
 
 	private boolean enforceSingleResult;
 
+	private boolean verbose = false;
+
 	@PostConstruct
 	public void init() {
 		ldapFilter = "(objectClass=*)";
@@ -337,6 +339,14 @@ public class EntryQuery implements Serializable {
 			searchFilter = maybeSearchFilter;
 		}
 		return searchFilter;
+	}
+
+	public boolean isVerbose() {
+		return verbose;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 }

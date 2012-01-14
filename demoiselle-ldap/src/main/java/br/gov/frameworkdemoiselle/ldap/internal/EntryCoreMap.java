@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
 import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 
@@ -25,7 +24,7 @@ public class EntryCoreMap implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger = LoggerProducer.create(EntryManager.class);
+	private Logger logger = LoggerProducer.create(EntryCoreMap.class);
 
 	@Inject
 	private ConnectionManager conn;
@@ -33,14 +32,18 @@ public class EntryCoreMap implements Serializable {
 	@Inject
 	private EntryQuery query;
 
+	private boolean verbose = false;
+
 	private LDAPConnection getConnection() {
 		return this.conn.initialized();
 	}
 
 	public void persist(Map<String, String[]> entry, String dn) {
+		loggerArgs(entry, dn);
 		try {
 			LDAPAttributeSet attributeSet = new LDAPAttributeSet();
 			for (Map.Entry<String, String[]> attrMap : entry.entrySet()) {
+				loggerEntry(attrMap.getKey(), attrMap.getValue());
 				attributeSet.add(new LDAPAttribute(attrMap.getKey(), attrMap.getValue()));
 			}
 			LDAPEntry newEntry = new LDAPEntry(dn, attributeSet);
@@ -52,9 +55,11 @@ public class EntryCoreMap implements Serializable {
 	}
 
 	public void merge(Map<String, String[]> entry, String dn) {
+		loggerArgs(entry, dn);
 		try {
 			List<LDAPModification> modList = new ArrayList<LDAPModification>();
 			for (Map.Entry<String, String[]> attrMap : entry.entrySet()) {
+				loggerEntry(attrMap.getKey(), attrMap.getValue());
 				LDAPAttribute attribute = new LDAPAttribute(attrMap.getKey(), attrMap.getValue());
 				modList.add(new LDAPModification(LDAPModification.REPLACE, attribute));
 			}
@@ -68,6 +73,7 @@ public class EntryCoreMap implements Serializable {
 	}
 
 	public void update(Map<String, String[]> entry, String dn) {
+		loggerArgs(entry, dn);
 		try {
 			throw new LDAPException();
 		} catch (LDAPException e) {
@@ -77,6 +83,7 @@ public class EntryCoreMap implements Serializable {
 	}
 
 	public void remove(String dn) {
+		loggerArgs(null, dn);
 		try {
 			getConnection().delete(dn);
 		} catch (LDAPException e) {
@@ -86,11 +93,13 @@ public class EntryCoreMap implements Serializable {
 	}
 
 	public Map<String, String[]> find(String searchFilter) {
+		loggerArgs(null, searchFilter);
 		query.setFilter(searchFilter);
 		return query.getSingleResult();
 	}
 
 	public Map<String, String[]> getReference(String dn) {
+		loggerArgs(null, dn);
 		query.setBaseDn(dn);
 		query.setScope(LDAPConnection.SCOPE_BASE);
 		query.setFilter("objectClass=*");
@@ -98,8 +107,35 @@ public class EntryCoreMap implements Serializable {
 	}
 
 	public String findReference(String searchFilter) {
+		loggerArgs(null, searchFilter);
 		query.setFilter(searchFilter);
 		return query.getSingleDn();
+	}
+
+	private void loggerArgs(Object entry, Object dn) {
+		if (verbose) {
+			logger.info(Thread.currentThread().getStackTrace()[2].getMethodName() + "(" + entry + "," + dn + ")");
+			logger.info("dn: " + dn);
+		}
+	}
+
+	private void loggerEntry(Object attr, Object value) {
+		if (verbose) {
+			if (value instanceof String[]) {
+				String[] values = (String[]) value;
+				for (String valueElement : values)
+					logger.info(attr + ": " + valueElement);
+			} else
+				logger.info(attr + ": " + value);
+		}
+	}
+
+	public boolean isVerbose() {
+		return verbose;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 }

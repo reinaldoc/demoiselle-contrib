@@ -72,6 +72,14 @@ public class EntryCore implements Serializable {
 		return coreMap.findReference((String) searchFilter);
 	}
 
+	public boolean isVerbose() {
+		return coreMap.isVerbose();
+	}
+
+	public void setVerbose(boolean verbose) {
+		coreMap.setVerbose(verbose);
+	}
+
 	/**
 	 * Build a super classes List<Class<? extends Object>>
 	 * 
