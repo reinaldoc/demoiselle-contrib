@@ -5,7 +5,7 @@ import java.io.Serializable;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "EntryManager", prefix = "EntryManager")
+@Configuration(resource = "entrymanager", prefix = "EntryManager")
 public class EntryManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
