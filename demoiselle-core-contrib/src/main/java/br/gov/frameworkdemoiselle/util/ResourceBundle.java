@@ -34,85 +34,85 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.template;
+package br.gov.frameworkdemoiselle.util;
 
-import java.util.List;
-import java.util.ListIterator;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Set;
 
-import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Reflections;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.message.DefaultMessage;
+import br.gov.frameworkdemoiselle.message.SeverityType;
 
-public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
+@Singleton
+public class ResourceBundle extends java.util.ResourceBundle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Class<C> delegateClass;
+	private transient java.util.ResourceBundle delegate;
 
-	private C delegate;
-
-	@Inject
-	private ResourceBundle bundle;
-
-	@Override
-	@Transactional
-	public void delete(final I id) {
-		this.getDelegate().delete(id);
+	public ResourceBundle(java.util.ResourceBundle resourceBundle) {
+		this.delegate = resourceBundle;
 	}
 
-	@Transactional
-	public void delete(final List<I> idList) {
-		ListIterator<I> iter = idList.listIterator();
-		while (iter.hasNext()) {
-			this.delete(iter.next());
+	@Override
+	public boolean containsKey(String key) {
+		return delegate.containsKey(key);
+	}
+
+	@Override
+	public Enumeration<String> getKeys() {
+		return delegate.getKeys();
+	}
+
+	@Override
+	public Locale getLocale() {
+		return delegate.getLocale();
+	}
+
+	@Override
+	public Set<String> keySet() {
+		return delegate.keySet();
+	}
+
+	public String getString(String key, Object... params) {
+		return Strings.getString(getString(key), params);
+	}
+
+	@Override
+	protected Object handleGetObject(String key) {
+		Object result;
+
+		try {
+			Method method = delegate.getClass().getMethod("handleGetObject", String.class);
+
+			method.setAccessible(true);
+			result = method.invoke(delegate, key);
+			method.setAccessible(false);
+
+		} catch (Exception cause) {
+			throw new RuntimeException(cause);
 		}
+		return result;
 	}
 
-	public List<T> findByExample(T example) {
-		return getDelegate().findByExample(example);
+	public DefaultMessage getI18nMessage(String bundleKey) {
+		return new DefaultMessage(getString(bundleKey));
 	}
 
-	@Override
-	public List<T> findAll() {
-		return getDelegate().findAll();
+	public DefaultMessage getI18nMessage(String bundleKey, Object... params) {
+		return new DefaultMessage(getString(bundleKey, params));
 	}
 
-	protected C getDelegate() {
-		if (this.delegate == null) {
-			this.delegate = Beans.getReference(getDelegateClass());
-		}
-		return this.delegate;
+	public DefaultMessage getI18nMessage(String bundleKey, SeverityType type) {
+		return new DefaultMessage(getString(bundleKey), type);
 	}
 
-	protected Class<C> getDelegateClass() {
-		if (this.delegateClass == null) {
-			this.delegateClass = Reflections.getGenericTypeArgument(this.getClass(), 2);
-		}
-		return this.delegateClass;
-	}
-
-	@Override
-	@Transactional
-	public void insert(final T bean) {
-		getDelegate().insert(bean);
-	}
-
-	@Override
-	public T load(final I id) {
-		return getDelegate().load(id);
-	}
-
-	@Override
-	@Transactional
-	public void update(final T bean) {
-		getDelegate().update(bean);
-	}
-
-	public ResourceBundle getBundle() {
-		return bundle;
+	public DefaultMessage getI18nMessage(String bundleKey, SeverityType type, Object... params) {
+		return new DefaultMessage(getString(bundleKey, params), type);
 	}
 
 }
