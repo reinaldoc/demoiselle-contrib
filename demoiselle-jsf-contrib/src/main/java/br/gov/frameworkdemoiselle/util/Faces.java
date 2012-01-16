@@ -175,13 +175,7 @@ public class Faces {
 		return getFacesContext().isValidationFailed();
 	}
 
-	public static void addValidMessage(Message... messageList) {
-		if (!getFacesContext().isValidationFailed())
-			for (Message message : messageList)
-				addMessage(message);
-	}
-
-	public static void validationFailed(Message... messageList) {
+	public static void validationFailedMessage(Message... messageList) {
 		for (Message message : messageList)
 			addMessage(message);
 		getFacesContext().validationFailed();
