@@ -47,6 +47,8 @@ public class ConnectionManager implements Serializable {
 
 	private String authenticateFilter;
 
+	private String authenticateDnResults;
+
 	private boolean verbose = false;
 
 	@SuppressWarnings("unused")
@@ -203,6 +205,21 @@ public class ConnectionManager implements Serializable {
 	}
 
 	/**
+	 * Get DN used on bind operation or null
+	 * 
+	 * @return A DN used on bind operation or null
+	 */
+	public String getBindDn() {
+		try {
+			if (getConnection().isBound())
+				return getConnection().getAuthenticationDN();
+		} catch (Exception e) {
+			// Ignore
+		}
+		return null;
+	}
+
+	/**
 	 * This is a isolated method that use a alternative connection to validate a
 	 * dn or user and a password. This method don't touch current connection.
 	 * 
@@ -211,6 +228,7 @@ public class ConnectionManager implements Serializable {
 	 * @return
 	 */
 	public boolean authenticate(String binddn, String bindpw, int protocol) {
+		authenticateDnResults = null;
 		if (binddn != null && !binddn.contains("=")) {
 			query.setFilter(authenticateFilter.replaceAll("%u", binddn));
 			binddn = query.getSingleDn();
@@ -219,9 +237,21 @@ public class ConnectionManager implements Serializable {
 		if (binddn != null) {
 			ConnectionManager cm = new ConnectionManager();
 			cm.connect(connURI.getServerURI(), connURI.isStarttls());
-			return cm.bind(binddn, bindpw, protocol);
+			boolean auth = cm.bind(binddn, bindpw, protocol);
+			if (auth)
+				authenticateDnResults = cm.getBindDn();
+			return auth;
 		}
 		return false;
+	}
+
+	/**
+	 * Get DN used on authenticate operation or null
+	 * 
+	 * @return A DN used on authenticate operation or null
+	 */
+	public String getAuthenticateDn() {
+		return authenticateDnResults;
 	}
 
 	private void loggerInfo(String msg) {

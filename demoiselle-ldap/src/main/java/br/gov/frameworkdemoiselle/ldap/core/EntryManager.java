@@ -89,6 +89,15 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
+	 * Get DN used on bind operation or null
+	 * 
+	 * @return A DN used on bind method or null
+	 */
+	public String getBindDn() {
+		return connectionManager.getBindDn();
+	}
+
+	/**
 	 * This is a isolated method that use a alternative connection to validate a
 	 * dn or user and a password. This method don't touch current connection
 	 * authentication.
@@ -102,6 +111,16 @@ public class EntryManager implements Serializable {
 	 */
 	public boolean authenticate(String binddn, String bindpw) {
 		return connectionManager.authenticate(binddn, bindpw, protocol);
+	}
+
+	/**
+	 * Get DN used on authenticate method or null (isn't current connection
+	 * authentication)
+	 * 
+	 * @return The last DN used on authenticate method or null
+	 */
+	public String getAuthenticateDn() {
+		return connectionManager.getAuthenticateDn();
 	}
 
 	/**
