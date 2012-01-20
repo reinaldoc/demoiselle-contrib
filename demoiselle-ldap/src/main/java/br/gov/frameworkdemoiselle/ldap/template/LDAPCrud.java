@@ -106,4 +106,8 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 		return null;
 	}
 
+	public List<T> findByDisjunctionExample(T example) {
+		return null;
+	}
+
 }
