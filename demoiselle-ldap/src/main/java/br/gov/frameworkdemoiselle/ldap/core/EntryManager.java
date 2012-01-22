@@ -1,6 +1,22 @@
+/**
+ * Copyright (c) 2012 - Reinaldo de Carvalho <reinaldoc@gmail.com>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details. 
+ * 
+ */
+
 package br.gov.frameworkdemoiselle.ldap.core;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
@@ -22,13 +38,16 @@ public class EntryManager implements Serializable {
 	private ConnectionManager connectionManager;
 
 	@Inject
-	private EntryQuery query;
-
-	@Inject
 	private EntryCore core;
 
 	@Inject
 	private EntryCoreMap coreMap;
+
+	@Inject
+	private EntryQuery query;
+
+	@Inject
+	private EntryQueryMap queryMap;
 
 	private int protocol = 3;
 
@@ -127,12 +146,15 @@ public class EntryManager implements Serializable {
 	 * Persist a LDAP Entry. Use LDAP Add Operation
 	 * 
 	 * @param entry
-	 *            a MAP with key as attributes and values as attribute values
+	 *            a MAP with key as attributes and values as attribute values.
+	 *            The valid types for Object value is String, String[] or
+	 *            byte[], a wrong type throw EntryException
+	 * 
 	 * @param dn
 	 *            String Representation of Distinguished Name (RFC 1485)
 	 * @throws EntryException
 	 */
-	public void persist(Map<String, String[]> entry, String dn) {
+	public void persist(Map<String, Object> entry, String dn) {
 		coreMap.persist(entry, dn);
 	}
 
@@ -143,27 +165,35 @@ public class EntryManager implements Serializable {
 	 * 
 	 * @param entry
 	 *            a MAP with key as attributes and values as attribute values
+	 *            The valid types for Object value is String, String[] or
+	 *            byte[], a wrong type throw EntryException
 	 * @param dn
 	 *            String Representation of Distinguished Name (RFC 1485)
 	 * @throws EntryException
 	 */
-	public void merge(Map<String, String[]> entry, String dn) {
+	public void merge(Map<String, Object> entry, String dn) {
 		coreMap.merge(entry, dn);
 	}
 
 	/**
-	 * Update LDAP Entry to declared attributes only. Undeclared attributes will
-	 * be removed. Declared attributes will be replaced. You must declare all
-	 * required attributes. Use LDAP Modify Operation
+	 * Merge LDAP Entry to declared attributes only. Undeclared attributes will
+	 * be removed from DSA. Declared attributes will be replaced. You must
+	 * declare all required attributes. Use LDAP Modify Operation.
 	 * 
+	 * @param oldEntry
+	 *            a MAP with key as attributes and values as attribute values
+	 *            The valid types for Object value is String, String[] or
+	 *            byte[], a wrong type throw EntryException
 	 * @param entry
 	 *            a MAP with key as attributes and values as attribute values
+	 *            The valid types for Object value is String, String[] or
+	 *            byte[], a wrong type throw EntryException
 	 * @param dn
 	 *            String Representation of Distinguished Name (RFC 1485)
 	 * @throws EntryException
 	 */
-	public void update(Map<String, String[]> entry, String dn) {
-		coreMap.update(entry, dn);
+	public void merge(Map<String, Object> oldEntry, Map<String, Object> entry, String dn) {
+		coreMap.merge(oldEntry, entry, dn);
 	}
 
 	/**
@@ -184,7 +214,7 @@ public class EntryManager implements Serializable {
 	 *            String Representation of Search Filters (RFC 4515)
 	 * @return a MAP with key as attributes and values as attribute values
 	 */
-	public Map<String, String[]> find(String searchFilter) {
+	public Map<String, Object> find(String searchFilter) {
 		return coreMap.find(searchFilter);
 	}
 
@@ -195,7 +225,7 @@ public class EntryManager implements Serializable {
 	 *            String Representation of Distinguished Name (RFC 1485)
 	 * @return a MAP with key as attributes and values as attribute values
 	 */
-	public Map<String, String[]> getReference(String dn) {
+	public Map<String, Object> getReference(String dn) {
 		return coreMap.getReference(dn);
 	}
 
@@ -243,8 +273,8 @@ public class EntryManager implements Serializable {
 	 * @LDAPEntry annotated object
 	 * @throws EntryException
 	 */
-	public void update(Object entry) {
-		core.update(entry);
+	public void update(Object oldEntry, Object entry) {
+		core.merge(oldEntry, entry);
 	}
 
 	/**
@@ -261,74 +291,87 @@ public class EntryManager implements Serializable {
 	/**
 	 * Find a Entry by String Representation of Search Filters (RFC 4515)
 	 * 
-	 * @Method not implemented yet
 	 * @param entryClass
 	 *            a entry class
 	 * @param searchFilter
 	 *            String Representation of Search Filters (RFC 4515)
 	 * @return a entry object
 	 */
-	public <T> T find(Class<T> entryClass, Object searchFilter) {
-		return core.find(entryClass, searchFilter);
+	public <T> T find(Class<T> entryClass, Object id) {
+		return core.find(entryClass, id);
 	}
 
 	/**
-	 * Find a Entry by String Representation of Distinguished Names (RFC 1485)
+	 * Find a Entry with only DistinguishedName value by @id annotated value
 	 * 
-	 * @Method not implemented yet
 	 * @param entryClass
 	 *            a entry class
 	 * @param dn
 	 *            String Representation of Distinguished Name (RFC 1485)
 	 * @return a entry object
 	 */
-	public <T> T getReference(Class<T> entryClass, Object dn) {
-		return core.getReference(entryClass, dn);
+	public <T> T getReference(Class<T> entryClass, Object id) {
+		return core.getReference(entryClass, id);
 	}
 
 	/**
-	 * Find a DN by String Representation of Search Filters (RFC 4515)
+	 * Create a query based on not null attributes values of a entry.
 	 * 
-	 * @param searchFilter
-	 *            String Representation of Search Filters (RFC 4515)
-	 * @return dn String Representation of Distinguished Name (RFC 1485)
+	 * @param entry
+	 * @param isDisjunction
+	 * @return
 	 */
-	public String findReference(Object searchFilter) {
-		return core.findReference(searchFilter);
+	public <T> List<T> findByExample(T entry, boolean isConjunction, int maxResult) {
+		return query.findByExample(entry, isConjunction, maxResult);
+	}
+
+	/**
+	 * Create a query based on not null attributes values of a entry.
+	 * 
+	 * @param entry
+	 * @param isDisjunction
+	 * @return
+	 */
+	public <T> List<T> findByExample(T entry, boolean isConjunction) {
+		return query.findByExample(entry, isConjunction);
+	}
+
+	/**
+	 * Create a query based on not null attributes values of a entry.
+	 * 
+	 * @param entry
+	 * @param isDisjunction
+	 * @return
+	 */
+	public <T> List<T> findByExample(T entry) {
+		return query.findByExample(entry, true);
 	}
 
 	/**
 	 * Create an instance of EntryQuery for executing a String Representation of
-	 * Search Filters (RFC 4515)
+	 * Search Filters (RFC 4515) and returns Objects
 	 * 
 	 * @param ldapSearchFilter
 	 *            LDAP Search Filter String (RFC 4515)
 	 * @return the new entry query instance
 	 */
-	public EntryQuery createQuery(String ldapSearchFilter) {
-		query.setFilter(ldapSearchFilter);
+	public EntryQuery createQuery(String searchFilter) {
+		query.setSearchFilter(searchFilter);
 		return query;
 	}
 
 	/**
-	 * Get verbose status.
+	 * Create an instance of EntryQueryMap for executing a String Representation
+	 * of Search Filters (RFC 4515) and returns HashMaps
 	 * 
-	 * @return true if enabled
+	 * @param ldapSearchFilter
+	 *            LDAP Search Filter String (RFC 4515)
+	 * @return the new entry query instance
 	 */
-	public boolean isVerbose() {
-		return coreMap.isVerbose();
-	}
-
-	/**
-	 * Enable or disabled verbose. If enabled entry processing is logged.
-	 * 
-	 * @param verbose
-	 */
-	public void setVerbose(boolean verbose) {
-		connectionManager.setVerbose(verbose);
-		core.setVerbose(verbose);
-		coreMap.setVerbose(verbose);
-		query.setVerbose(verbose);
+	public EntryQueryMap createQueryMap(String searchFilter) {
+		queryMap.init();
+		queryMap.setSearchFilter(searchFilter);
+		return queryMap;
 	}
 
 }
