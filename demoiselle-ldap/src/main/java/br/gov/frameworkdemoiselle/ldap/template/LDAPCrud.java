@@ -1,6 +1,7 @@
 /*
  * Demoiselle Framework
  * Copyright (C) 2010 SERPRO
+ * Copyright (c) 2012 - Reinaldo de Carvalho <reinaldoc@gmail.com>
  * ----------------------------------------------------------------------------
  * This file is part of Demoiselle Framework.
  * 
@@ -84,8 +85,8 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	}
 
 	public void delete(final I id) {
-		T entity = getEntryManager().getReference(getBeanClass(), id);
-		getEntryManager().remove(entity);
+		T entry = getEntryManager().getReference(getBeanClass(), id);
+		getEntryManager().remove(entry);
 	}
 
 	public void update(final T entity) {
@@ -96,18 +97,13 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 		return getEntryManager().find(getBeanClass(), id);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<T> findAll() {
-		//final EntryQuery query = getEntryManager().createQuery(beanClass.getSimpleName()+"=*");
-		List<T> lista = null; // query.getResultList();
-		return lista;
+		return getEntryManager().createQuery("objectClass=" + getBeanClass().getSimpleName()).getResultList();
 	}
 
-	public List<T> findByExample(T example) {
-		return null;
-	}
-
-	public List<T> findByDisjunctionExample(T example) {
-		return null;
+	public List<T> findByExample(T example, boolean isConjunction, int maxResult) {
+		return getEntryManager().findByExample(example, isConjunction, maxResult);
 	}
 
 }
