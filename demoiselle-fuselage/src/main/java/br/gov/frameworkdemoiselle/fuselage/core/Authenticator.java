@@ -9,21 +9,30 @@ import java.util.Set;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.fuselage.authenticators.AuthenticatorModule;
 import br.gov.frameworkdemoiselle.fuselage.authenticators.AuthenticatorResults;
-import br.gov.frameworkdemoiselle.fuselage.authenticators.LdapAuthenticator;
-import br.gov.frameworkdemoiselle.fuselage.authenticators.LocalAuthenticator;
-import br.gov.frameworkdemoiselle.fuselage.business.ProfileDetectBC;
-import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
+import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
+import br.gov.frameworkdemoiselle.fuselage.configuration.AuthenticatorConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
-import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileDetect;
+import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Alternative
 public class Authenticator implements br.gov.frameworkdemoiselle.security.Authenticator {
 
 	private static final long serialVersionUID = 1L;
+
+	private Logger logger = LoggerProducer.create(Authenticator.class);
+
+	@Inject
+	private ResourceBundle bundle;
 
 	private User user;
 
@@ -31,22 +40,16 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 	private Credential credential;
 
 	@Inject
-	private LocalAuthenticator localAuthenticator;
+	private AuthenticatorConfig authenticatorConfig;
+
+	private AuthenticatorResults authResults;
 
 	@Inject
-	private LdapAuthenticator ldapAuthenticator;
-
-	private AuthenticatorResults authResults = new AuthenticatorResults();
-
-	@Inject
-	private UserBC userBC;
-
-	@Inject
-	private ProfileDetectBC profileDetectBC;
+	private ProfileByRuleBC profileDetectBC;
 
 	@Override
 	public void unAuthenticate() {
-		this.user = null;
+		user = null;
 		credential.clear();
 	}
 
@@ -58,35 +61,42 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 	@Override
 	public boolean authenticate() {
 		user = null;
-		authResults = new AuthenticatorResults();
-		SecurityUser authUser = callAuthenticationModules();
-		if (authUser != null) {
+		authResults = callAuthenticationModules();
+		if (authResults.isLoggedIn()) {
 			user = new User();
-			user.setId(authUser.getName());
-			user.setAttribute("user", authUser);
-			setUserPermissions(authUser);
+			user.setAttribute("user", authResults.getSecurityUser());
+			user.setId(authResults.getSecurityUser().getName());
+			setUserPermissions(authResults.getSecurityUser());
 			return true;
 		}
 		return false;
 	}
 
-	private SecurityUser callAuthenticationModules() {
-		SecurityUser authUser = null;
-		boolean auth = localAuthenticator.authenticate(credential.getUsername(), credential.getPassword());
-		authResults = localAuthenticator.getResults();
-		if (!auth) {
-			auth = ldapAuthenticator.authenticate(credential.getUsername(), credential.getPassword());
-			if (auth) {
-				authResults = ldapAuthenticator.getResults();
-				authUser = new SecurityUser();
-				authUser.setLogin(credential.getUsername());
-				authUser.setName(authResults.getCommonName());
-				authUser.setOrgunit(authResults.getOrganizationalUnit());
-				authUser.setDescription(authResults.getDescription());
-				authUser = userBC.loadAndUpdate(authUser);
+	private AuthenticatorResults callAuthenticationModules() {
+
+		AuthenticatorResults authenticatorResults = new AuthenticatorResults();
+		if (authenticatorConfig.getAuthenticators() == null || authenticatorConfig.getAuthenticators().size() == 0) {
+			logger.info(bundle.getString("fuselage.authenticators.unavailable"));
+			return authenticatorResults;
+		}
+
+		for (String module : authenticatorConfig.getAuthenticators()) {
+			try {
+				AuthenticatorModule authenticatorModule = (AuthenticatorModule) Beans.getReference(Class
+						.forName("br.gov.frameworkdemoiselle.fuselage.authenticators." + module));
+				if (authenticatorModule.authenticate(credential.getUsername(), credential.getPassword()))
+					return authenticatorModule.getResults();
+
+				if (authenticatorModule.getResults().isUserUnavailable())
+					return authenticatorResults;
+			} catch (RuntimeException e) {
+				logger.info(bundle.getString("fuselage.authenticators.moduleunavailable", module));
+			} catch (Exception e) {
+				logger.info(bundle.getString("fuselage.authenticators.moduleunavailable", module));
 			}
 		}
-		return authUser;
+
+		return authenticatorResults;
 	}
 
 	private void setUserPermissions(SecurityUser userLoad) {
@@ -98,62 +108,52 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		/*
 		 * SecurityProfileDetect.implementation.ALL-LOGGED-IN
 		 */
-		List<SecurityProfileDetect> allLoggedIn = profileDetectBC.findByImplementation("ALL-LOGGED-IN");
-		if (allLoggedIn != null) {
-			for (SecurityProfileDetect profileDetect : allLoggedIn) {
+		List<SecurityProfileByRule> allLoggedIn = profileDetectBC.findByImplementation("ALL-LOGGED-IN");
+		if (allLoggedIn != null)
+			for (SecurityProfileByRule profileDetect : allLoggedIn)
 				setPermissionsByProfiles(profileDetect.getProfiles());
-				setUserWelcomePage(profileDetect);
-			}
-		}
 
 		/*
 		 * LdapAuthenticator
 		 */
-		if (ldapAuthenticator.getClass().getSimpleName().equals(authResults.getAuthenticatorModuleName())) {
+		if ("LdapAuthenticator".equals(authResults.getAuthenticatorModuleName())) {
 			/*
 			 * SecurityProfileDetect.implementation.LDAP-USER-ATTR
 			 */
-			List<SecurityProfileDetect> ldapUserAttr = profileDetectBC.findByImplementation("LDAP-USER-ATTR");
+			List<SecurityProfileByRule> ldapUserAttr = profileDetectBC.findByImplementation("LDAP-USER-ATTR");
 			if (ldapUserAttr != null) {
-				for (SecurityProfileDetect profileDetect : ldapUserAttr) {
-					if (profileDetect.getKeyName() != null && profileDetect.getValue() != null && profileDetect.getValuenotation() != null) {
+				for (SecurityProfileByRule profileDetect : ldapUserAttr) {
+					if (profileDetect.getKeyname() != null && profileDetect.getValue() != null && profileDetect.getValuenotation() != null) {
 						if (profileDetect.getValuenotation().equalsIgnoreCase("EXACT")) {
-							if (profileDetect.getValue().equalsIgnoreCase(authResults.getGenericResults().get(profileDetect.getKeyName().toLowerCase()))) {
+							if (profileDetect.getValue().equalsIgnoreCase(
+									authResults.getGenericResults().get(profileDetect.getKeyname().toLowerCase())))
 								setPermissionsByProfiles(profileDetect.getProfiles());
-								setUserWelcomePage(profileDetect);
-							}
 						} else if (profileDetect.getValuenotation().equalsIgnoreCase("CONTAINS")) {
-							String value = authResults.getGenericResults().get(profileDetect.getKeyName().toLowerCase());
-							if (value != null && value.toLowerCase().contains(profileDetect.getValue().toLowerCase())) {
+							String value = authResults.getGenericResults().get(profileDetect.getKeyname().toLowerCase());
+							if (value != null && value.toLowerCase().contains(profileDetect.getValue().toLowerCase()))
 								setPermissionsByProfiles(profileDetect.getProfiles());
-								setUserWelcomePage(profileDetect);
-							}
-						} else {
-							System.out.println("Authenticator.setUserPermissions(), Notation not implemented: " + profileDetect.getValuenotation());
-						}
+						} else
+							logger.info("setUserPermissions()->Notation not implemented: " + profileDetect.getValuenotation());
 					}
 
 				}
 			}
-			
+
 			/*
 			 * SecurityProfileDetect.implementation.LDAP-USER-DN
 			 */
-			List<SecurityProfileDetect> ldapUserDn = profileDetectBC.findByImplementation("LDAP-USER-DN");
-			if (ldapUserDn != null) {
-				for (SecurityProfileDetect profileDetect : ldapUserDn) {
-					if (profileDetect.getValue() != null && profileDetect.getValuenotation() != null) {
-						if (profileDetect.getValuenotation().equalsIgnoreCase("EXACT-PARENT")) {
-							String dn = authResults.getGenericResults().get("dn");
-							if (dn != null && dn.contains(","+profileDetect.getValue()+",")) {
+			List<SecurityProfileByRule> ldapUserDn = profileDetectBC.findByImplementation("LDAP-USER-DN");
+			String dn = authResults.getGenericResults().get("dn");
+			if (ldapUserDn != null && dn != null)
+				for (SecurityProfileByRule profileDetect : ldapUserDn)
+					if (profileDetect.getValue() != null && profileDetect.getValuenotation() != null)
+						if (profileDetect.getValuenotation().equalsIgnoreCase("EXACT")) {
+							if (dn.equals(profileDetect.getValue()))
 								setPermissionsByProfiles(profileDetect.getProfiles());
-								setUserWelcomePage(profileDetect);
-							}
+						} else if (profileDetect.getValuenotation().equalsIgnoreCase("CONTAINS")) {
+							if (dn.contains(profileDetect.getValue()))
+								setPermissionsByProfiles(profileDetect.getProfiles());
 						}
-					}
-				}
-			}
-
 
 		}
 	}
@@ -167,6 +167,8 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 	}
 
 	private void setPermissionsByProfile(SecurityProfile profile) {
+		setUserWelcomePage(profile);
+
 		Set<String> roles = new HashSet<String>();
 		Set<String> rolesNames = new HashSet<String>();
 		Map<String, String> resourceMap = new HashMap<String, String>();
@@ -175,8 +177,8 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		if (roleList != null) {
 			for (SecurityRole role : roleList) {
 				roles.add(role.getName());
-				rolesNames.add(role.getHumanName());
-				List<SecurityResource> resourceList = role.getResource();
+				rolesNames.add(role.getShortDescription());
+				List<SecurityResource> resourceList = role.getResources();
 				if (resourceList != null) {
 					for (SecurityResource resource : resourceList)
 						resourceMap.put(resource.getValue(), resource.getName());
@@ -192,15 +194,19 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		user.putAllAttribute("resources", resourceMap);
 	}
 
-	private void setUserWelcomePage(SecurityProfileDetect detect) {
-//		if (detect != null) {
-//			if (user.getAttribute("welcome_page_priority") != null) {
-//				//Object priority
-//			}
-//			
-//			
-//			Long resourcePriority = detect.getResourcePriority();
-//		}
+	private void setUserWelcomePage(SecurityProfile profile) {
+		if (profile != null) {
+			Long welcomePriority = profile.getWelcomePagePriority();
+			Long lastWelcomePriotiry = (Long) user.getAttribute("welcome_page_priority");
+
+			if (welcomePriority != null && welcomePriority.intValue() > 0)
+				if (lastWelcomePriotiry == null || lastWelcomePriotiry.intValue() < welcomePriority.intValue())
+					if (profile.getWelcomePage() != null && profile.getWelcomePage().getValue() != null)
+						if (profile.getWelcomePage().getName() != null && profile.getWelcomePage().getName().contains("url")) {
+							user.setAttribute("welcome_page_priority", welcomePriority);
+							user.setAttribute("welcome_page", profile.getWelcomePage().getValue());
+						}
+		}
 	}
 
 }
