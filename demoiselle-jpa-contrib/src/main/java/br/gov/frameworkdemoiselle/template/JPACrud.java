@@ -58,6 +58,8 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
@@ -132,8 +134,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	protected void handleException(Throwable cause) throws Throwable {
 		if (cause instanceof TransactionRequiredException) {
-			String message = bundle.get().getString("no-transaction-active", "frameworkdemoiselle.transaction.class",
-					Configuration.DEFAULT_RESOURCE);
+			String message = bundle.get().getString("no-transaction-active", "frameworkdemoiselle.transaction.class", Configuration.DEFAULT_RESOURCE);
 			throw new DemoiselleException(message, cause);
 
 		} else {
@@ -161,7 +162,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	@Override
-	public T load(final Object id) {
+	public T load(final I id) {
 		return getEntityManager().find(getBeanClass(), id);
 	}
 
@@ -264,7 +265,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		}
 
 		List<T> resultList = query.getResultList();
-		System.out.println("[JPACrud.findAll() List<T>.size(): " + resultList.size());
 		return resultList;
 	}
 
@@ -283,12 +283,13 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		}
 
 		Long count = getEntityManager().createQuery(criteria).getSingleResult();
-		System.out.println("[JPACrud.countAll() count: " + count.intValue());
 		return count.intValue();
 	}
 
 	/**
-	 * Retrieves a list of entities based on a single example instance of it.
+	 * Retrieves a list of entities based on a single example instance with
+	 * conjunction (AND) or disjunction (OR) between not null attributes of it.
+	 * Attention for default fields values.
 	 * <p>
 	 * See below a sample of its usage:
 	 * 
@@ -302,9 +303,12 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 *            an entity example
 	 * @return a list of entities
 	 */
-	public List<T> findByExample(final T example) {
-		final CriteriaQuery<T> criteria = createCriteriaByExample(example);
-		return getEntityManager().createQuery(criteria).getResultList();
+	public List<T> findByExample(final T example, boolean isConjunction, int maxResult) {
+		final CriteriaQuery<T> criteria = createCriteriaByExample(example, isConjunction);
+		TypedQuery<T> query = getEntityManager().createQuery(criteria);
+		if (maxResult > 0)
+			query.setMaxResults(maxResult);
+		return query.getResultList();
 	}
 
 	/**
@@ -315,19 +319,18 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 *            an example of the given entity
 	 * @return an instance of {@code CriteriaQuery}
 	 */
-	private CriteriaQuery<T> createCriteriaByExample(final T example) {
+	private CriteriaQuery<T> createCriteriaByExample(final T example, boolean logic) {
 
 		final CriteriaBuilder builder = getCriteriaBuilder();
 		final CriteriaQuery<T> query = builder.createQuery(getBeanClass());
 		final Root<T> entity = query.from(getBeanClass());
 
 		final List<Predicate> predicates = new ArrayList<Predicate>();
-		final Field[] fields = example.getClass().getDeclaredFields();
+		final Field[] fields = getSuperClassesFields(example, false);
 
 		for (Field field : fields) {
 
-			if (!field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Basic.class)
-					&& !field.isAnnotationPresent(Enumerated.class)) {
+			if (!field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Basic.class) && !field.isAnnotationPresent(Enumerated.class)) {
 				continue;
 			}
 
@@ -346,10 +349,43 @@ public class JPACrud<T, I> implements Crud<T, I> {
 				continue;
 			}
 
-			final Predicate pred = builder.equal(entity.get(field.getName()), value);
+			Predicate pred;
+			if (logic)
+				pred = builder.equal(entity.get(field.getName()), value);
+			else {
+				if (value instanceof String) {
+					Expression<String> expField = entity.get(field.getName());
+					pred = builder.like(builder.lower(expField), "%" + ((String) value).toLowerCase() + "%");
+				} else
+					pred = builder.equal(entity.get(field.getName()), value);
+			}
 			predicates.add(pred);
 		}
-		return query.where(predicates.toArray(new Predicate[0])).select(entity);
+		if (logic)
+			return query.where(builder.and(predicates.toArray(new Predicate[0]))).select(entity);
+		else
+			return query.where(builder.or(predicates.toArray(new Predicate[0]))).select(entity);
+	}
+
+	/**
+	 * Build a array of super classes fields
+	 * 
+	 * @param entry
+	 * @param onlySuperClasses
+	 * @return Array of Super Classes Fields
+	 */
+	private static Field[] getSuperClassesFields(Object entry, boolean onlySuperClasses) {
+		Field[] fieldArray = null;
+		if (entry != null) {
+			if (!onlySuperClasses)
+				fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entry.getClass().getDeclaredFields());
+			Class<? extends Object> superClazz = entry.getClass().getSuperclass();
+			while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
+				fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());
+				superClazz = superClazz.getSuperclass();
+			}
+		}
+		return fieldArray;
 	}
 
 }
