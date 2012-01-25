@@ -2,42 +2,38 @@ package br.gov.frameworkdemoiselle.fuselage.business;
 
 import java.util.List;
 
-import br.gov.frameworkdemoiselle.annotation.Startup;
+import javax.inject.Inject;
+
+import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.fuselage.persistence.UserDAO;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
-import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	private static final long serialVersionUID = 1L;
 
-	@Transactional
-	@Startup
-	public void startup() {
-		if (findAll().isEmpty()) {
-			insert(new SecurityUser("faa-admin", "Usuário Administrador", "adminpass"));
-		}
+	@Inject
+	private ProfileBC profileBC;
+
+	public List<SecurityProfile> getProfiles() {
+		return profileBC.findAll();
 	}
 
-	public SecurityUser loadAndUpdate(SecurityUser securityUser) {
-		if (securityUser != null && Strings.isNotBlank(securityUser.getLogin())) {
-			SecurityUser bean = loadByLogin(securityUser.getLogin());
-			if (bean.getId() == null) {
-				bean = securityUser;
-				bean.setAvailable(1);
-				insert(bean);
-			} else if (bean.getAvailable() == null || bean.getAvailable() != 1)
-				return null;
-			else {
-				bean.setName(securityUser.getName());
-				bean.setOrgunit(securityUser.getOrgunit());
-				bean.setDescription(securityUser.getDescription());
-				update(bean);
-			}
-			return bean;
+	public boolean userAvailable(String login) {
+		if (login != null && login.length() > 2) {
+			List<SecurityUser> userList = findByLogin(login);
+			if (userList.size() == 0)
+				return true;
 		}
-		return null;
+		return false;
+	}
+
+	public void insertOrUpdate(SecurityUser securityUser) {
+		if (securityUser.getId() == null) {
+			securityUser.setAvailable(1);
+			getDelegate().insert(securityUser);
+		} else
+			getDelegate().update(securityUser);
 	}
 
 	public SecurityUser loadByLogin(String login) {
@@ -52,7 +48,15 @@ public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	public List<SecurityUser> findByLogin(String login) {
 		SecurityUser userLoad = new SecurityUser();
 		userLoad.setLogin(login);
-		return getDelegate().findByExample(userLoad);
+		return getDelegate().findByExample(userLoad, true, 0);
+	}
+
+	public List<SecurityUser> findUsers(String query) {
+		SecurityUser userLoad = new SecurityUser();
+		userLoad.setLogin(query);
+		userLoad.setName(query);
+		userLoad.setDescription(query);
+		return getDelegate().findByExample(userLoad, false, 0);
 	}
 
 	public void disable(SecurityUser securityUser) {
