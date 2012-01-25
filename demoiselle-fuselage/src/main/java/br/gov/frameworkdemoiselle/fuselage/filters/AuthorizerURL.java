@@ -24,8 +24,7 @@ import br.gov.frameworkdemoiselle.security.SecurityContext;
 @WebFilter(urlPatterns = { "/*" })
 public class AuthorizerURL implements Filter {
 
-	@Inject
-	private Logger logger;
+	private Logger logger = LoggerProducer.create(AuthorizerURL.class);
 
 	@Inject
 	private SecurityContext securityContext;
@@ -47,7 +46,6 @@ public class AuthorizerURL implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		this.logger = LoggerProducer.create(AuthorizerURL.class);
 		this.request = (HttpServletRequest) request;
 		String url = this.request.getRequestURI().replaceAll("^/.+?/", "/");
 
@@ -62,7 +60,7 @@ public class AuthorizerURL implements Filter {
 			}
 		}
 
-		if (securityContext.getPublicResources("public_url").contains(url)) {
+		if (securityContext.getPublicResources("public_url").contains(url) || url.equals(config.getLoginPage())) {
 			info("permitted by public resource", url);
 			chain.doFilter(request, response);
 			return;
@@ -70,16 +68,16 @@ public class AuthorizerURL implements Filter {
 
 		if (!securityContext.isLoggedIn()) {
 			info("denied by not logged in, redirect to login page", url);
-			redirect(response, config.getLoginPage());
+			redirect(response, getContext() + config.getLoginPage());
 			chain.doFilter(request, response);
 			return;
 		}
 
-		if (securityContext.hasPermission("url", url)) {
+		if (securityContext.hasPermission("private_url", url)) {
 			info("permitted by resource", url);
 		} else {
 			info("denied by resource, redirect to welcome page", url);
-			redirect(response, config.getLoginPage());
+			redirect(response, getContext() + config.getLoginPage());
 		}
 		chain.doFilter(request, response);
 	}
@@ -93,13 +91,18 @@ public class AuthorizerURL implements Filter {
 	}
 
 	private String getUsername() {
-		if (securityContext.isLoggedIn())
-			return ((SecurityUser) securityContext.getUser().getAttribute("user")).getLogin();
-		else
-			return null;
+		try {
+			if (securityContext.isLoggedIn())
+				return ((SecurityUser) securityContext.getUser().getAttribute("user")).getLogin();
+		} catch (Exception e) {
+			// Ignore
+		}
+		return null;
 	}
 
 	private String getContext() {
+		if (request.getServletContext() == null)
+			return null;
 		return request.getServletContext().getContextPath();
 	}
 
