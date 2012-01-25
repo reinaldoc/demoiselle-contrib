@@ -13,8 +13,10 @@ public class ResourceBC extends DelegateCrud<SecurityResource, Long, ResourceDAO
 	@Startup
 	public void startup() {
 		if (findAll().isEmpty()) {
-			insert(new SecurityResource("public_url", "/login"));
-			insert(new SecurityResource("public_url_startswith", "/javax.faces.resource/"));
+			insert(new SecurityResource("public_url", "/", "Url inicial"));
+			insert(new SecurityResource("public_url", "/login", "Url de Login"));
+			insert(new SecurityResource("public_url_startswith", "/javax.faces.resource/", "Url de recursos JSF"));
 		}
 	}
+
 }
