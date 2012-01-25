@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
+import br.gov.frameworkdemoiselle.fuselage.configuration.LocalAuthenticatorConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -14,6 +15,9 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 	private UserBC userBC;
 
 	private AuthenticatorResults results = new AuthenticatorResults();
+
+	@Inject
+	private LocalAuthenticatorConfig config;
 
 	public AuthenticatorResults getResults() {
 		return results;
@@ -33,6 +37,8 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 	}
 
 	private boolean login(String username, String password) {
+		validateAdmin(username);
+		
 		if (Strings.isBlank(username) || Strings.isBlank(password))
 			return false;
 
@@ -48,6 +54,11 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 			return true;
 		}
 		return false;
+	}
+	
+	private void validateAdmin(String username) {
+		if (config.getAdmins().contains(username))
+			results.getGenericResults().put("admin", "true");
 	}
 
 }

@@ -101,9 +101,17 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 
 	private void setUserPermissions(SecurityUser userLoad) {
 		/*
+		 * Set all profiles to admin
+		 */
+		if (authResults.getGenericResults().containsKey("admin")) {
+			setPermissionsByProfiles(profileDetectBC.getProfiles(), false);
+			return;
+		}
+
+		/*
 		 * SecurityUser.Profiles
 		 */
-		setPermissionsByProfiles(userLoad.getProfiles());
+		setPermissionsByProfiles(userLoad.getProfiles(), true);
 
 		/*
 		 * SecurityProfileDetect.implementation.ALL-LOGGED-IN
@@ -111,7 +119,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		List<SecurityProfileByRule> allLoggedIn = profileDetectBC.findByImplementation("ALL-LOGGED-IN");
 		if (allLoggedIn != null)
 			for (SecurityProfileByRule profileDetect : allLoggedIn)
-				setPermissionsByProfiles(profileDetect.getProfiles());
+				setPermissionsByProfiles(profileDetect.getProfiles(), true);
 
 		/*
 		 * LdapAuthenticator
@@ -127,11 +135,11 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 						if (profileDetect.getValuenotation().equalsIgnoreCase("EXACT")) {
 							if (profileDetect.getValue().equalsIgnoreCase(
 									authResults.getGenericResults().get(profileDetect.getKeyname().toLowerCase())))
-								setPermissionsByProfiles(profileDetect.getProfiles());
+								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						} else if (profileDetect.getValuenotation().equalsIgnoreCase("CONTAINS")) {
 							String value = authResults.getGenericResults().get(profileDetect.getKeyname().toLowerCase());
 							if (value != null && value.toLowerCase().contains(profileDetect.getValue().toLowerCase()))
-								setPermissionsByProfiles(profileDetect.getProfiles());
+								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						} else
 							logger.info("setUserPermissions()->Notation not implemented: " + profileDetect.getValuenotation());
 					}
@@ -149,24 +157,24 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 					if (profileDetect.getValue() != null && profileDetect.getValuenotation() != null)
 						if (profileDetect.getValuenotation().equalsIgnoreCase("EXACT")) {
 							if (dn.equals(profileDetect.getValue()))
-								setPermissionsByProfiles(profileDetect.getProfiles());
+								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						} else if (profileDetect.getValuenotation().equalsIgnoreCase("CONTAINS")) {
 							if (dn.contains(profileDetect.getValue()))
-								setPermissionsByProfiles(profileDetect.getProfiles());
+								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						}
 
 		}
 	}
 
-	private void setPermissionsByProfiles(List<SecurityProfile> profiles) {
+	private void setPermissionsByProfiles(List<SecurityProfile> profiles, boolean includeRestrictiveRole) {
 		if (profiles != null) {
 			for (SecurityProfile profile : profiles) {
-				setPermissionsByProfile(profile);
+				setPermissionsByProfile(profile, includeRestrictiveRole);
 			}
 		}
 	}
 
-	private void setPermissionsByProfile(SecurityProfile profile) {
+	private void setPermissionsByProfile(SecurityProfile profile, boolean includeRestrictiveRole) {
 		setUserWelcomePage(profile);
 
 		Set<String> roles = new HashSet<String>();
@@ -176,6 +184,8 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		List<SecurityRole> roleList = profile.getRoles();
 		if (roleList != null) {
 			for (SecurityRole role : roleList) {
+				if (!includeRestrictiveRole && role.getRestriction())
+					continue;
 				roles.add(role.getName());
 				rolesNames.add(role.getShortDescription());
 				List<SecurityResource> resourceList = role.getResources();
