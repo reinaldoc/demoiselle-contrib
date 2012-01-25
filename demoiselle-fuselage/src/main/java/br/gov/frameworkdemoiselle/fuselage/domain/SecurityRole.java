@@ -12,8 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 public class SecurityRole implements Serializable {
@@ -21,26 +23,35 @@ public class SecurityRole implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO, generator="system-uuid")
-	@SequenceGenerator(name = "system-uuid", sequenceName="guid")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "system-uuid")
+	@SequenceGenerator(name = "system-uuid", sequenceName = "guid")
 	private Long id;
 
-	@NotEmpty
 	@Column
+	@NotBlank(message = "Especifique melhor o nome do papél")
+	@Size(min = 3, max = 255, message = "Especifique melhor o nome do papél")
 	private String name;
 
 	@Column
-	private String description;
-	
+	@NotBlank(message = "Melhore a descrição curta deste papél")
+	@Size(min = 10, max = 255, message = "Melhore a descrição curta deste papél")
+	private String shortDescription;
+
 	@Column
-	private String humanName;	
+	@NotBlank(message = "Melhore a descrição deste papél")
+	@Size(min = 20, max = 255, message = "Melhore a descrição deste papél")
+	private String description;
+
+	@Column
+	@NotNull
+	private Boolean restriction;
 
 	@ManyToMany
-	@JoinTable(name="SECURITYROLE_RESOURCE", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "RESOURCE_ID") })
-	private List<SecurityResource> resource;
+	@JoinTable(name = "SECURITYROLE_RESOURCE", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "RESOURCE_ID") })
+	private List<SecurityResource> resources;
 
 	@ManyToMany
-	@JoinTable(name="SECURITYPROFILE_ROLE", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "PROFILE_ID") })
+	@JoinTable(name = "SECURITYPROFILE_ROLE", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "PROFILE_ID") })
 	private List<SecurityProfile> profiles;
 
 	public Long getId() {
@@ -67,12 +78,28 @@ public class SecurityRole implements Serializable {
 		this.description = description;
 	}
 
-	public List<SecurityResource> getResource() {
-		return resource;
+	public String getShortDescription() {
+		return shortDescription;
 	}
 
-	public void setResource(List<SecurityResource> resource) {
-		this.resource = resource;
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	public Boolean getRestriction() {
+		return restriction;
+	}
+
+	public void setRestriction(Boolean restriction) {
+		this.restriction = restriction;
+	}
+
+	public List<SecurityResource> getResources() {
+		return resources;
+	}
+
+	public void setResources(List<SecurityResource> resources) {
+		this.resources = resources;
 	}
 
 	public List<SecurityProfile> getProfiles() {
@@ -83,12 +110,4 @@ public class SecurityRole implements Serializable {
 		this.profiles = profiles;
 	}
 
-	public String getHumanName() {
-		return humanName;
-	}
-
-	public void setHumanName(String humanName) {
-		this.humanName = humanName;
-	} 
-	
 }

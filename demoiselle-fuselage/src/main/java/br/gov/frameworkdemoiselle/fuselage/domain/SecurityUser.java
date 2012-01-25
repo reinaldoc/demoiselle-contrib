@@ -28,9 +28,9 @@ public class SecurityUser implements Serializable {
 	@SequenceGenerator(name = "system-uuid", sequenceName = "guid")
 	private Long id;
 
+	@Column
 	@NotBlank(message = "Especifique melhor o login")
 	@Size(min = 3, max = 255, message = "Especifique melhor o login")
-	@Column
 	private String login;
 
 	@Column

@@ -13,8 +13,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 public class SecurityProfile implements Serializable {
@@ -26,11 +27,19 @@ public class SecurityProfile implements Serializable {
 	@SequenceGenerator(name = "system-uuid", sequenceName = "guid")
 	private Long id;
 
-	@NotEmpty
 	@Column
+	@NotBlank(message = "Especifique melhor o nome do perfil")
+	@Size(min = 3, max = 255, message = "Especifique melhor o nome do perfil")
 	private String name;
 
 	@Column
+	@NotBlank(message = "Melhore a descrição curta deste perfil")
+	@Size(min = 10, max = 255, message = "Melhore a descrição curta deste perfil")
+	private String shortDescription;
+
+	@Column
+	@NotBlank(message = "Melhore a descrição deste perfil")
+	@Size(min = 20, max = 255, message = "Melhore a descrição deste perfil")
 	private String description;
 
 	@Column
@@ -48,8 +57,8 @@ public class SecurityProfile implements Serializable {
 	private List<SecurityRole> roles;
 
 	@ManyToMany
-	@JoinTable(name = "SECURITYPROFILE_PROFILEDETECT", joinColumns = { @JoinColumn(name = "PROFILE_ID") }, inverseJoinColumns = { @JoinColumn(name = "DETECT_ID") })
-	private List<SecurityProfileDetect> profiledefault;
+	@JoinTable(name = "SECURITYPROFILE_BYRULE", joinColumns = { @JoinColumn(name = "PROFILE_ID") }, inverseJoinColumns = { @JoinColumn(name = "RULE_ID") })
+	private List<SecurityProfileByRule> rules;
 
 	public Long getId() {
 		return id;
@@ -67,28 +76,12 @@ public class SecurityProfile implements Serializable {
 		this.name = name;
 	}
 
-	public List<SecurityRole> getRoles() {
-		return roles;
+	public String getShortDescription() {
+		return shortDescription;
 	}
 
-	public void setRoles(List<SecurityRole> roles) {
-		this.roles = roles;
-	}
-
-	public List<SecurityUser> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<SecurityUser> users) {
-		this.users = users;
-	}
-
-	public List<SecurityProfileDetect> getProfiledefault() {
-		return profiledefault;
-	}
-
-	public void setProfiledefault(List<SecurityProfileDetect> profiledefault) {
-		this.profiledefault = profiledefault;
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
 	}
 
 	public String getDescription() {
@@ -113,6 +106,30 @@ public class SecurityProfile implements Serializable {
 
 	public void setWelcomePage(SecurityResource welcomePage) {
 		this.welcomePage = welcomePage;
+	}
+
+	public List<SecurityUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<SecurityUser> users) {
+		this.users = users;
+	}
+
+	public List<SecurityRole> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<SecurityRole> roles) {
+		this.roles = roles;
+	}
+
+	public List<SecurityProfileByRule> getRules() {
+		return rules;
+	}
+
+	public void setRules(List<SecurityProfileByRule> rules) {
+		this.rules = rules;
 	}
 
 }
