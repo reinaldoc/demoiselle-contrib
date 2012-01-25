@@ -97,8 +97,16 @@
 
 	</dependencies>
 
-
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.jasper</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<!-- Este plugin serve para o envio dos arquivos de configuração do portal 
 				de componentes. Os arquivos da pasta src/site/portal serão enviados para 

@@ -54,12 +54,12 @@ FROM
 			<textField>
 				<reportElement x="0" y="0" width="231" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[""+$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="253" y="0" width="130" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{login}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[""+$F{login}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="20" width="555" height="1"/>
