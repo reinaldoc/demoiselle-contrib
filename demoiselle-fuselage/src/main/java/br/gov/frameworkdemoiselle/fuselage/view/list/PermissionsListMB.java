@@ -11,11 +11,17 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
+import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
+import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @ViewController
 public class PermissionsListMB {
+
+	@Inject
+	private ResourceBundle bundle;
 
 	@Inject
 	private SecurityContext securityContext;
@@ -23,9 +29,12 @@ public class PermissionsListMB {
 	public SecurityUser getUser() {
 		try {
 			return ((SecurityUser) securityContext.getUser().getAttribute("user"));
+		} catch (RuntimeException e) {
 		} catch (Exception e) {
-			return new SecurityUser();
 		}
+		Faces.validationFailed();
+		Faces.addMessage(bundle.getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+		return new SecurityUser();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,7 +44,8 @@ public class PermissionsListMB {
 			Set<String> setResult = ((Set<String>) securityContext.getUser().getAttribute("profile_names"));
 			listResult = Arrays.asList(setResult.toArray(new String[] {}));
 		} catch (Exception e) {
-			// Ignore
+			Faces.validationFailed();
+			Faces.addMessage(bundle.getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
 		}
 		Collections.sort(listResult);
 		return listResult;
@@ -48,7 +58,8 @@ public class PermissionsListMB {
 			Set<String> setResult = ((Set<String>) securityContext.getUser().getAttribute("roles"));
 			listResult = Arrays.asList(setResult.toArray(new String[] {}));
 		} catch (Exception e) {
-			// Ignore
+			Faces.validationFailed();
+			Faces.addMessage(bundle.getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
 		}
 		Collections.sort(listResult);
 		return listResult;
@@ -61,7 +72,8 @@ public class PermissionsListMB {
 			Set<String> setResult = ((Set<String>) securityContext.getUser().getAttribute("role_names"));
 			listResult = Arrays.asList(setResult.toArray(new String[] {}));
 		} catch (Exception e) {
-			// Ignore
+			Faces.validationFailed();
+			Faces.addMessage(bundle.getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
 		}
 		Collections.sort(listResult);
 		return listResult;
@@ -73,7 +85,8 @@ public class PermissionsListMB {
 		try {
 			resourceMap = ((Map<String, String>) securityContext.getUser().getAttribute("resources"));
 		} catch (Exception e) {
-			// Ignore
+			Faces.validationFailed();
+			Faces.addMessage(bundle.getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
 		}
 		return resourceMap;
 	}
@@ -84,7 +97,8 @@ public class PermissionsListMB {
 		try {
 			listResult = Arrays.asList(((Map<String, String>) securityContext.getUser().getAttribute("resources")).keySet().toArray(new String[] {}));
 		} catch (Exception e) {
-			// TODO: handle exception
+			Faces.validationFailed();
+			Faces.addMessage(bundle.getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
 		}
 		Collections.sort(listResult);
 		return listResult;
