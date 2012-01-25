@@ -1,18 +1,19 @@
 package br.gov.frameworkdemoiselle.fuselage.authenticators;
 
-public class DenyAuthenticator implements AuthenticatorModule {
+public class DenyAuthenticator extends AbstractAuthenticatorModule<DenyAuthenticator> {
 
 	private AuthenticatorResults results = new AuthenticatorResults();
 
-	public boolean authenticate(String username, String password) {
-		results = new AuthenticatorResults();
-		results.setAuthenticatorModuleName(getClass().getSimpleName());
-		return false;
-	}
-
-	@Override
 	public AuthenticatorResults getResults() {
 		return results;
+	}
+
+	public boolean authenticate(String username, String password) {
+		results = new AuthenticatorResults();
+		results.setAuthenticatorModuleName(getModuleName());
+		results.setUserUnavailable(true);
+		getLogger().info(getBundle().getString("fuselage.authenticators.login.failed", username, getModuleName()));
+		return false;
 	}
 
 }
