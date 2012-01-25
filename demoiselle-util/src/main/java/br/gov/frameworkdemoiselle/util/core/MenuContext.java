@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.util.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,9 +7,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractMenuContext implements Serializable {
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
+import br.gov.frameworkdemoiselle.util.configuration.MenuContextConfig;
+
+public abstract class MenuContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private MenuContextConfig config;
 
 	public final static String KEY_CONFIG = "CONFIG_";
 
@@ -27,15 +35,32 @@ public abstract class AbstractMenuContext implements Serializable {
 
 	public final static String KEY_STYLECLASS = "Style";
 
-	public final static String KEY_COUNTER = "Counter";
+	private final static String KEY_COUNTER = "Counter";
+
+	private String selectedStyleClass;
+	
+	private boolean singleSelect = true;
+
+	private boolean permitUnselect = false;
 
 	private Map<String, Map<String, Map<String, String>>> menu = new HashMap<String, Map<String, Map<String, String>>>();
 
-	protected abstract String getSelectedStyleClass();
-
-	protected abstract boolean isSingleSelection();
-
-	protected abstract boolean isPermitedUnselect();
+	@PostConstruct
+	public void init() {
+		List<String[]> selectItems = config.getSelectItems();
+		if (selectItems != null)
+			for (String[] menuItem : selectItems) {
+				select(menuItem[0], menuItem[1]);
+				if ("false".equals(menuItem[2]))
+					setSelectionMultiMode(menuItem[0]);
+				if ("true".equals(menuItem[3]))
+					permitUnselect(menuItem[3], true);
+			}
+		
+		selectedStyleClass = config.getSelectedStyleClass();
+		singleSelect = config.isSingleSelect();
+		permitUnselect = config.isPermitedUnselect();
+	}
 
 	/**
 	 * Retrive menu from XHTML;
@@ -94,7 +119,7 @@ public abstract class AbstractMenuContext implements Serializable {
 
 	public void select(String menuName, String itemName) {
 		unselectAll(menuName);
-		setValue(menuName, itemName, KEY_STYLECLASS, getSelectedStyleClass());
+		setValue(menuName, itemName, KEY_STYLECLASS, selectedStyleClass);
 	}
 
 	public void select(String menuName, String itemName, String styleClass) {
@@ -197,7 +222,7 @@ public abstract class AbstractMenuContext implements Serializable {
 	public String getSelectionMode(String menuName) {
 		String selectionMode = getValue(menuName, KEY_CONFIG, KEY_SELECTION_MODE);
 		if (selectionMode == null) {
-			if (isSingleSelection())
+			if (singleSelect)
 				selectionMode = SELECTION_MODE_SINGLE;
 			else
 				selectionMode = SELECTION_MODE_MULTI;
@@ -214,7 +239,7 @@ public abstract class AbstractMenuContext implements Serializable {
 	}
 
 	public boolean isPermitUnselect(String menuName) {
-		boolean permitUnselect = isPermitedUnselect();
+		boolean permitUnselect = this.permitUnselect;
 		String permitUnselectStr = getValue(menuName, KEY_CONFIG, KEY_PERMIT_UNSELECT);
 		if (PERMIT_UNSELECT_TRUE.equals(permitUnselectStr))
 			permitUnselect = true;
