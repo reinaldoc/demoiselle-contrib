@@ -55,7 +55,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean {
 
 	public abstract String delete();
 
-	public abstract T load(I id);
+	protected abstract T load(I id);
 
 	protected Class<T> getBeanClass() {
 		if (this.beanClass == null) {
