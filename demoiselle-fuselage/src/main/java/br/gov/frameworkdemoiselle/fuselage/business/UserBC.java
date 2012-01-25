@@ -4,13 +4,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.fuselage.persistence.UserDAO;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
+import br.gov.frameworkdemoiselle.transaction.Transactional;
 
 public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	private static final long serialVersionUID = 1L;
+
+	@Transactional
+	@Startup
+	public void startup() {
+		if (findAll().isEmpty()) {
+			insert(new SecurityUser("faa-admin", "Administrador do Fuselage", "123456"));
+		}
+	}
 
 	@Inject
 	private ProfileBC profileBC;
