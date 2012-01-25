@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -70,9 +71,8 @@ public class SecurityUser implements Serializable {
 	public SecurityUser(String login, String name, String password) {
 		this.login = login;
 		this.name = name;
-		this.password = password;
-		this.passwordrepeat = password;
 		this.available = 1;
+		setPassword(password);
 	}
 
 	public Long getId() {
@@ -104,7 +104,7 @@ public class SecurityUser implements Serializable {
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = DigestUtils.sha512Hex(password);
 	}
 
 	public List<SecurityProfile> getProfiles() {

@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
@@ -38,9 +36,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.available.unavailable", getBean().getLogin()));
 				return null;
 			}
-			if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().equals(getBean().getPasswordrepeat())) {
-				getBean().setPassword(DigestUtils.sha512Hex(getBean().getPassword()));
-			} else {
+			if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
 				Faces.validationFailed();
 				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notmatch"));
 				return null;
@@ -74,9 +70,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 				Faces.validationFailed();
 				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notstrong"));
 				return null;
-			} else if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().equals(getBean().getPasswordrepeat())) {
-				getBean().setPassword(DigestUtils.sha512Hex(getBean().getPassword()));
-			} else {
+			} else if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
 				Faces.validationFailed();
 				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notmatch"));
 				return null;
