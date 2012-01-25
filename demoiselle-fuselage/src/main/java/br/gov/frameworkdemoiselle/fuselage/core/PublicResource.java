@@ -29,7 +29,7 @@ public class PublicResource implements br.gov.frameworkdemoiselle.security.Publi
 		if (!publicResourceLoaded.contains(resourceName)) {
 			publicResourceLoaded.add(resourceName);
 			List<String> resourceList = new ArrayList<String>();
-			List<SecurityResource> resultList = resourceBC.findByExample(new SecurityResource(resourceName));
+			List<SecurityResource> resultList = resourceBC.findByExample(new SecurityResource(resourceName), true, 0);
 			if (resultList != null) {
 				ListIterator<SecurityResource> iter = resultList.listIterator();
 				while (iter.hasNext()) {
