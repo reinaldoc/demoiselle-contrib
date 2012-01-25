@@ -5,7 +5,7 @@ import java.io.Serializable;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "fuselage", prefix = "fuselage.authenticators.LdapAuthenticator")
+@Configuration(resource = "fuselage", prefix = "fuselage.authenticators.module.LdapAuthenticator")
 public class LdapAuthenticatorConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -24,6 +24,9 @@ public class LdapAuthenticatorConfig implements Serializable {
 
 	@Name("userSearchFilter")
 	private String userSearchFilter = "(uid=%u)";
+
+	@Name("verbose")
+	private boolean verbose = false;
 
 	public String getUidAttr() {
 		return uidAttr;
@@ -63,6 +66,14 @@ public class LdapAuthenticatorConfig implements Serializable {
 
 	public void setUserSearchFilter(String userSearchFilter) {
 		this.userSearchFilter = userSearchFilter;
+	}
+
+	public boolean isVerbose() {
+		return verbose;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 }
