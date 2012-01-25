@@ -83,6 +83,11 @@
 			<version>2.0.3</version><!--$NO-MVN-MAN-VER$ -->
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.4</version>
+		</dependency>
 
 		<!-- Support Tools -->
 		<dependency>
