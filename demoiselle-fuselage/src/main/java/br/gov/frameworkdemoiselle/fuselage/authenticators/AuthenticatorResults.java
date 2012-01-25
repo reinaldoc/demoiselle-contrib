@@ -3,76 +3,19 @@ package br.gov.frameworkdemoiselle.fuselage.authenticators;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
+
 public class AuthenticatorResults {
 
 	public String authenticatorModuleName;
 
-	public String uid;
+	public SecurityUser securityUser;
 
-	public String commonName;
+	public boolean loggedIn = false;
 
-	public String organizationalUnit;
-
-	public String description;
+	public boolean userUnavailable = false;
 
 	public Map<String, String> genericResults = new HashMap<String, String>();
-
-	public Map<String, String> getGenericResults() {
-		return genericResults;
-	}
-
-	public void setGenericResults(Map<String, String> genericResults) {
-		this.genericResults = genericResults;
-	}
-
-	public void putGenericResults(String key, String value) {
-		this.genericResults.put(key, value);
-	}
-
-	public Map<String, String> getUserResults() {
-		Map<String, String> allResults = new HashMap<String, String>();
-		if (uid != null)
-			allResults.put("uid", uid);
-		if (commonName != null)
-			allResults.put("commonName", commonName);
-		if (organizationalUnit != null)
-			allResults.put("organizationalUnit", commonName);
-		if (description != null)
-			allResults.put("description", description);
-		return allResults;
-	}
-
-	public String getUid() {
-		return uid;
-	}
-
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
-
-	public String getCommonName() {
-		return commonName;
-	}
-
-	public void setCommonName(String commonName) {
-		this.commonName = commonName;
-	}
-
-	public String getOrganizationalUnit() {
-		return organizationalUnit;
-	}
-
-	public void setOrganizationalUnit(String organizationalUnit) {
-		this.organizationalUnit = organizationalUnit;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public String getAuthenticatorModuleName() {
 		return authenticatorModuleName;
@@ -80,6 +23,38 @@ public class AuthenticatorResults {
 
 	public void setAuthenticatorModuleName(String authenticatorModuleName) {
 		this.authenticatorModuleName = authenticatorModuleName;
+	}
+
+	public SecurityUser getSecurityUser() {
+		return securityUser;
+	}
+
+	public void setSecurityUser(SecurityUser securityUser) {
+		this.securityUser = securityUser;
+	}
+
+	public boolean isLoggedIn() {
+		return loggedIn;
+	}
+
+	public void setLoggedIn(boolean loggedIn) {
+		this.loggedIn = loggedIn;
+	}
+
+	public boolean isUserUnavailable() {
+		return userUnavailable;
+	}
+
+	public void setUserUnavailable(boolean userUnavailable) {
+		this.userUnavailable = userUnavailable;
+	}
+
+	public Map<String, String> getGenericResults() {
+		return genericResults;
+	}
+
+	public void setGenericResults(Map<String, String> genericResults) {
+		this.genericResults = genericResults;
 	}
 
 }
