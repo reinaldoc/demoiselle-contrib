@@ -59,17 +59,12 @@
 		<!-- Major Libraries -->
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
-			<artifactId>demoiselle-jsf-contrib</artifactId>
+			<artifactId>demoiselle-primefaces</artifactId>
 			<version>2.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-jpa-contrib</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>demoiselle-contrib</groupId>
-			<artifactId>demoiselle-primefaces</artifactId>
 			<version>2.2.0</version>
 		</dependency>
 		<dependency>
