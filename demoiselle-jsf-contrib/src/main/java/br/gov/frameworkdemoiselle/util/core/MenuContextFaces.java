@@ -1,11 +1,11 @@
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.util.core;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.util.MenuContext;
 import br.gov.frameworkdemoiselle.util.Parameter;
+import br.gov.frameworkdemoiselle.util.core.MenuContext;
 
 @SessionScoped
 public class MenuContextFaces extends MenuContext {
