@@ -42,7 +42,6 @@
 		<groupId>br.gov.frameworkdemoiselle.component</groupId>
 		<artifactId>demoiselle-component-parent</artifactId>
 		<version>2.0.7</version>
-		<relativePath>../</relativePath>
 	</parent>
 
 	<artifactId>demoiselle-primefaces</artifactId>
@@ -58,6 +57,7 @@
 	</properties>
 
 	<dependencies>
+
 		<!-- Major Libraries -->
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
@@ -65,31 +65,31 @@
 			<version>2.2.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>3.0.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-jsf-contrib</artifactId>
 			<version>2.2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>3.0.M4</version>
-			<scope>compile</scope>
-		</dependency>
-		
+
 		<!-- Support Tools -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- 
-			Este plugin serve para o envio dos arquivos de configuração do portal de componentes.
-			Os arquivos da pasta src/site/portal serão enviados para a raiz do site de componentes informando a categoria do projeto e a descrição 
-			além de um arquivo index.php que redireciona para a ultima versão do componente.  
-			 -->
+			<!-- Este plugin serve para o envio dos arquivos de configuração do portal 
+				de componentes. Os arquivos da pasta src/site/portal serão enviados para 
+				a raiz do site de componentes informando a categoria do projeto e a descrição 
+				além de um arquivo index.php que redireciona para a ultima versão do componente. -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>wagon-maven-plugin</artifactId>
@@ -120,11 +120,11 @@
 		<url>${svn.url}/${project.artifactId}</url>
 	</scm>
 
-	<!--  Distribuição do projeto -->
+	<!-- Distribuição do projeto -->
 	<distributionManagement>
 		<site>
 			<id>demoiselle.sourceforge.net</id>
-			<!-- O padrão para garantir o histório de sites é  <nome do componente>/<versao> -->
+			<!-- O padrão para garantir o histório de sites é <nome do componente>/<versao> -->
 			<url>${shell.htdocs}/component/${project.artifactId}/${project.version}</url>
 		</site>
 	</distributionManagement>
