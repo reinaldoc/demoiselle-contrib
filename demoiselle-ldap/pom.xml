@@ -44,6 +44,7 @@
 		<version>2.2.0</version>
 	</parent>
 
+	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-ldap</artifactId>
 	<packaging>jar</packaging>
 
@@ -53,6 +54,7 @@
 
 	<properties>
 		<category>Outros</category>
+		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -70,29 +72,16 @@
 		</dependency>
 	</dependencies>
 
-
 	<build>
 		<plugins>
-			<!-- Este plugin serve para o envio dos arquivos de configuração do portal 
-				de componentes. Os arquivos da pasta src/site/portal serão enviados para 
-				a raiz do site de componentes informando a categoria do projeto e a descrição 
-				além de um arquivo index.php que redireciona para a ultima versão do componente. -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<version>${wagon-maven-plugin}</version>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${maven.install.plugin.version}</version>
 				<executions>
 					<execution>
-						<id>upload-portal-info</id>
-						<phase>site-deploy</phase>
-						<goals>
-							<goal>upload</goal>
-						</goals>
+						<id>default-install</id>
 						<configuration>
-							<serverId>demoiselle.sourceforge.net</serverId>
-							<fromDir>${basedir}/target/site/portal</fromDir>
-							<url>${shell.htdocs}/component/${project.artifactId}</url>
-							<toDir></toDir>
+							<createChecksum>true</createChecksum>
 						</configuration>
 					</execution>
 				</executions>
@@ -100,31 +89,10 @@
 		</plugins>
 	</build>
 
-	<!-- Conexão com o repositório de fontes -->
-	<scm>
-		<connection>${svn.connection}/${project.artifactId}</connection>
-		<developerConnection>${svn.developerConnection}/${project.artifactId}</developerConnection>
-		<url>${svn.url}/${project.artifactId}</url>
-	</scm>
-
-	<!-- Distribuição do projeto -->
-	<distributionManagement>
-		<site>
-			<id>demoiselle.sourceforge.net</id>
-			<!-- O padrão para garantir o histório de sites é <nome do componente>/<versao> -->
-			<url>${shell.htdocs}/component/${project.artifactId}/${project.version}</url>
-		</site>
-	</distributionManagement>
-
 	<repositories>
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
-		</repository>
-		<repository>
-			<id>reinaldoc-repo</id>
-			<name>Reinaldo Github Maven Repository</name>
-			<url>http://reinaldoc.github.com/maven</url>
 		</repository>
 	</repositories>
 
