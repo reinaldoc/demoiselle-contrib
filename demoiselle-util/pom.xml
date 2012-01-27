@@ -42,7 +42,6 @@
 		<groupId>br.gov.frameworkdemoiselle.component</groupId>
 		<artifactId>demoiselle-component-parent</artifactId>
 		<version>2.0.7</version>
-		<relativePath>../</relativePath>
 	</parent>
 
 	<artifactId>demoiselle-util</artifactId>
@@ -51,7 +50,7 @@
 
 	<name>demoiselle-util</name>
 	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
-	<description>Component com utilitários para o demoiselle</description>
+	<description>Componente com utilitários para o demoiselle</description>
 
 	<properties>
 		<category>Outros</category>
