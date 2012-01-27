@@ -71,6 +71,7 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		}
 	}
 
+	@Override
 	public List<T> findByExample(T example, boolean isConjunction, int maxResult) {
 		return getDelegate().findByExample(example, isConjunction, maxResult);
 	}
