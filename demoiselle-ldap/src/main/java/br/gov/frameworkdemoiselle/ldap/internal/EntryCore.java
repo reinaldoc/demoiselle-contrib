@@ -72,12 +72,12 @@ public class EntryCore implements Serializable {
 		}
 	}
 
-	public String findReference(String searchFilter) {
-		return coreMap.findReference(searchFilter);
+	public String findReference(Object searchFilter) {
+		return coreMap.findReference((String) searchFilter);
 	}
 
 	private static String getReferenceFilter(Class<?> entryClass, Object id) {
-		String fieldName = ClazzUtils.getFieldName(ClazzUtils.getRequiredFieldAnnotatedAs(entryClass, Id.class));
+		String fieldName = ClazzUtils.getFieldName(ClazzUtils.getFieldAnnotatedAs(entryClass, Id.class, true));
 		return "(&(objectClass=" + entryClass.getSimpleName() + ")(" + fieldName + "=" + id + "))";
 	}
 

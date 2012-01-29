@@ -35,6 +35,7 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.ldap.annotation.DistinguishedName;
 import br.gov.frameworkdemoiselle.ldap.annotation.Id;
 import br.gov.frameworkdemoiselle.ldap.annotation.LDAPEntry;
+import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -43,6 +44,10 @@ public class ClazzUtils {
 
 	private static Logger logger = LoggerProducer.create(ClazzUtils.class);
 
+	public static final boolean EntryObjectListCascade = false;
+
+	public static final boolean EntryObjectCascade = true;
+
 	/**
 	 * Get @DistinguishedName value of a @LDAPEntry annotated object
 	 * 
@@ -50,19 +55,19 @@ public class ClazzUtils {
 	 * @return Distinguished Name
 	 */
 	public static String getDistinguishedName(Object entry) {
-		requireAnnotation(entry.getClass(), LDAPEntry.class);
-		return (String) getRequiredAnnotatedValue(entry, DistinguishedName.class);
+		isAnnotationPresent(entry.getClass(), LDAPEntry.class, true);
+		return (String) getAnnotatedValue(entry, DistinguishedName.class, true);
 	}
 
 	/**
 	 * Convert @LDAPEntry annotated object to Map<String, Object>. The valid
-	 * types for Object value is String, String[] or byte[]
+	 * types for Object Map value is String, String[] or byte[]
 	 * 
 	 * @param entry
 	 * @return Entry Map
 	 */
 	public static Map<String, Object> getObjectMap(Object entry) {
-		requireAnnotation(entry.getClass(), LDAPEntry.class);
+		isAnnotationPresent(entry.getClass(), LDAPEntry.class, true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		Field[] fields = getSuperClassesFields(entry.getClass());
@@ -79,11 +84,18 @@ public class ClazzUtils {
 		return map;
 	}
 
+	/**
+	 * Process field value of @LDAPEntry annotated class and return a LDAP
+	 * supported object of String, String[] or byte[] types
+	 * 
+	 * @param object
+	 * @return A value to be commited to LDAP as String, String[] or byte[]
+	 */
 	public static Object getObjectAsSupportedType(Object obj) {
 		if (obj instanceof String || obj instanceof String[] || obj instanceof byte[])
 			return obj;
-		else if (isAnnotationPresent(obj.getClass(), LDAPEntry.class))
-			return getRequiredAnnotatedValue(obj, Id.class).toString();
+		else if (isAnnotationPresent(obj.getClass(), LDAPEntry.class, false))
+			return getAnnotatedValue(obj, Id.class, true).toString();
 		else if (obj.getClass().isArray())
 			return convertToStringArrayFromArray(obj);
 		else if (isCollection(obj.getClass()))
@@ -108,22 +120,32 @@ public class ClazzUtils {
 	}
 
 	/**
-	 * Convert a Map<dn, Map<attr, value[]>> to @LDAPEntry annotated object
+	 * Convert a Map<dn, Map<attr, Object>> to @LDAPEntry annotated object
 	 * 
-	 * @param entry
-	 * @return Entry Map
+	 * @param entryMap
+	 * @param clazz
+	 *            <T>
+	 * @return List<T>
 	 */
 	public static <T> List<T> getEntryObjectList(Map<String, Map<String, Object>> entryMap, Class<T> clazz) {
+		return getEntryObjectList(entryMap, clazz, EntryObjectListCascade);
+	}
+
+	private static <T> List<T> getEntryObjectList(Map<String, Map<String, Object>> entryMap, Class<T> clazz, boolean cascade) {
 		if (entryMap == null)
 			return null;
-		requireAnnotation(clazz, LDAPEntry.class);
+		isAnnotationPresent(clazz, LDAPEntry.class, true);
 		List<T> resultList = new ArrayList<T>();
 		for (Map.Entry<String, Map<String, Object>> mapEntry : entryMap.entrySet())
-			resultList.add(getEntryObject(mapEntry.getKey(), mapEntry.getValue(), clazz));
+			resultList.add(getEntryObject(mapEntry.getKey(), mapEntry.getValue(), clazz, cascade));
 		return resultList;
 	}
 
 	public static <T> T getEntryObject(String dn, Map<String, Object> map, Class<T> clazz) {
+		return getEntryObject(dn, map, clazz, EntryObjectCascade);
+	}
+
+	private static <T> T getEntryObject(String dn, Map<String, Object> map, Class<T> clazz, boolean cascade) {
 		T entry = Beans.getReference(clazz);
 		Field[] fields = getSuperClassesFields(entry.getClass());
 		for (Field field : fields) {
@@ -134,7 +156,7 @@ public class ClazzUtils {
 			else {
 				String fieldName = getFieldName(field);
 				if (map.containsKey(fieldName))
-					setFieldValue(field, entry, map.get(fieldName));
+					setFieldValue(field, entry, map.get(fieldName), cascade);
 			}
 		}
 		return entry;
@@ -213,45 +235,45 @@ public class ClazzUtils {
 	}
 
 	/**
-	 * Get annotated value and when null throw EntryException
-	 * 
-	 * @param entry
-	 * @param clazz
-	 * @return
-	 */
-	public static Object getRequiredAnnotatedValue(Object entry, Class<? extends Annotation> clazz) {
-		Object value = getAnnotatedValue(entry, clazz);
-		if (value != null && !value.toString().trim().isEmpty()) {
-			return value;
-		}
-		throw new EntryException("Class " + entry.getClass().getSimpleName() + " doesn't have a valid value for @" + clazz.getSimpleName());
-	}
-
-	/**
 	 * Get annotated value
 	 * 
 	 * @param entry
 	 */
-	private static Object getAnnotatedValue(Object entry, Class<? extends Annotation> clazz) {
-		Field field = getFieldAnnotatedAs(entry.getClass(), clazz);
+	public static Object getAnnotatedValue(Object entry, Class<? extends Annotation> clazz, boolean required) {
+		Field field = getFieldAnnotatedAs(entry.getClass(), clazz, required);
 		if (field != null)
 			return Reflections.getFieldValue(field, entry);
 		return null;
 	}
 
-	public static Field getRequiredFieldAnnotatedAs(Class<?> claz, Class<? extends Annotation> clazz) {
-		Field field = getFieldAnnotatedAs(claz, clazz);
-		if (field == null)
-			throw new EntryException("Field with @" + clazz.getSimpleName() + " not found on class " + claz.getSimpleName());
-		return field;
+	public static Field getFieldAnnotatedAs(Class<?> clazz, Class<? extends Annotation> aclazz, boolean required) {
+		for (Field field : getSuperClassesFields(clazz))
+			if (field.isAnnotationPresent(aclazz))
+				return field;
+		if (required)
+			throw new EntryException("Field with @" + aclazz.getSimpleName() + " not found on class " + clazz.getSimpleName());
+		else
+			return null;
 	}
 
-	public static Field getFieldAnnotatedAs(Class<?> claz, Class<? extends Annotation> clazz) {
-		Field[] fields = getSuperClassesFields(claz);
-		for (Field field : fields)
-			if (field.isAnnotationPresent(clazz))
-				return field;
-		return null;
+	/**
+	 * Verify if a POJO have a annotated field, throw EntryException if
+	 * annotation is required and wasn't found.
+	 * 
+	 * @param aclazz
+	 *            a POJO class to be verified
+	 * @param aclazz
+	 *            a Annotation class to be searched on POJO fields
+	 * @param required
+	 *            especify if should throw a EntryExpcetion when annotation
+	 *            was't found.
+	 * 
+	 */
+	public static boolean hasFieldAnnotatedAs(Class<?> clazz, Class<? extends Annotation> aclazz, boolean required) {
+		Field field = getFieldAnnotatedAs(clazz, aclazz, required);
+		if (field == null)
+			return false;
+		return true;
 	}
 
 	/**
@@ -262,10 +284,14 @@ public class ClazzUtils {
 	 * @param value
 	 */
 	public static void setFieldValue(Field field, Object entry, Object value) {
-		Reflections.setFieldValue(field, entry, getValueAsFieldType(field, value));
+		setFieldValue(field, entry, value, false);
 	}
 
-	public static Object getValueAsFieldType(Field field, Object values) {
+	public static void setFieldValue(Field field, Object entry, Object value, boolean cascade) {
+		Reflections.setFieldValue(field, entry, getValueAsFieldType(field, value, cascade));
+	}
+
+	public static Object getValueAsFieldType(Field field, Object values, boolean cascade) {
 		if (values instanceof String[]) {
 			String[] valueArray = (String[]) values;
 
@@ -301,8 +327,8 @@ public class ClazzUtils {
 
 			}
 
-			if (isAnnotationPresent(field.getType(), LDAPEntry.class))
-				return getMappedEntryObject(field.getType(), valueArray);
+			if (isAnnotationPresent(field.getType(), LDAPEntry.class, false))
+				return getMappedEntryObject(field.getType(), valueArray, cascade);
 
 			if (field.getType().isAssignableFrom(ArrayList.class))
 				if (String.class.isAssignableFrom(Reflections.getGenericTypeArgument(field.getType(), 0)))
@@ -345,10 +371,15 @@ public class ClazzUtils {
 		return null;
 	}
 
-	public static Object getMappedEntryObject(Class<?> clazz, String[] value) {
-		Object entry = Beans.getReference(clazz);
-		setAnnotatedFieldValueAs(entry, Id.class, value);
-		return entry;
+	public static Object getMappedEntryObject(Class<?> clazz, String[] value, boolean cascade) {
+		if (cascade) {
+			EntryManager em = Beans.getReference(EntryManager.class);
+			return em.find(clazz, value[0]);
+		} else {
+			Object entry = Beans.getReference(clazz);
+			setAnnotatedFieldValueAs(entry, Id.class, value);
+			return entry;
+		}
 	}
 
 	/**
@@ -356,14 +387,15 @@ public class ClazzUtils {
 	 * 
 	 * @param entry
 	 */
-	public static void setAnnotatedFieldValueAs(Object entry, Class<? extends Annotation> clazz, String[] value) {
-		Field field = getFieldAnnotatedAs(entry.getClass(), clazz);
+	public static void setAnnotatedFieldValueAs(Object entry, Class<? extends Annotation> clazz, Object value) {
+		Field field = getFieldAnnotatedAs(entry.getClass(), clazz, false);
 		setFieldValue(field, entry, value);
 	}
 
 	/**
-	 * If @Name present returns field.getAnnotation(Name.class).value(),
-	 * otherwise field.getName();
+	 * Get a field name (object attribute name) or the value of @Name if
+	 * annotation is present. In other words, if @Name is present returns
+	 * field.getAnnotation(Name.class).value(), otherwise field.getName();
 	 * 
 	 * @param field
 	 * @return @Name annotation value or object attribute name;
@@ -379,28 +411,25 @@ public class ClazzUtils {
 	}
 
 	/**
-	 * Verify if annotation is present
+	 * Verify if a class or yours super classes have annotation, throw
+	 * EntryException if annotation is required and wasn't found.
 	 * 
-	 * @param entry
 	 * @param clazz
+	 *            a class to be verified
+	 * @param aclazz
+	 *            a Annotation class to be searched
+	 * @param required
+	 *            define if should throw a EntryExpcetion when annotation was't
+	 *            found.
+	 * 
 	 */
-	public static boolean isAnnotationPresent(Class<?> entryClass, Class<? extends Annotation> clazz) {
-		for (Class<?> claz : getSuperClasses(entryClass))
-			if (claz.isAnnotationPresent(clazz))
+	public static boolean isAnnotationPresent(Class<?> clazz, Class<? extends Annotation> aclazz, boolean required) {
+		for (Class<?> claz : getSuperClasses(clazz))
+			if (claz.isAnnotationPresent(aclazz))
 				return true;
+		if (required)
+			throw new EntryException("Entry " + clazz.getSimpleName() + " doesn't have @" + aclazz.getName());
 		return false;
-	}
-
-	/**
-	 * Verify if annotation is present on entry and when false throw
-	 * EntryException
-	 * 
-	 * @param entry
-	 * @param clazz
-	 */
-	public static void requireAnnotation(Class<?> entryClass, Class<? extends Annotation> clazz) {
-		if (!isAnnotationPresent(entryClass, clazz))
-			throw new EntryException("Entry " + entryClass.getSimpleName() + " doesn't have @" + clazz.getName());
 	}
 
 }
