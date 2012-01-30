@@ -44,6 +44,8 @@ import java.util.Map;
 
 import javax.enterprise.inject.Alternative;
 
+import br.gov.frameworkdemoiselle.enumeration.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -78,9 +80,9 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	private Map<String, String> filters;
 
-	private FiltersNotationEnum filtersNotation;
+	private NotationEnum filtersNotation;
 
-	private FiltersLogicEnum filtersLogic;
+	private LogicEnum filtersLogic;
 
 	private boolean filtersCaseInsensitive;
 
@@ -96,8 +98,8 @@ public class PaginationImpl implements Serializable, Pagination {
 		sorting = new ArrayList<String>();
 		sortOrder = true;
 		filters = new HashMap<String, String>();
-		filtersNotation = FiltersNotationEnum.INFIX;
-		filtersLogic = FiltersLogicEnum.AND;
+		filtersNotation = NotationEnum.INFIX;
+		filtersLogic = LogicEnum.AND;
 		filtersCaseInsensitive = true;
 	}
 
@@ -236,19 +238,19 @@ public class PaginationImpl implements Serializable, Pagination {
 		this.filters = filters;
 	}
 
-	public FiltersNotationEnum getFiltersNotation() {
+	public NotationEnum getFiltersNotation() {
 		return filtersNotation;
 	}
 
-	public void setFiltersNotation(FiltersNotationEnum filtersNotation) {
+	public void setFiltersNotation(NotationEnum filtersNotation) {
 		this.filtersNotation = filtersNotation;
 	}
 
-	public FiltersLogicEnum getFiltersLogic() {
+	public LogicEnum getFiltersLogic() {
 		return filtersLogic;
 	}
 
-	public void setFiltersLogic(FiltersLogicEnum filtersLogic) {
+	public void setFiltersLogic(LogicEnum filtersLogic) {
 		this.filtersLogic = filtersLogic;
 	}
 
