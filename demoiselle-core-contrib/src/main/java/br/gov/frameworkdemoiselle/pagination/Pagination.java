@@ -39,6 +39,9 @@ package br.gov.frameworkdemoiselle.pagination;
 import java.util.List;
 import java.util.Map;
 
+import br.gov.frameworkdemoiselle.enumeration.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
+
 /**
  * Structure used to handle pagination of data results on both <i>backend</i>
  * (i.e., persistence) and <i>frontend</i> (i.e., presentation) layers in the
@@ -47,14 +50,6 @@ import java.util.Map;
  * @author SERPRO
  */
 public interface Pagination {
-
-	static enum FiltersNotationEnum {
-		PREFIX, INFIX, POSTFIX, EXACT
-	};
-
-	static enum FiltersLogicEnum {
-		AND, OR
-	};
 
 	/**
 	 * Returns the current page.
@@ -117,13 +112,13 @@ public interface Pagination {
 
 	void setFilters(Map<String, String> filters);
 
-	FiltersNotationEnum getFiltersNotation();
+	NotationEnum getFiltersNotation();
 
-	void setFiltersNotation(FiltersNotationEnum notationEnum);
+	void setFiltersNotation(NotationEnum notationEnum);
 
-	FiltersLogicEnum getFiltersLogic();
+	LogicEnum getFiltersLogic();
 
-	void setFiltersLogic(FiltersLogicEnum logicEnum);
+	void setFiltersLogic(LogicEnum logicEnum);
 	
 	boolean isFiltersCaseInsensitive();
 	

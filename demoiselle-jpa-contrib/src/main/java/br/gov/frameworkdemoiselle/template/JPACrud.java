@@ -63,6 +63,8 @@ import org.apache.commons.lang.ArrayUtils;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.enumeration.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
@@ -182,14 +184,14 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return orderList;
 	}
 
-	private String createNotationString(String entityAttrValue, Pagination.FiltersNotationEnum notationEnum) {
+	private String createNotationString(String entityAttrValue, NotationEnum notationEnum) {
 		if (entityAttrValue == null) {
 			return "";
-		} else if (notationEnum == Pagination.FiltersNotationEnum.INFIX) {
+		} else if (notationEnum == NotationEnum.INFIX) {
 			return "%" + entityAttrValue + "%";
-		} else if (notationEnum == Pagination.FiltersNotationEnum.PREFIX) {
+		} else if (notationEnum == NotationEnum.PREFIX) {
 			return entityAttrValue + "%";
-		} else if (notationEnum == Pagination.FiltersNotationEnum.POSTFIX) {
+		} else if (notationEnum == NotationEnum.POSTFIX) {
 			return "%" + entityAttrValue;
 		}
 		return entityAttrValue;
@@ -230,7 +232,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			}
 			predicates.add(this.cBuilder.like(expEntityAttr, createNotationString(entityAttrValue, pagination.getFiltersNotation())));
 		}
-		if (pagination.getFiltersLogic() == Pagination.FiltersLogicEnum.OR) {
+		if (pagination.getFiltersLogic() == LogicEnum.OR) {
 			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
 		} else {
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
