@@ -41,9 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 
@@ -59,9 +57,6 @@ public class QueryContextImpl implements Serializable, QueryContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private PaginationConfig config;
-
 	private final Map<Class<?>, QueryConfig<?>> cache = new HashMap<Class<?>, QueryConfig<?>>();
 
 	public <T> QueryConfig<T> getQueryConfig(final Class<T> clazz) {
@@ -74,7 +69,6 @@ public class QueryContextImpl implements Serializable, QueryContext {
 
 		if (queryConfig == null || create) {
 			queryConfig = new QueryConfigImpl<T>();
-			queryConfig.setPageSize(config.getPageSize());
 			cache.put(clazz, queryConfig);
 		}
 
