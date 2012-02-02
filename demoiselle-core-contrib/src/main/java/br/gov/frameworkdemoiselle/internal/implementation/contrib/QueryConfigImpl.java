@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.internal.implementation.contrib;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,10 +44,10 @@ import java.util.Map;
 
 import javax.enterprise.inject.Alternative;
 
-import br.gov.frameworkdemoiselle.enumeration.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
-import br.gov.frameworkdemoiselle.pagination.Pagination;
-import br.gov.frameworkdemoiselle.util.Strings;
+import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 /**
  * Structure used to handle pagination of data results on both <i>backend</i>
@@ -59,10 +59,10 @@ import br.gov.frameworkdemoiselle.util.Strings;
  * number of pages in {@code totalPages}.
  * 
  * @author SERPRO
- * @see Pagination
+ * @see QueryConfig
  */
 @Alternative
-public class PaginationImpl implements Serializable, Pagination {
+public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	private boolean sortOrder;
 
-	private Map<String, String> filters;
+	private Map<String, Object> filters;
 
 	private NotationEnum filtersNotation;
 
@@ -86,7 +86,7 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	private boolean filtersCaseInsensitive;
 
-	public PaginationImpl() {
+	public QueryConfigImpl() {
 		pageSize = 0;
 		totalResults = 0;
 		reset();
@@ -97,7 +97,7 @@ public class PaginationImpl implements Serializable, Pagination {
 		totalPages = 0;
 		sorting = new ArrayList<String>();
 		sortOrder = true;
-		filters = new HashMap<String, String>();
+		filters = new HashMap<String, Object>();
 		filtersNotation = NotationEnum.INFIX;
 		filtersLogic = LogicEnum.AND;
 		filtersCaseInsensitive = true;
@@ -230,35 +230,39 @@ public class PaginationImpl implements Serializable, Pagination {
 		this.sortOrder = sortOrder;
 	}
 
-	public Map<String, String> getFilters() {
+	public Map<String, Object> getFilter() {
 		return filters;
 	}
 
-	public void setFilters(Map<String, String> filters) {
+	public void setFilter(Map<String, Object> filters) {
 		this.filters = filters;
 	}
 
-	public NotationEnum getFiltersNotation() {
+	public void setFilter(T domain) {
+		
+	}
+	
+	public NotationEnum getFilterNotation() {
 		return filtersNotation;
 	}
 
-	public void setFiltersNotation(NotationEnum filtersNotation) {
+	public void setFilterNotation(NotationEnum filtersNotation) {
 		this.filtersNotation = filtersNotation;
 	}
 
-	public LogicEnum getFiltersLogic() {
+	public LogicEnum getFilterLogic() {
 		return filtersLogic;
 	}
 
-	public void setFiltersLogic(LogicEnum filtersLogic) {
+	public void setFilterLogic(LogicEnum filtersLogic) {
 		this.filtersLogic = filtersLogic;
 	}
 
-	public boolean isFiltersCaseInsensitive() {
+	public boolean isFilterCaseInsensitive() {
 		return filtersCaseInsensitive;
 	}
 
-	public void setFiltersCaseInsensitive(boolean filtersCaseInsensitive) {
+	public void setFilterCaseInsensitive(boolean filtersCaseInsensitive) {
 		this.filtersCaseInsensitive = filtersCaseInsensitive;
 	}
 

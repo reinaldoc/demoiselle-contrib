@@ -34,13 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.pagination;
+package br.gov.frameworkdemoiselle.query.contrib;
 
 import java.util.List;
 import java.util.Map;
 
-import br.gov.frameworkdemoiselle.enumeration.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
 
 /**
  * Structure used to handle pagination of data results on both <i>backend</i>
@@ -49,7 +49,7 @@ import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
  * 
  * @author SERPRO
  */
-public interface Pagination {
+public interface QueryConfig<T> {
 
 	/**
 	 * Returns the current page.
@@ -108,20 +108,22 @@ public interface Pagination {
 
 	void setSortOrder(boolean ordering);
 
-	Map<String, String> getFilters();
+	Map<String, Object> getFilter();
 
-	void setFilters(Map<String, String> filters);
+	void setFilter(Map<String, Object> filters);
 
-	NotationEnum getFiltersNotation();
+	void setFilter(T filter);
 
-	void setFiltersNotation(NotationEnum notationEnum);
+	NotationEnum getFilterNotation();
 
-	LogicEnum getFiltersLogic();
+	void setFilterNotation(NotationEnum notationEnum);
 
-	void setFiltersLogic(LogicEnum logicEnum);
+	LogicEnum getFilterLogic();
+
+	void setFilterLogic(LogicEnum logicEnum);
 	
-	boolean isFiltersCaseInsensitive();
+	boolean isFilterCaseInsensitive();
 	
-	void setFiltersCaseInsensitive(boolean insensitive);
+	void setFilterCaseInsensitive(boolean insensitive);
 
 }
