@@ -55,6 +55,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
+import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
@@ -201,4 +202,21 @@ public class Faces {
 			resetInputFields(component.getChildren());
 		}
 	}
+
+	public static void addI18nMessage(String bundleKey) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey)));
+	}
+
+	public static void addI18nMessage(String bundleKey, Object... params) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params)));
+	}
+
+	public static void addI18nMessage(String bundleKey, SeverityType type) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey), type));
+	}
+
+	public static void addI18nMessage(String bundleKey, SeverityType type, Object... params) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params), type));
+	}
+
 }
