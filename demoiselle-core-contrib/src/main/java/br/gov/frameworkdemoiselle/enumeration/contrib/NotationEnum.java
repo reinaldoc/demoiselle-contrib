@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.enumeration;
+package br.gov.frameworkdemoiselle.enumeration.contrib;
 
 public enum NotationEnum {
 
