@@ -34,13 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.template;
+package br.gov.frameworkdemoiselle.template.contrib;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -63,10 +63,11 @@ import org.apache.commons.lang.ArrayUtils;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.enumeration.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.NotationEnum;
-import br.gov.frameworkdemoiselle.pagination.Pagination;
-import br.gov.frameworkdemoiselle.pagination.PaginationContext;
+import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
+import br.gov.frameworkdemoiselle.template.Crud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -89,9 +90,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	private EntityManager entityManager;
 
 	@Inject
-	private Instance<PaginationContext> paginationContext;
+	private Instance<QueryContext> queryContext;
 
-	private Pagination pagination;
+	private QueryConfig<T> queryConfig;
 
 	@Inject
 	@Name("demoiselle-jpa-bundle")
@@ -118,12 +119,12 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return this.entityManager;
 	}
 
-	protected Pagination getPagination() {
-		if (pagination == null) {
-			PaginationContext context = paginationContext.get();
-			pagination = context.getPagination(getBeanClass());
+	protected QueryConfig<T> getQueryConfig() {
+		if (queryConfig == null) {
+			QueryContext context = queryContext.get();
+			queryConfig = context.getQueryConfig(getBeanClass());
 		}
-		return pagination;
+		return queryConfig;
 	}
 
 	protected CriteriaQuery<T> createCriteriaQuery() {
@@ -168,19 +169,14 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return getEntityManager().find(getBeanClass(), id);
 	}
 
-	private List<Order> createSort(Root<T> criteriaEntity, Pagination pagination) {
+	private List<Order> createSort(Root<T> criteriaEntity, QueryConfig<T> queryConfig) {
 		List<Order> orderList = new ArrayList<Order>();
-		ListIterator<String> orderIter = pagination.getSorting().listIterator();
-		while (orderIter.hasNext()) {
-			String sortAtrr = orderIter.next();
-			if (sortAtrr != null) {
-				if (pagination.isSortOrder()) {
+		for (String sortAtrr : queryConfig.getSorting())
+			if (sortAtrr != null)
+				if (queryConfig.isSortOrder())
 					orderList.add(this.cBuilder.asc(criteriaEntity.get(sortAtrr)));
-				} else {
+				else
 					orderList.add(this.cBuilder.desc(criteriaEntity.get(sortAtrr)));
-				}
-			}
-		}
 		return orderList;
 	}
 
@@ -197,8 +193,8 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return entityAttrValue;
 	}
 
-	private Predicate createWhere(Root<T> criteriaEntity, Pagination pagination) {
-		Iterator<String> filtersIter = pagination.getFilters().keySet().iterator();
+	private Predicate createWhere(Root<T> criteriaEntity, QueryConfig<T> queryConfig) {
+		Iterator<String> filtersIter = queryConfig.getFilter().keySet().iterator();
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		while (filtersIter.hasNext()) {
@@ -222,17 +218,17 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			// GambiModeOff
 			// Expression<String> expEntityAttr =
 			// criteriaEntity.get(entityAttr);
-			String entityAttrValue = pagination.getFilters().get(entityAttr);
+			String entityAttrValue = (String) queryConfig.getFilter().get(entityAttr);
 			if (entityAttrValue == null) {
 				entityAttrValue = "";
 			}
-			if (pagination.isFiltersCaseInsensitive()) {
+			if (queryConfig.isFilterCaseInsensitive()) {
 				expEntityAttr = this.cBuilder.lower(expEntityAttr);
 				entityAttrValue = entityAttrValue.toLowerCase();
 			}
-			predicates.add(this.cBuilder.like(expEntityAttr, createNotationString(entityAttrValue, pagination.getFiltersNotation())));
+			predicates.add(this.cBuilder.like(expEntityAttr, createNotationString(entityAttrValue, queryConfig.getFilterNotation())));
 		}
-		if (pagination.getFiltersLogic() == LogicEnum.OR) {
+		if (queryConfig.getFilterLogic() == LogicEnum.OR) {
 			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
 		} else {
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
@@ -245,24 +241,24 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		CriteriaQuery<T> criteria = this.cBuilder.createQuery(getBeanClass());
 		Root<T> criteriaEntity = criteria.from(getBeanClass());
 
-		final Pagination pagination = this.getPagination();
-		if (pagination != null) {
-			if (pagination.getFilters() != null && !pagination.getFilters().isEmpty()) {
-				criteria.where(createWhere(criteriaEntity, pagination));
+		final QueryConfig<T> queryConfig = this.getQueryConfig();
+		if (queryConfig != null) {
+			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty()) {
+				criteria.where(createWhere(criteriaEntity, queryConfig));
 			}
-			if (pagination.getSorting() != null && !pagination.getSorting().isEmpty()) {
-				List<Order> orderList = createSort(criteriaEntity, pagination);
+			if (queryConfig.getSorting() != null && queryConfig.getSorting().length != 0) {
+				List<Order> orderList = createSort(criteriaEntity, queryConfig);
 				criteria.orderBy(orderList.toArray(new Order[] {}));
 			}
 		}
 
 		TypedQuery<T> query = getEntityManager().createQuery(criteria);
 
-		if (pagination != null) {
-			pagination.setTotalResults(countAll(pagination));
-			if (pagination.getPageSize() > 0) {
-				query.setFirstResult(pagination.getFirstResult());
-				query.setMaxResults(pagination.getPageSize());
+		if (queryConfig != null) {
+			queryConfig.setTotalResults(countAll(queryConfig));
+			if (queryConfig.getPageSize() > 0) {
+				query.setFirstResult(queryConfig.getFirstResult());
+				query.setMaxResults(queryConfig.getPageSize());
 			}
 		}
 
@@ -275,13 +271,13 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * 
 	 * @return the row count
 	 */
-	private int countAll(Pagination pagination) {
+	private int countAll(QueryConfig<T> queryConfig) {
 		CriteriaQuery<Long> criteria = this.cBuilder.createQuery(Long.class);
 		Root<T> criteriaEntity = criteria.from(getBeanClass());
 		criteria.select(this.cBuilder.count(criteriaEntity));
 
-		if (pagination.getFilters() != null && !pagination.getFilters().isEmpty()) {
-			criteria.where(createWhere(criteriaEntity, pagination));
+		if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty()) {
+			criteria.where(createWhere(criteriaEntity, queryConfig));
 		}
 
 		Long count = getEntityManager().createQuery(criteria).getSingleResult();
@@ -305,7 +301,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 *            an entity example
 	 * @return a list of entities
 	 */
-	public List<T> findByExample(final T example, boolean isConjunction, int maxResult) {
+	public List<T> find(final T example) {
+		boolean isConjunction = true;
+		int maxResult = 0;
 		final CriteriaQuery<T> criteria = createCriteriaByExample(example, isConjunction);
 		TypedQuery<T> query = getEntityManager().createQuery(criteria);
 		if (maxResult > 0)
@@ -328,7 +326,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		final Root<T> entity = query.from(getBeanClass());
 
 		final List<Predicate> predicates = new ArrayList<Predicate>();
-		final Field[] fields = getSuperClassesFields(example, false);
+		final Field[] fields = getSuperClassesFields(example.getClass());
 
 		for (Field field : fields) {
 
@@ -372,22 +370,39 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	/**
 	 * Build a array of super classes fields
 	 * 
-	 * @param entry
-	 * @param onlySuperClasses
 	 * @return Array of Super Classes Fields
 	 */
-	private static Field[] getSuperClassesFields(Object entry, boolean onlySuperClasses) {
+	public static Field[] getSuperClassesFields(Class<?> entryClass) {
 		Field[] fieldArray = null;
-		if (entry != null) {
-			if (!onlySuperClasses)
-				fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entry.getClass().getDeclaredFields());
-			Class<? extends Object> superClazz = entry.getClass().getSuperclass();
-			while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
-				fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());
-				superClazz = superClazz.getSuperclass();
-			}
+		fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entryClass.getDeclaredFields());
+		Class<?> superClazz = entryClass.getSuperclass();
+		while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
+			fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());
+			superClazz = superClazz.getSuperclass();
 		}
 		return fieldArray;
+	}
+
+	/**
+	 * Get annotated value
+	 * 
+	 * @param entry
+	 */
+	public static Object getAnnotatedValue(Object entry, Class<? extends Annotation> aclazz, boolean required) {
+		Field field = getFieldAnnotatedAs(entry.getClass(), aclazz, required);
+		if (field != null)
+			return Reflections.getFieldValue(field, entry);
+		return null;
+	}
+
+	public static Field getFieldAnnotatedAs(Class<?> clazz, Class<? extends Annotation> aclazz, boolean required) {
+		for (Field field : getSuperClassesFields(clazz))
+			if (field.isAnnotationPresent(aclazz))
+				return field;
+		if (required)
+			throw new DemoiselleException("Field with @" + aclazz.getSimpleName() + " not found on class " + clazz.getSimpleName());
+		else
+			return null;
 	}
 
 }
