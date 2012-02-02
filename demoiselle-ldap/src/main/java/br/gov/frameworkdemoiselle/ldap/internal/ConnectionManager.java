@@ -150,7 +150,7 @@ public class ConnectionManager implements Serializable {
 	/**
 	 * Try get a authenticated connection, bind fails silently;
 	 * 
-	 * @return
+	 * @return LDAPConnection instance
 	 */
 	public LDAPConnection initialized() {
 		bind(binddn, bindpw, protocol);
@@ -240,7 +240,7 @@ public class ConnectionManager implements Serializable {
 	 * 
 	 * @param binddn
 	 * @param bindpw
-	 * @return
+	 * @return authentication results
 	 */
 	public boolean authenticate(String binddn, String bindpw, int protocol) {
 		authenticateDnResults = null;

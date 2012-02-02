@@ -56,13 +56,10 @@ public class ConnectionURI implements Serializable {
 	}
 
 	/**
-	 * Returns the security layer at enumeration element: TlsEnum.SSL or
-	 * TlsEnum.TLS or TlsEnum.NONE;
-	 * 
-	 * @return
-	 * @throws URISyntaxException
+	 * Set tls value by URI scheme and starttls option. TlsEnum.SSL for ldaps
+	 * URI scheme, or TlsEnum.TLS if starttls is true, otherwise TlsEnum.NONE;
 	 */
-	private void setUseTLS() throws URISyntaxException {
+	private void setUseTLS() {
 		if ("ldaps".equals(serverURI.getScheme()))
 			useTLS = TlsEnum.SSL;
 		else if (starttls)
@@ -75,48 +72,36 @@ public class ConnectionURI implements Serializable {
 	 * Returns the security layer at enumeration element: TlsEnum.SSL or
 	 * TlsEnum.TLS or TlsEnum.NONE;
 	 * 
-	 * @return
-	 * @throws URISyntaxException
+	 * @return the security layer at TlsEnum enumeration element
 	 */
-	public TlsEnum getTls() throws URISyntaxException {
+	public TlsEnum getTls() {
 		return useTLS;
 	}
 
 	/**
-	 * Returns the host component of this URI;
-	 * 
-	 * @return
-	 * @throws URISyntaxException
+	 * @return the host component of this URI
 	 */
-	public String getHost() throws URISyntaxException {
+	public String getHost() {
 		return serverURI.getHost();
 	}
 
 	/**
-	 * Returns the port number of this URI;
-	 * 
-	 * @return
-	 * @throws URISyntaxException
+	 * @return the port number of this URI
 	 */
-	public Integer getPort() throws URISyntaxException {
+	public Integer getPort() {
 		return serverURI.getPort();
 	}
 
 	/**
-	 * Returns the content of this URI as a String. This string is equivalent to
-	 * the original input constructor string;
-	 * 
-	 * @return
+	 * @return the content of this URI as a String. The original input
+	 *         constructor string
 	 */
 	public String getServerURI() {
 		return serverURI.toString();
 	}
 
 	/**
-	 * Returns the starttls parameter used on constructor;
-	 * 
-	 * @return
-	 * @throws URISyntaxException
+	 * @return starttls parameter used on constructor
 	 */
 	public boolean isStarttls() {
 		return starttls;

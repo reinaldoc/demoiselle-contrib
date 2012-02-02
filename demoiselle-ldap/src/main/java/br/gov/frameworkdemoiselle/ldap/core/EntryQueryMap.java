@@ -267,10 +267,6 @@ public class EntryQueryMap implements Serializable {
 		return null;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public Map<String, Object> getSingleAttributesResult() {
 		Map<String, Object> searchResult = getSingleResult();
 		for (Map.Entry<String, Object> entry : searchResult.entrySet())

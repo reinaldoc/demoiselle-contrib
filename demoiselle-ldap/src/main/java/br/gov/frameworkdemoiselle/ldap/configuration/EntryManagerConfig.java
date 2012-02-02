@@ -125,9 +125,7 @@ public class EntryManagerConfig implements Serializable {
 	}
 
 	/**
-	 * Get EntryManager.search.basedn property;
-	 * 
-	 * @return
+	 * @return EntryManager.search.basedn property;
 	 */
 	public String getBasedn() {
 		return basedn;

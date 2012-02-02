@@ -60,7 +60,7 @@ public class ClazzUtils {
 	}
 
 	/**
-	 * Convert @LDAPEntry annotated object to Map<String, Object>. The valid
+	 * Convert @LDAPEntry annotated object to Map(String, Object). The valid
 	 * types for Object Map value is String, String[] or byte[]
 	 * 
 	 * @param entry
@@ -88,7 +88,6 @@ public class ClazzUtils {
 	 * Process field value of @LDAPEntry annotated class and return a LDAP
 	 * supported object of String, String[] or byte[] types
 	 * 
-	 * @param object
 	 * @return A value to be commited to LDAP as String, String[] or byte[]
 	 */
 	public static Object getObjectAsSupportedType(Object obj) {
@@ -120,7 +119,7 @@ public class ClazzUtils {
 	}
 
 	/**
-	 * Convert a Map<dn, Map<attr, Object>> to @LDAPEntry annotated object
+	 * Convert a Map(dn, Map(attr, Object)) to @LDAPEntry annotated object
 	 * 
 	 * @param entryMap
 	 * @param clazz
@@ -200,10 +199,8 @@ public class ClazzUtils {
 	}
 
 	/**
-	 * Build a super classes List<Class<? extends Object>>
+	 * Build a super classes List(Class(? extends Object))
 	 * 
-	 * @param entry
-	 * @param onlySuperClasses
 	 * @return List of Super Classes
 	 */
 	public static List<Class<? extends Object>> getSuperClasses(Class<?> entryClass) {
@@ -219,8 +216,6 @@ public class ClazzUtils {
 	/**
 	 * Build a array of super classes fields
 	 * 
-	 * @param entry
-	 * @param onlySuperClasses
 	 * @return Array of Super Classes Fields
 	 */
 	public static Field[] getSuperClassesFields(Class<?> entryClass) {
@@ -239,8 +234,8 @@ public class ClazzUtils {
 	 * 
 	 * @param entry
 	 */
-	public static Object getAnnotatedValue(Object entry, Class<? extends Annotation> clazz, boolean required) {
-		Field field = getFieldAnnotatedAs(entry.getClass(), clazz, required);
+	public static Object getAnnotatedValue(Object entry, Class<? extends Annotation> aclazz, boolean required) {
+		Field field = getFieldAnnotatedAs(entry.getClass(), aclazz, required);
 		if (field != null)
 			return Reflections.getFieldValue(field, entry);
 		return null;
@@ -260,7 +255,7 @@ public class ClazzUtils {
 	 * Verify if a POJO have a annotated field, throw EntryException if
 	 * annotation is required and wasn't found.
 	 * 
-	 * @param aclazz
+	 * @param clazz
 	 *            a POJO class to be verified
 	 * @param aclazz
 	 *            a Annotation class to be searched on POJO fields
