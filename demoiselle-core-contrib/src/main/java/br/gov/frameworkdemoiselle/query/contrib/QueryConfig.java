@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.query.contrib;
 
-import java.util.List;
 import java.util.Map;
 
 import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
@@ -98,11 +97,9 @@ public interface QueryConfig<T> {
 	 */
 	void setFirstResult(int firstResult);
 
-	List<String> getSorting();
+	String[] getSorting();
 
-	void setSorting(List<String> attributesName);
-
-	void setSorting(String attributesName);
+	void setSorting(String... attributesName);
 
 	boolean isSortOrder();
 
@@ -123,9 +120,9 @@ public interface QueryConfig<T> {
 	LogicEnum getFilterLogic();
 
 	void setFilterLogic(LogicEnum logicEnum);
-	
+
 	boolean isFilterCaseInsensitive();
-	
+
 	void setFilterCaseInsensitive(boolean insensitive);
 
 }

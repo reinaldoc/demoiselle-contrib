@@ -37,9 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.implementation.contrib;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.inject.Alternative;
@@ -74,7 +72,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private int totalPages;
 
-	private List<String> sorting;
+	private String[] sorting;
 
 	private boolean sortOrder;
 
@@ -95,7 +93,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	private void reset() {
 		currentPage = 0;
 		totalPages = 0;
-		sorting = new ArrayList<String>();
+		sorting = new String[0];
 		sortOrder = true;
 		filters = new HashMap<String, Object>();
 		filtersNotation = NotationEnum.INFIX;
@@ -208,17 +206,11 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		return Strings.toString(this);
 	}
 
-	public List<String> getSorting() {
+	public String[] getSorting() {
 		return sorting;
 	}
 
-	public void setSorting(String attrName) {
-		List<String> attrList = new ArrayList<String>();
-		attrList.add(attrName);
-		this.sorting = attrList;
-	}
-
-	public void setSorting(List<String> sorting) {
+	public void setSorting(String... sorting) {
 		this.sorting = sorting;
 	}
 
