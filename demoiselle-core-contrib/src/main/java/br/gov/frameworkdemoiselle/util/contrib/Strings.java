@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.util.contrib;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
+import br.gov.frameworkdemoiselle.util.Reflections;
 
 public class Strings extends StringUtils {
 
