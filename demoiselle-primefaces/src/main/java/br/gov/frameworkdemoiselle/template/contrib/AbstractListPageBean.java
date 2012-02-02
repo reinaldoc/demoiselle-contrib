@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.template;
+package br.gov.frameworkdemoiselle.template.contrib;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,8 +49,10 @@ import javax.inject.Inject;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import br.gov.frameworkdemoiselle.pagination.Pagination;
-import br.gov.frameworkdemoiselle.pagination.PaginationContext;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
+import br.gov.frameworkdemoiselle.template.AbstractPageBean;
+import br.gov.frameworkdemoiselle.template.ListPageBean;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
@@ -67,34 +69,31 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	private Map<I, Boolean> selection = new HashMap<I, Boolean>();
 
 	@Inject
-	private PaginationContext paginationContext;
+	private QueryContext queryContext;
 
-	protected String lazyDataModelInitialSortAttribute;
+	protected String sortAttribute;
+
+	protected abstract String getSortAttribute();
 
 	private LazyDataModel<T> lazyDataModel = new LazyDataModel<T>() {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public List<T> load(int first, int pageSize, String sortAttribute, SortOrder sortOrder,
-				Map<String, String> filters) {
-			List<T> t = new ArrayList<T>();
-			List<String> sortFieldList = new ArrayList<String>();
+		public List<T> load(int first, int pageSize, String sortAttribute, SortOrder sortOrder, Map<String, String> filters) {
 			if (sortAttribute == null) {
-				sortAttribute = getLazyDataModelInitialSortAttribute();
+				sortAttribute = getSortAttribute();
 			}
-			sortFieldList.add(sortAttribute);
+			QueryConfig<T> queryConfig = getQueryConfig();
+			queryConfig.setFirstResult(first);
+			queryConfig.setPageSize(pageSize);
+			queryConfig.setSorting(sortAttribute);
+			queryConfig.setSortOrder(sortOrder.equals(SortOrder.ASCENDING));
+			queryConfig.setFilterStr(filters);
 
-			Pagination pagination = getPagination();
-			pagination.setFirstResult(first);
-			pagination.setPageSize(pageSize);
-			pagination.setSorting(sortFieldList);
-			pagination.setSortOrder(sortOrder.equals(SortOrder.ASCENDING));
-			pagination.setFilters(filters);
-
-			t = handleResultList();
-
-			this.setRowCount(pagination.getTotalResults());
+			List<T> t = handleResultList();
+			this.setRowCount(queryConfig.getTotalResults());
 			this.setPageSize(pageSize);
+
 			return t;
 		}
 
@@ -155,8 +154,8 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		this.selection = selection;
 	}
 
-	public Pagination getPagination() {
-		return paginationContext.getPagination(getBeanClass(), true);
+	public QueryConfig<T> getQueryConfig() {
+		return queryContext.getQueryConfig(getBeanClass(), true);
 	}
 
 	public void clearSelection() {
@@ -181,14 +180,6 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	public void setLazyDataModel(LazyDataModel<T> lazyDataModel) {
 		this.lazyDataModel = lazyDataModel;
-	}
-
-	public String getLazyDataModelInitialSortAttribute() {
-		return lazyDataModelInitialSortAttribute;
-	}
-
-	public void setLazyDataModelInitialSortAttribute(String lazyDataModelInitialSortAttribute) {
-		this.lazyDataModelInitialSortAttribute = lazyDataModelInitialSortAttribute;
 	}
 
 	public String getResultFilter() {
