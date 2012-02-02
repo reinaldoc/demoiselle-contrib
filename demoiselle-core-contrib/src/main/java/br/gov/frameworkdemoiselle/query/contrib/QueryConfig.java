@@ -110,6 +110,8 @@ public interface QueryConfig<T> {
 
 	Map<String, Object> getFilter();
 
+	void setFilterStr(Map<String, String> filters);
+
 	void setFilter(Map<String, Object> filters);
 
 	void setFilter(T filter);

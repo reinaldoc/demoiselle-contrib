@@ -238,10 +238,18 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		this.filters = filters;
 	}
 
-	public void setFilter(T domain) {
-		
+	public void setFilterStr(Map<String, String> filters) {
+		Map<String, Object> filterMap = new HashMap<String, Object>();
+		if (filters != null)
+			for (Map.Entry<String, String> entry : filters.entrySet())
+				filterMap.put(entry.getKey(), entry.getValue());
+		this.filters = filterMap;
 	}
-	
+
+	public void setFilter(T domain) {
+
+	}
+
 	public NotationEnum getFilterNotation() {
 		return filtersNotation;
 	}
