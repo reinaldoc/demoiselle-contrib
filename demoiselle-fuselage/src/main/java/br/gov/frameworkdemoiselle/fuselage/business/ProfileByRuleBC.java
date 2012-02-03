@@ -24,7 +24,7 @@ public class ProfileByRuleBC extends DelegateCrud<SecurityProfileByRule, Long, P
 		SecurityProfileByRule conditionLoad = new SecurityProfileByRule();
 		conditionLoad.setImplementation(implementation);
 		conditionLoad.setAvailable(1);
-		return getDelegate().findByExample(conditionLoad, true, 0);
+		return getDelegate().find(conditionLoad);
 	}
 
 	public void disable(SecurityProfileByRule securityProfileByRule) {

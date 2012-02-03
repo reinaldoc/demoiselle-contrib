@@ -58,16 +58,17 @@ public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	public List<SecurityUser> findByLogin(String login) {
 		SecurityUser userLoad = new SecurityUser();
 		userLoad.setLogin(login);
-		return getDelegate().findByExample(userLoad, true, 0);
+		return getDelegate().find(userLoad);
 	}
 
-	public List<SecurityUser> findUsers(String query) {
-		SecurityUser userLoad = new SecurityUser();
-		userLoad.setLogin(query);
-		userLoad.setName(query);
-		userLoad.setDescription(query);
-		return getDelegate().findByExample(userLoad, false, 0);
-	}
+//	public List<SecurityUser> findUsers(String query) {
+//		SecurityUser userLoad = new SecurityUser();
+//		userLoad.setLogin(query);
+//		userLoad.setName(query);
+//		userLoad.setDescription(query);
+//		userLoad.getDomainFinder().setConjunction(false);
+//		return getDelegate().find(userLoad);
+//	}
 
 	public void disable(SecurityUser securityUser) {
 		securityUser.setAvailable(0);
