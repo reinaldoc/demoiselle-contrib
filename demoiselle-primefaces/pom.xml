@@ -39,14 +39,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>br.gov.frameworkdemoiselle.component</groupId>
-		<artifactId>demoiselle-component-parent</artifactId>
-		<version>2.0.7</version>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-jsf-parent</artifactId>
+		<version>2.2.1</version>
 	</parent>
 
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-primefaces</artifactId>
-	<version>2.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-primefaces</name>
@@ -65,25 +64,18 @@
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-core-contrib</artifactId>
-			<version>2.2.0</version>
+			<version>2.2.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-jsf-contrib</artifactId>
-			<version>2.2.0</version>
+			<version>2.2.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>${primefaces.version}</version>
-		</dependency>
-
-		<!-- Support Tools -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 		</dependency>
 
 	</dependencies>
