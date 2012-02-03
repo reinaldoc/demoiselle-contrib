@@ -42,9 +42,9 @@ import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
 import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
 
 /**
- * Structure used to handle pagination of data results on both <i>backend</i>
- * (i.e., persistence) and <i>frontend</i> (i.e., presentation) layers in the
- * application.
+ * Structure used to handle query configuration of data results on both
+ * <i>backend</i> (i.e., persistence) and <i>frontend</i> (i.e., presentation)
+ * layers in the application.
  * 
  * @author SERPRO
  */
@@ -124,5 +124,9 @@ public interface QueryConfig<T> {
 	boolean isFilterCaseInsensitive();
 
 	void setFilterCaseInsensitive(boolean insensitive);
+
+	Object getGeneric();
+
+	void setGeneric(Object object);
 
 }

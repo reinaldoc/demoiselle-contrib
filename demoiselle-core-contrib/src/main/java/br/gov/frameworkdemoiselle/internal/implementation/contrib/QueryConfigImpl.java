@@ -76,13 +76,15 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private boolean sortOrder;
 
-	private Map<String, Object> filters;
+	private Map<String, Object> filter;
 
-	private NotationEnum filtersNotation;
+	private NotationEnum filterNotation;
 
-	private LogicEnum filtersLogic;
+	private LogicEnum filterLogic;
 
-	private boolean filtersCaseInsensitive;
+	private boolean filterCaseInsensitive;
+	
+	private Object generic;
 
 	public QueryConfigImpl() {
 		pageSize = 0;
@@ -95,10 +97,10 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		totalPages = 0;
 		sorting = new String[0];
 		sortOrder = true;
-		filters = new HashMap<String, Object>();
-		filtersNotation = NotationEnum.INFIX;
-		filtersLogic = LogicEnum.AND;
-		filtersCaseInsensitive = true;
+		filter = new HashMap<String, Object>();
+		filterNotation = NotationEnum.INFIX;
+		filterLogic = LogicEnum.AND;
+		filterCaseInsensitive = true;
 	}
 
 	public int getCurrentPage() {
@@ -223,11 +225,11 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	}
 
 	public Map<String, Object> getFilter() {
-		return filters;
+		return filter;
 	}
 
 	public void setFilter(Map<String, Object> filters) {
-		this.filters = filters;
+		this.filter = filters;
 	}
 
 	public void setFilterStr(Map<String, String> filters) {
@@ -235,7 +237,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		if (filters != null)
 			for (Map.Entry<String, String> entry : filters.entrySet())
 				filterMap.put(entry.getKey(), entry.getValue());
-		this.filters = filterMap;
+		this.filter = filterMap;
 	}
 
 	public void setFilter(T domain) {
@@ -243,27 +245,35 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	}
 
 	public NotationEnum getFilterNotation() {
-		return filtersNotation;
+		return filterNotation;
 	}
 
 	public void setFilterNotation(NotationEnum filtersNotation) {
-		this.filtersNotation = filtersNotation;
+		this.filterNotation = filtersNotation;
 	}
 
 	public LogicEnum getFilterLogic() {
-		return filtersLogic;
+		return filterLogic;
 	}
 
 	public void setFilterLogic(LogicEnum filtersLogic) {
-		this.filtersLogic = filtersLogic;
+		this.filterLogic = filtersLogic;
 	}
 
 	public boolean isFilterCaseInsensitive() {
-		return filtersCaseInsensitive;
+		return filterCaseInsensitive;
 	}
 
 	public void setFilterCaseInsensitive(boolean filtersCaseInsensitive) {
-		this.filtersCaseInsensitive = filtersCaseInsensitive;
+		this.filterCaseInsensitive = filtersCaseInsensitive;
+	}
+
+	public Object getGeneric() {
+		return generic;
+	}
+
+	public void setGeneric(Object generic) {
+		this.generic = generic;
 	}
 
 }
