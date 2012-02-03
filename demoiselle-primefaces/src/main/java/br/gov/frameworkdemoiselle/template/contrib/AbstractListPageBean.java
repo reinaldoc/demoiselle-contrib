@@ -53,8 +53,8 @@ import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.template.AbstractPageBean;
 import br.gov.frameworkdemoiselle.template.ListPageBean;
-import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 
 public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implements ListPageBean<T, I> {
 

@@ -7,7 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.configuration.LocalAuthenticatorConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
-import br.gov.frameworkdemoiselle.util.Strings;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthenticator> {
 

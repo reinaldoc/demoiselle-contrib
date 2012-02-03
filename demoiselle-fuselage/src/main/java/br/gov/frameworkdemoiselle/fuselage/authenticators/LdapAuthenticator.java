@@ -9,7 +9,7 @@ import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.configuration.LdapAuthenticatorConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
-import br.gov.frameworkdemoiselle.util.Strings;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 public class LdapAuthenticator extends AbstractAuthenticatorModule<LdapAuthenticator> {
 
