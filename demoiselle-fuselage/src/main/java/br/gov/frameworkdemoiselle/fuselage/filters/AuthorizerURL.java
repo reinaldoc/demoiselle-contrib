@@ -49,7 +49,7 @@ public class AuthorizerURL implements Filter {
 		this.request = (HttpServletRequest) request;
 		String url = this.request.getRequestURI().replaceAll("^/.+?/", "/");
 
-		List<String> publicurls = securityContext.getPublicResources("public_url_startswith");
+		List<String> publicurls = getPublicUrls("public_url_startswith");
 		if (publicurls != null) {
 			for (String publicurl : publicurls) {
 				if (url.startsWith(publicurl)) {
@@ -60,7 +60,7 @@ public class AuthorizerURL implements Filter {
 			}
 		}
 
-		if (securityContext.getPublicResources("public_url").contains(url) || url.equals(config.getLoginPage())) {
+		if (getPublicUrls("public_url").contains(url) || url.equals(config.getLoginPage())) {
 			info("permitted by public resource", url);
 			chain.doFilter(request, response);
 			return;
@@ -94,6 +94,23 @@ public class AuthorizerURL implements Filter {
 		try {
 			if (securityContext.isLoggedIn())
 				return ((SecurityUser) securityContext.getUser().getAttribute("user")).getLogin();
+		} catch (Exception e) {
+			// Ignore
+		}
+		return null;
+	}
+
+	/**
+	 * Only resources "public_url_startswith" and "public_url" are available;
+	 * 
+	 * @param resourceName
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> getPublicUrls(String resourceName) {
+		try {
+			if (securityContext.isLoggedIn())
+				return ((List<String>) securityContext.getUser().getAttribute(resourceName));
 		} catch (Exception e) {
 			// Ignore
 		}

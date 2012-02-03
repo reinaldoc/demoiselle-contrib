@@ -1,5 +1,6 @@
 package br.gov.frameworkdemoiselle.fuselage.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.fuselage.authenticators.AuthenticatorModule;
 import br.gov.frameworkdemoiselle.fuselage.authenticators.AuthenticatorResults;
 import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
+import br.gov.frameworkdemoiselle.fuselage.business.ResourceBC;
 import br.gov.frameworkdemoiselle.fuselage.configuration.AuthenticatorConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
@@ -21,6 +23,7 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -47,6 +50,12 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 	@Inject
 	private ProfileByRuleBC profileDetectBC;
 
+	@Inject
+	private ResourceBC resourceBC;
+
+	@Inject
+	private QueryContext queryContext;
+
 	@Override
 	public void unAuthenticate() {
 		user = null;
@@ -67,6 +76,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			user.setAttribute("user", authResults.getSecurityUser());
 			user.setId(authResults.getSecurityUser().getName());
 			setUserPermissions(authResults.getSecurityUser());
+			setPublicResources();
 			return true;
 		}
 		return false;
@@ -217,6 +227,27 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 							user.setAttribute("welcome_page", profile.getWelcomePage().getValue());
 						}
 		}
+	}
+
+	private void setPublicResources() {
+		List<String> publicUrl = new ArrayList<String>();
+		List<SecurityResource> resources = findResourceByName("public_url");
+		for (SecurityResource resource : resources)
+			publicUrl.add(resource.getValue());
+		user.setAttribute("public_url", publicUrl);
+		
+		List<String> publicUrlStartsWith = new ArrayList<String>();
+		resources = findResourceByName("public_url_startswith");
+		for (SecurityResource resource : resources)
+			publicUrlStartsWith.add(resource.getValue());
+		user.setAttribute("public_url_startswith", publicUrlStartsWith);
+
+	}
+
+	private List<SecurityResource> findResourceByName(String resourceName) {
+		queryContext.getQueryConfig(SecurityResource.class, true).getFilter().put("name", resourceName);
+		queryContext.getQueryConfig(SecurityResource.class).setPageSize(0);
+		return resourceBC.findAll();
 	}
 
 }
