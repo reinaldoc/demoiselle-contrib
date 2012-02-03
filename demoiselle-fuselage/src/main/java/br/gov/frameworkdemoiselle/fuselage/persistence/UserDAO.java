@@ -2,7 +2,7 @@ package br.gov.frameworkdemoiselle.fuselage.persistence;
 
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
-import br.gov.frameworkdemoiselle.template.JPACrud;
+import br.gov.frameworkdemoiselle.template.contrib.JPACrud;
 
 @PersistenceController
 public class UserDAO extends JPACrud<SecurityUser, Long> {

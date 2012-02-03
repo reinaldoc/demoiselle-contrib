@@ -6,7 +6,7 @@ import javax.persistence.Query;
 
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
-import br.gov.frameworkdemoiselle.template.JPACrud;
+import br.gov.frameworkdemoiselle.template.contrib.JPACrud;
 
 @PersistenceController
 public class ProfileDAO extends JPACrud<SecurityProfile, Long> {

@@ -7,7 +7,7 @@ import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.util.Strings;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @Named
 public class ProxyMB implements Serializable {

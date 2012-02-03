@@ -7,6 +7,7 @@ import br.gov.frameworkdemoiselle.template.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
 public class ResourceBC extends DelegateCrud<SecurityResource, Long, ResourceDAO> {
+
 	private static final long serialVersionUID = 1L;
 
 	@Transactional
