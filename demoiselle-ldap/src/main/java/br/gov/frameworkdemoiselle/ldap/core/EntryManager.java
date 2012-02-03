@@ -16,7 +16,6 @@
 package br.gov.frameworkdemoiselle.ldap.core;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
@@ -243,8 +242,8 @@ public class EntryManager implements Serializable {
 	/**
 	 * Persist a @LDAPEntry annotated object. Use LDAP Add Operation
 	 * 
-	 * @param a
-	 * @LDAPEntry annotated object
+	 * @param entry
+	 *            a entry annotated with LDAPEntry
 	 * @throws EntryException
 	 */
 	public void persist(Object entry) {
@@ -256,8 +255,8 @@ public class EntryManager implements Serializable {
 	 * remain in DSA. Not null attributes will be replaced. Use LDAP Modify
 	 * Operation.
 	 * 
-	 * @param a
-	 * @LDAPEntry annotated object
+	 * @param entry
+	 *            a entry annotated with LDAPEntry
 	 * @throws EntryException
 	 */
 	public void merge(Object entry) {
@@ -269,8 +268,10 @@ public class EntryManager implements Serializable {
 	 * removed from DSA. Not null attributes will be replaced. You must declare
 	 * all required attributes. Use LDAP Modify Operation
 	 * 
-	 * @param a
-	 * @LDAPEntry annotated object
+	 * @param oldEntry
+	 *            the current entry annotated with LDAPEntry
+	 * @param entry
+	 *            entry annotated with LDAPEntry with values to update
 	 * @throws EntryException
 	 */
 	public void update(Object oldEntry, Object entry) {
@@ -280,8 +281,8 @@ public class EntryManager implements Serializable {
 	/**
 	 * Remove a @LDAPEntry annotated object. Use LDAP Del Operation
 	 * 
-	 * @param a
-	 * @LDAPEntry annotated object
+	 * @param entry
+	 *            a entry annotated with LDAPEntry
 	 * @throws EntryException
 	 */
 	public void remove(Object entry) {
@@ -293,8 +294,8 @@ public class EntryManager implements Serializable {
 	 * 
 	 * @param entryClass
 	 *            a entry class
-	 * @param searchFilter
-	 *            String Representation of Search Filters (RFC 4515)
+	 * @param id
+	 *            find a entry with @id attribute equals to id value
 	 * @return a entry object
 	 */
 	public <T> T find(Class<T> entryClass, Object id) {
@@ -306,8 +307,8 @@ public class EntryManager implements Serializable {
 	 * 
 	 * @param entryClass
 	 *            a entry class
-	 * @param dn
-	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @param id
+	 *            find a entry with @id attribute equals to id value
 	 * @return a entry object
 	 */
 	public <T> T getReference(Class<T> entryClass, Object id) {
@@ -315,43 +316,10 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
-	 * Create a query based on not null attributes values of a entry.
-	 * 
-	 * @param entry
-	 * @param isDisjunction
-	 * @return
-	 */
-	public <T> List<T> findByExample(T entry, boolean isConjunction, int maxResult) {
-		return query.findByExample(entry, isConjunction, maxResult);
-	}
-
-	/**
-	 * Create a query based on not null attributes values of a entry.
-	 * 
-	 * @param entry
-	 * @param isDisjunction
-	 * @return
-	 */
-	public <T> List<T> findByExample(T entry, boolean isConjunction) {
-		return query.findByExample(entry, isConjunction);
-	}
-
-	/**
-	 * Create a query based on not null attributes values of a entry.
-	 * 
-	 * @param entry
-	 * @param isDisjunction
-	 * @return
-	 */
-	public <T> List<T> findByExample(T entry) {
-		return query.findByExample(entry, true);
-	}
-
-	/**
 	 * Create an instance of EntryQuery for executing a String Representation of
 	 * Search Filters (RFC 4515) and returns Objects
 	 * 
-	 * @param ldapSearchFilter
+	 * @param searchFilter
 	 *            LDAP Search Filter String (RFC 4515)
 	 * @return the new entry query instance
 	 */
@@ -364,7 +332,7 @@ public class EntryManager implements Serializable {
 	 * Create an instance of EntryQueryMap for executing a String Representation
 	 * of Search Filters (RFC 4515) and returns HashMaps
 	 * 
-	 * @param ldapSearchFilter
+	 * @param searchFilter
 	 *            LDAP Search Filter String (RFC 4515)
 	 * @return the new entry query instance
 	 */

@@ -38,11 +38,17 @@
 package br.gov.frameworkdemoiselle.ldap.template;
 
 import java.util.List;
+import java.util.Map;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.template.Crud;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
@@ -63,6 +69,11 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	@Inject
 	private EntryManager entryManager;
 
+	@Inject
+	private Instance<QueryContext> queryContext;
+
+	private QueryConfig<T> queryConfig;
+
 	private Class<T> beanClass;
 
 	protected Class<T> getBeanClass() {
@@ -78,6 +89,14 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 
 	protected EntryQuery createQuery(final String ql) {
 		return getEntryManager().createQuery(ql);
+	}
+
+	protected QueryConfig<T> getQueryConfig() {
+		if (queryConfig == null) {
+			QueryContext context = queryContext.get();
+			queryConfig = context.getQueryConfig(getBeanClass());
+		}
+		return queryConfig;
 	}
 
 	public void insert(final T entity) {
@@ -99,11 +118,125 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 
 	@SuppressWarnings("unchecked")
 	public List<T> findAll() {
-		return getEntryManager().createQuery("objectClass=" + getBeanClass().getSimpleName()).getResultList();
+		String filter = "objectClass=" + getBeanClass().getSimpleName();
+
+		final QueryConfig<T> queryConfig = this.getQueryConfig();
+		if (queryConfig != null)
+			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
+				filter = getFilter(getBeanClass(), queryConfig.getFilter(), queryConfig.getFilterLogic(), queryConfig.getFilterNotation());
+
+		EntryQuery query = getEntryManager().createQuery(filter);
+
+		if (queryConfig != null) {
+			// TODO: implement pagination with LDAP Asynchronous Query
+			// queryConfig.setTotalResults(countAll(queryConfig));
+			if (queryConfig.getPageSize() > 0) {
+				// query.setFirstResult(queryConfig.getFirstResult());
+				query.setBaseDN((String) queryConfig.getGeneric());
+				query.setMaxResults(queryConfig.getPageSize());
+			}
+		}
+
+		return query.getResultList();
 	}
 
-	public List<T> findByExample(T example, boolean isConjunction, int maxResult) {
-		return getEntryManager().findByExample(example, isConjunction, maxResult);
+	/**
+	 * Create a filter like
+	 * "(&(objectClass=className)(attribute1=value1)(attribute2=value2))" or
+	 * "(&(objectClass=className)(|(attribute1=value1)(attribute2=value2)))"
+	 * 
+	 * @param clazz
+	 *            a class with objectClass as name
+	 * @param map
+	 *            a map with attributes as key and attributes values as Object.
+	 *            Object can be null for "(attribute=*)", or a .toString capable
+	 *            object like Integer or Long for "(attribute=value)", or can be
+	 *            a array, for "(attribute=value1)(attribute=value2)"
+	 * @param logic
+	 *            if AND or OR result "(attribute=value)", otherwise is NAND or
+	 *            NOR that means "(!(attribute=value))"
+	 * @param notation
+	 *            if INFIX result "(attribute=*value*)", else if PREFIX
+	 *            "(attribute=value*)", else if POSTFIX "(attribute=value*)",
+	 *            otherwise is EXACT "(attribute=value)"
+	 * @return a filter like
+	 *         "(&(objectClass=className)(attribute1=value1)(attribute2=value2))"
+	 *         or
+	 *         "(&(objectClass=className)(|(attribute1=value1)(attribute2=value2)))"
+	 */
+	public static String getFilter(Class<?> clazz, Map<String, Object> map, LogicEnum logic, NotationEnum notation) {
+		if (logic == LogicEnum.AND || logic == LogicEnum.NAND)
+			return "(&(objectClass=" + clazz.getSimpleName() + ")" + getPartialFilter(map, logic, notation) + ")";
+		else
+			return "(&(objectClass=" + clazz.getSimpleName() + ")(|" + getPartialFilter(map, logic, notation) + "))";
+	}
+
+	/**
+	 * Create a partial filter like "(attribute1=value1)(attribute2=value2)" or
+	 * "(!(attribute1=value1))(!(attribute2=value2))".
+	 * 
+	 * @param map
+	 *            a map with attributes as key and attributes values as Object.
+	 *            Object can be null for "(attribute=*)", or a .toString capable
+	 *            object like Integer or Long for "(attribute=value)", or can be
+	 *            a array, for "(attribute=value1)(attribute=value2)"
+	 * @param logic
+	 *            if AND or OR result "(attribute=value)", otherwise is NAND or
+	 *            NOR that means "(!(attribute=value))"
+	 * @param notation
+	 *            if INFIX result "(attribute=*value*)", else if PREFIX
+	 *            "(attribute=value*)", else if POSTFIX "(attribute=value*)",
+	 *            otherwise is EXACT "(attribute=value)"
+	 * @return a partial filter like "(attribute1=value1)(attribute2=value2)" or
+	 *         "(!(attribute1=value1))(!(attribute2=value2))".
+	 */
+	public static String getPartialFilter(Map<String, Object> map, LogicEnum logic, NotationEnum notation) {
+		String partialFilter = "";
+		for (Map.Entry<String, Object> mapEntry : map.entrySet())
+			if (mapEntry.getValue() == null || !mapEntry.getValue().getClass().isArray())
+				partialFilter = partialFilter + getPartialFilterElement(mapEntry.getKey(), mapEntry.getValue(), logic, notation);
+			else
+				for (Object value : (Object[]) mapEntry.getValue())
+					partialFilter = partialFilter + getPartialFilterElement(mapEntry.getKey(), value, logic, notation);
+		return partialFilter;
+	}
+
+	/**
+	 * Create a partial filter element like "(attribute=value)" or
+	 * "(!(attribute=value))"
+	 * 
+	 * @param attr
+	 *            attribute name
+	 * @param value
+	 *            attribute value
+	 * @param logic
+	 *            if AND or OR result "(attribute=value)", otherwise is NAND or
+	 *            NOR that means "(!(attribute=value))"
+	 * @param notation
+	 *            if INFIX result "(attribute=*value*)", else if PREFIX
+	 *            "(attribute=value*)", else if POSTFIX "(attribute=value*)",
+	 *            otherwise is EXACT "(attribute=value)"
+	 * @return a partial filter element like "(attribute=*value*)" or
+	 *         "(!(attribute=value))"
+	 */
+	public static String getPartialFilterElement(String attr, Object value, LogicEnum logic, NotationEnum notation) {
+		String partialFilter;
+
+		if (value == null)
+			partialFilter = "(" + attr + "=*)";
+		else if (notation == NotationEnum.INFIX)
+			partialFilter = "(" + attr + "=*" + value + "*)";
+		else if (notation == NotationEnum.PREFIX)
+			partialFilter = "(" + attr + "=" + value + "*)";
+		else if (notation == NotationEnum.POSTFIX)
+			partialFilter = "(" + attr + "=*" + value + ")";
+		else
+			partialFilter = "(" + attr + "=" + value + ")";
+
+		if (logic == LogicEnum.NAND || logic == LogicEnum.NOR)
+			partialFilter = "(!" + partialFilter + ")";
+
+		return partialFilter;
 	}
 
 }

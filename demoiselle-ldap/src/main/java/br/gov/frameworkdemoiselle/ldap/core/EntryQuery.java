@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -39,26 +38,29 @@ public class EntryQuery implements Serializable {
 
 	private String searchFilter;
 
-	private int maxResults;
+	private int maxResults = 0;
 
-	@PostConstruct
+	private String baseDN = null;
+
 	public void init() {
 		queryMap.init();
+		queryMap.setDnAsAttibute(false);
 		queryMap.setSearchFilter(searchFilter);
-		queryMap.setMaxResults(maxResults);
+		if (maxResults != 0)
+			queryMap.setMaxResults(maxResults);
+		if (baseDN != null)
+			queryMap.setBaseDn(baseDN);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public List getResultList() {
 		init();
-		queryMap.setDnAsAttibute(false);
 		return ClazzUtils.getEntryObjectList(queryMap.getResult(),
 				ClazzUtils.getRequiredClassForSearchFilter(searchFilter, entryManagerConfig.getLdapentryPackages()));
 	}
 
 	public Object getSingleResult() {
 		init();
-		queryMap.setDnAsAttibute(false);
 		queryMap.setMaxResults(2);
 		Map<String, Map<String, Object>> map = queryMap.getResult();
 		if (map.size() == 1)
@@ -67,52 +69,16 @@ public class EntryQuery implements Serializable {
 		return null;
 	}
 
-	public String getPartialFilter(String attr, String value, boolean isConjunction) {
-		if (isConjunction)
-			return "(" + attr + "=" + value + ")";
-		else
-			return "(" + attr + "=*" + value + "*)";
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> List<T> findByExample(T entry, boolean isConjunction, int maxResult) {
-		try {
-			Map<String, Object> map = ClazzUtils.getObjectMap(entry);
-
-			String filter = "";
-			for (Map.Entry<String, Object> mapEntry : map.entrySet())
-				if (mapEntry.getValue() instanceof String)
-					filter = filter + getPartialFilter(mapEntry.getKey(), (String) mapEntry.getValue(), isConjunction);
-				else if (mapEntry.getValue() instanceof String[])
-					for (String value : (String[]) mapEntry.getValue())
-						filter = filter + getPartialFilter(mapEntry.getKey(), value, isConjunction);
-
-			if (filter.isEmpty())
-				return null;
-
-			if (isConjunction)
-				setSearchFilter("(&(objectClass=" + entry.getClass().getSimpleName() + ")(&" + filter + "))");
-			else
-				setSearchFilter("(&(objectClass=" + entry.getClass().getSimpleName() + ")(|" + filter + "))");
-
-			setMaxResults(maxResult);
-			return getResultList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public <T> List<T> findByExample(T entry, boolean isConjunction) {
-		return findByExample(entry, isConjunction, entryManagerConfig.getFindByExampleMaxresult());
-	}
-
 	public void setMaxResults(int maxResult) {
 		this.maxResults = maxResult;
 	}
 
 	public void setSearchFilter(String searchFilter) {
 		this.searchFilter = searchFilter;
+	}
+
+	public void setBaseDN(String baseDN) {
+		this.baseDN = baseDN;
 	}
 
 }
