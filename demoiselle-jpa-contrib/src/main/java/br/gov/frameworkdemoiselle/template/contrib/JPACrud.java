@@ -39,8 +39,8 @@ package br.gov.frameworkdemoiselle.template.contrib;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -98,16 +98,16 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	@Name("demoiselle-jpa-bundle")
 	private Instance<ResourceBundle> bundle;
 
-	private CriteriaBuilder cBuilder;
+	protected CriteriaBuilder cBuilder = null;
+
+	protected Root<T> cRoot = null;
 
 	private Class<T> beanClass;
 
 	protected Class<T> getBeanClass() {
-
 		if (this.beanClass == null) {
 			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
 		}
-
 		return this.beanClass;
 	}
 
@@ -169,87 +169,105 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return getEntityManager().find(getBeanClass(), id);
 	}
 
-	private List<Order> createSort(Root<T> criteriaEntity, QueryConfig<T> queryConfig) {
+	private Order[] getOrder() {
 		List<Order> orderList = new ArrayList<Order>();
 		for (String sortAtrr : queryConfig.getSorting())
 			if (sortAtrr != null)
 				if (queryConfig.isSortOrder())
-					orderList.add(this.cBuilder.asc(criteriaEntity.get(sortAtrr)));
+					orderList.add(this.cBuilder.asc(this.cRoot.get(sortAtrr)));
 				else
-					orderList.add(this.cBuilder.desc(criteriaEntity.get(sortAtrr)));
-		return orderList;
+					orderList.add(this.cBuilder.desc(this.cRoot.get(sortAtrr)));
+		return orderList.toArray(new Order[] {});
 	}
 
-	private String createNotationString(String entityAttrValue, NotationEnum notationEnum) {
+	private String getNotationString(String entityAttrValue) {
 		if (entityAttrValue == null) {
 			return "";
-		} else if (notationEnum == NotationEnum.INFIX) {
+		} else if (queryConfig.getFilterNotation() == NotationEnum.INFIX) {
 			return "%" + entityAttrValue + "%";
-		} else if (notationEnum == NotationEnum.PREFIX) {
+		} else if (queryConfig.getFilterNotation() == NotationEnum.PREFIX) {
 			return entityAttrValue + "%";
-		} else if (notationEnum == NotationEnum.POSTFIX) {
+		} else if (queryConfig.getFilterNotation() == NotationEnum.POSTFIX) {
 			return "%" + entityAttrValue;
 		}
 		return entityAttrValue;
 	}
 
-	private Predicate createWhere(Root<T> criteriaEntity, QueryConfig<T> queryConfig) {
-		Iterator<String> filtersIter = queryConfig.getFilter().keySet().iterator();
+	protected Predicate getPredicateForString(Expression<String> attr, String value) {
+		if (queryConfig.isFilterCaseInsensitive()) {
+			attr = this.cBuilder.lower(attr);
+			value = value.toLowerCase();
+		}
+		if (queryConfig.getFilterLogic() == LogicEnum.AND || queryConfig.getFilterLogic() == LogicEnum.OR)
+			return this.cBuilder.like(attr, getNotationString(value));
+		else
+			return this.cBuilder.notLike(attr, getNotationString(value));
+	}
+
+	protected Predicate getPredicateAsString(Expression<String> attr, Object value) {
+		if (queryConfig.getFilterLogic() == LogicEnum.AND || queryConfig.getFilterLogic() == LogicEnum.OR)
+			return this.cBuilder.equal(attr, value);
+		else
+			return this.cBuilder.notEqual(attr, value);
+	}
+
+	protected Expression<String> getAttributeExpression(Root<T> criteriaEntity, String attributeName) {
+		// TODO: made generic to support any navigation level
+		// GambiModeOn to support 4 level entity navigation
+		String[] attrNameList = attributeName.split("\\.");
+		if (attrNameList.length == 4)
+			return criteriaEntity.get(attrNameList[0]).get(attrNameList[1]).get(attrNameList[2]).get(attrNameList[3]);
+		else if (attrNameList.length == 3)
+			return criteriaEntity.get(attrNameList[0]).get(attrNameList[1]).get(attrNameList[2]);
+		else if (attrNameList.length == 2)
+			return criteriaEntity.get(attrNameList[0]).get(attrNameList[1]);
+		else
+			return criteriaEntity.get(attributeName);
+		// GambiModeOff
+	}
+
+	private Predicate getWhere() {
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
-		while (filtersIter.hasNext()) {
-			String entityAttr = filtersIter.next();
-			if (entityAttr == null) {
+		for (Map.Entry<String, Object> entry : queryConfig.getFilter().entrySet()) {
+			String entityAttr = entry.getKey();
+			if (entityAttr == null)
 				continue;
-			}
+			Object entityAttrValue = queryConfig.getFilter().get(entityAttr);
+			if (entityAttrValue == null)
+				continue;
 
-			// GambiModeOn to support entity navigation
-			String[] pathList = entityAttr.split("\\.");
-			Expression<String> expEntityAttr = null;
-			if (pathList.length == 4) {
-				expEntityAttr = criteriaEntity.get(pathList[0]).get(pathList[1]).get(pathList[2]).get(pathList[3]);
-			} else if (pathList.length == 3) {
-				expEntityAttr = criteriaEntity.get(pathList[0]).get(pathList[1]).get(pathList[2]);
-			} else if (pathList.length == 2) {
-				expEntityAttr = criteriaEntity.get(pathList[0]).get(pathList[1]);
-			} else {
-				expEntityAttr = criteriaEntity.get(entityAttr);
-			}
-			// GambiModeOff
-			// Expression<String> expEntityAttr =
-			// criteriaEntity.get(entityAttr);
-			String entityAttrValue = (String) queryConfig.getFilter().get(entityAttr);
-			if (entityAttrValue == null) {
-				entityAttrValue = "";
-			}
-			if (queryConfig.isFilterCaseInsensitive()) {
-				expEntityAttr = this.cBuilder.lower(expEntityAttr);
-				entityAttrValue = entityAttrValue.toLowerCase();
-			}
-			predicates.add(this.cBuilder.like(expEntityAttr, createNotationString(entityAttrValue, queryConfig.getFilterNotation())));
+			if (entityAttrValue instanceof String)
+				predicates.add(getPredicateForString(getAttributeExpression(this.cRoot, entityAttr), (String) entityAttrValue));
+			else if (entityAttrValue.getClass().isArray())
+				for (Object value : (Object[]) entityAttrValue)
+					if (value instanceof String)
+						predicates.add(getPredicateForString(getAttributeExpression(this.cRoot, entityAttr), (String) value));
+					else
+						predicates.add(getPredicateAsString(getAttributeExpression(this.cRoot, entityAttr), value));
+			else
+				predicates.add(getPredicateAsString(getAttributeExpression(this.cRoot, entityAttr), entityAttrValue));
+
 		}
-		if (queryConfig.getFilterLogic() == LogicEnum.OR) {
+
+		if (queryConfig.getFilterLogic() == LogicEnum.OR || queryConfig.getFilterLogic() == LogicEnum.NOR)
 			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
-		} else {
+		else
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
-		}
 	}
 
 	@Override
 	public List<T> findAll() {
 		this.cBuilder = getCriteriaBuilder();
 		CriteriaQuery<T> criteria = this.cBuilder.createQuery(getBeanClass());
-		Root<T> criteriaEntity = criteria.from(getBeanClass());
+		this.cRoot = criteria.from(getBeanClass());
 
-		final QueryConfig<T> queryConfig = this.getQueryConfig();
+		final QueryConfig<T> queryConfig = getQueryConfig();
 		if (queryConfig != null) {
-			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty()) {
-				criteria.where(createWhere(criteriaEntity, queryConfig));
-			}
-			if (queryConfig.getSorting() != null && queryConfig.getSorting().length != 0) {
-				List<Order> orderList = createSort(criteriaEntity, queryConfig);
-				criteria.orderBy(orderList.toArray(new Order[] {}));
-			}
+			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
+				criteria.where(getWhere());
+			if (queryConfig.getSorting() != null && queryConfig.getSorting().length != 0)
+				criteria.orderBy(getOrder());
 		}
 
 		TypedQuery<T> query = getEntityManager().createQuery(criteria);
@@ -262,8 +280,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			}
 		}
 
-		List<T> resultList = query.getResultList();
-		return resultList;
+		return query.getResultList();
 	}
 
 	/**
@@ -273,15 +290,12 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 */
 	private int countAll(QueryConfig<T> queryConfig) {
 		CriteriaQuery<Long> criteria = this.cBuilder.createQuery(Long.class);
-		Root<T> criteriaEntity = criteria.from(getBeanClass());
-		criteria.select(this.cBuilder.count(criteriaEntity));
+		criteria.select(this.cBuilder.count(this.cRoot));
 
-		if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty()) {
-			criteria.where(createWhere(criteriaEntity, queryConfig));
-		}
+		if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
+			criteria.where(getWhere());
 
-		Long count = getEntityManager().createQuery(criteria).getSingleResult();
-		return count.intValue();
+		return getEntityManager().createQuery(criteria).getSingleResult().intValue();
 	}
 
 	/**
