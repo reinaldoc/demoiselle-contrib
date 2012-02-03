@@ -13,8 +13,8 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
-import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
-import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.template.contrib.AbstractEditPageBean;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 
 @ViewController
 public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByRule, Long> {
@@ -32,10 +32,10 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 		try {
 			getBean().setAvailable(1);
 			bc.insert(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.insert.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profilerule.insert.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.insert.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profilerule.insert.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -44,11 +44,11 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	public String update() {
 		try {
 			bc.update(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.update.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profilerule.update.success", getBean().getName());
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.update.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profilerule.update.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -57,10 +57,10 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	public String delete() {
 		try {
 			bc.delete(getBean().getId());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.delete.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profilerule.delete.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.delete.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profilerule.delete.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -71,7 +71,7 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 			return bc.load(id);
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.load.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profilerule.load.failed", SeverityType.ERROR);
 		}
 		return new SecurityProfileByRule();
 	}
@@ -79,10 +79,10 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	public String disable() {
 		try {
 			bc.disable(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.disable.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profilerule.disable.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.disable.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profilerule.disable.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -90,10 +90,10 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	public String enable() {
 		try {
 			bc.enable(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.enable.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profilerule.enable.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profilerule.enable.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profilerule.enable.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -114,7 +114,7 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 			return bc.getProfiles();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityProfile>();
 	}

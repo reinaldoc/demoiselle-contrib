@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
@@ -12,9 +11,9 @@ import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
-import br.gov.frameworkdemoiselle.template.AbstractListPageBean;
+import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 
 @ViewController
 public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByRule, Long> {
@@ -26,9 +25,8 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 	@Inject
 	private ProfileByRuleBC bc;
 
-	@PostConstruct
-	public void init() {
-		setLazyDataModelInitialSortAttribute("name");
+	public String getSortAttribute() {
+		return "name";
 	}
 
 	@Override
@@ -37,7 +35,7 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityProfileByRule>();
 	}
@@ -49,7 +47,7 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 			clearSelection();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return null;
 	}

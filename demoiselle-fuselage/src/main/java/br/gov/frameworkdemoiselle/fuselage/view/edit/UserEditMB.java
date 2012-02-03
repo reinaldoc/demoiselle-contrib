@@ -11,9 +11,9 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
-import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
-import br.gov.frameworkdemoiselle.util.Faces;
-import br.gov.frameworkdemoiselle.util.Strings;
+import br.gov.frameworkdemoiselle.template.contrib.AbstractEditPageBean;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @ViewController
 public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
@@ -28,22 +28,22 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 		try {
 			if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().length() < 8) {
 				Faces.validationFailed();
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notstrong"));
+				Faces.addI18nMessage("fuselage.user.password.notstrong");
 				return null;
 			}
 			if (!bc.userAvailable(getBean().getLogin())) {
 				Faces.validationFailed();
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.available.unavailable", getBean().getLogin()));
+				Faces.addI18nMessage("fuselage.user.available.unavailable", getBean().getLogin());
 				return null;
 			}
 			if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
 				Faces.validationFailed();
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notmatch"));
+				Faces.addI18nMessage("fuselage.user.password.notmatch");
 				return null;
 			}
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.available.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.available.failed", SeverityType.ERROR);
 			return null;
 		}
 
@@ -51,10 +51,10 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 
 		try {
 			bc.insert(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.insert.success", getBean().getLogin()));
+			Faces.addI18nMessage("fuselage.user.insert.success", getBean().getLogin());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.insert.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.insert.failed", SeverityType.ERROR);
 		}
 
 		return null;
@@ -68,25 +68,25 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 				getBean().setPassword(securityUser.getPassword());
 			} else if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().length() < 8) {
 				Faces.validationFailed();
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notstrong"));
+				Faces.addI18nMessage("fuselage.user.password.notstrong");
 				return null;
 			} else if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
 				Faces.validationFailed();
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.password.notmatch"));
+				Faces.addI18nMessage("fuselage.user.password.notmatch");
 				return null;
 			}
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.update.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.update.failed", SeverityType.ERROR);
 			return null;
 		}
 
 		try {
 			bc.update(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.update.success", getBean().getLogin()));
+			Faces.addI18nMessage("fuselage.user.update.success", getBean().getLogin());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.update.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.update.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -95,10 +95,10 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 	public String delete() {
 		try {
 			bc.delete(getBean().getId());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.delete.success", getBean().getLogin()));
+			Faces.addI18nMessage("fuselage.user.delete.success", getBean().getLogin());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.delete.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.delete.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -106,10 +106,10 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 	public String disable() {
 		try {
 			bc.disable(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.disable.success", getBean().getLogin()));
+			Faces.addI18nMessage("fuselage.user.disable.success", getBean().getLogin());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.disable.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.disable.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -117,10 +117,10 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 	public String enable() {
 		try {
 			bc.enable(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.enable.success", getBean().getLogin()));
+			Faces.addI18nMessage("fuselage.user.enable.success", getBean().getLogin());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.enable.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.enable.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -128,14 +128,14 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 	public String userAvailable() {
 		try {
 			if (bc.userAvailable(getBean().getLogin()))
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.available.success", getBean().getLogin()));
+				Faces.addI18nMessage("fuselage.user.available.success", getBean().getLogin());
 			else {
 				Faces.validationFailed();
-				Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.available.unavailable", getBean().getLogin()));
+				Faces.addI18nMessage("fuselage.user.available.unavailable", getBean().getLogin());
 			}
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.available.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.available.failed", SeverityType.ERROR);
 		}
 
 		return null;
@@ -147,7 +147,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 			return bc.load(id);
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.user.load.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.user.load.failed", SeverityType.ERROR);
 		}
 		return new SecurityUser();
 	}
@@ -162,7 +162,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 			return bc.getProfiles();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityProfile>();
 	}

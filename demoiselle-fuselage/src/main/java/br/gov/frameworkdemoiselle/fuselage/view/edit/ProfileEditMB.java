@@ -12,8 +12,8 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
-import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
-import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.template.contrib.AbstractEditPageBean;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 
 @ViewController
 public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
@@ -27,10 +27,10 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	public String insert() {
 		try {
 			bc.insert(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.insert.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profile.insert.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.insert.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profile.insert.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -39,10 +39,10 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	public String update() {
 		try {
 			bc.update(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.update.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profile.update.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.update.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profile.update.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -51,10 +51,10 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	public String delete() {
 		try {
 			bc.delete(getBean().getId());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.delete.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.profile.delete.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.delete.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profile.delete.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -65,7 +65,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 			return bc.load(id);
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.profile.load.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.profile.load.failed", SeverityType.ERROR);
 		}
 		return new SecurityProfile();
 	}
@@ -79,7 +79,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 					priorities.add(new Long(i));
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return priorities;
 	}
@@ -94,7 +94,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 			return bc.getResources();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityResource>();
 	}
@@ -109,7 +109,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 			return bc.getRoles();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityRole>();
 	}

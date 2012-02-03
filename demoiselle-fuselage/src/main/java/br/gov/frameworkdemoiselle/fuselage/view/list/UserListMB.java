@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.message.SeverityType;
@@ -15,11 +15,11 @@ import br.gov.frameworkdemoiselle.report.Report;
 import br.gov.frameworkdemoiselle.report.Type;
 import br.gov.frameworkdemoiselle.report.annotation.Path;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
-import br.gov.frameworkdemoiselle.template.AbstractListPageBean;
+import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.FileRenderer;
-import br.gov.frameworkdemoiselle.util.Strings;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @ViewController
 public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
@@ -35,21 +35,23 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 	@Inject
 	private FileRenderer renderer;
 
-	@PostConstruct
-	public void init() {
-		setLazyDataModelInitialSortAttribute("name");
+	public String getSortAttribute() {
+		return "name";
 	}
 
 	@Override
 	protected List<SecurityUser> handleResultList() {
 		try {
-			if (Strings.isBlank(getResultFilter()))
-				return bc.findAll();
-			else
-				return bc.findUsers(getResultFilter());
+			if (Strings.isNotBlank(getResultFilter())) {
+				getQueryConfig().getFilter().put("login", getResultFilter());
+				getQueryConfig().getFilter().put("name", getResultFilter());
+				getQueryConfig().getFilter().put("description", getResultFilter());
+				getQueryConfig().setFilterLogic(LogicEnum.OR);
+			}
+			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityUser>();
 	}
@@ -61,7 +63,7 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 			clearSelection();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.business.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -73,7 +75,7 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 			this.renderer.render(buffer, FileRenderer.ContentType.PDF, "relatorio.pdf");
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.generic.report.error", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.generic.report.error", SeverityType.ERROR);
 		}
 		return null;
 	}

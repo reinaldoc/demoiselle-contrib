@@ -9,8 +9,8 @@ import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
-import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
-import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.template.contrib.AbstractEditPageBean;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 
 @ViewController
 public class ResourceEditMB extends AbstractEditPageBean<SecurityResource, Long> {
@@ -27,10 +27,10 @@ public class ResourceEditMB extends AbstractEditPageBean<SecurityResource, Long>
 	public String insert() {
 		try {
 			bc.insert(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.insert.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.resource.insert.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.insert.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.resource.insert.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -39,11 +39,11 @@ public class ResourceEditMB extends AbstractEditPageBean<SecurityResource, Long>
 	public String update() {
 		try {
 			bc.update(getBean());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.update.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.resource.update.success", getBean().getName());
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.update.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.resource.update.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -52,10 +52,10 @@ public class ResourceEditMB extends AbstractEditPageBean<SecurityResource, Long>
 	public String delete() {
 		try {
 			bc.delete(getBean().getId());
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.delete.success", getBean().getName()));
+			Faces.addI18nMessage("fuselage.resource.delete.success", getBean().getName());
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.delete.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.resource.delete.failed", SeverityType.ERROR);
 		}
 		return null;
 	}
@@ -66,7 +66,7 @@ public class ResourceEditMB extends AbstractEditPageBean<SecurityResource, Long>
 			return bc.load(id);
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
-			Faces.addMessage(bc.getBundle().getI18nMessage("fuselage.resource.load.failed", SeverityType.ERROR));
+			Faces.addI18nMessage("fuselage.resource.load.failed", SeverityType.ERROR);
 		}
 		return new SecurityResource();
 	}
