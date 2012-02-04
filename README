@@ -8,7 +8,7 @@ desenvolvimento do SERPRO.
 
 
 Repositório Maven
-=================
+=======================
 
 	<repository>
 		<id>demoiselle-contrib</id>
@@ -16,31 +16,31 @@ Repositório Maven
 		<url>http://reinaldoc.github.com/maven</url>
 	</repository>
 
-Componentes novos
-=================
+Extensões
+=======================
 
 	demoiselle-fuselage (importa todos os demais)
 	=============================================
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-fuselage</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
 
-	demoiselle-ldap (não importa nenhum outro)
-	==========================================
+	demoiselle-ldap (importa demoiselle-core-contrib)
+	=================================================
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-ldap</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
 
-	demoiselle-primefaces (importa demoiselle-jsf-contrib)
-	======================================================
+	demoiselle-primefaces (importa demoiselle-[core|jsf]-contrib)
+	=============================================================
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-primefaces</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
 
 	demoiselle-util (não importa nenhum outro)
@@ -48,10 +48,10 @@ Componentes novos
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-util</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
 
-Evolução de componentes
+Evoluções
 =======================
 
 	demoiselle-core-contrib (não importa nenhum outro)
@@ -59,7 +59,7 @@ Evolução de componentes
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-core-contrib</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
 
 	demoiselle-jsf-contrib (importa demoiselle-util)
@@ -67,7 +67,7 @@ Evolução de componentes
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-jsf-contrib</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
 
 	demoiselle-jpa-contrib (importa demoiselle-core-contrib)
@@ -75,5 +75,5 @@ Evolução de componentes
 	<dependency>
 		<groupId>demoiselle-contrib</groupId>
 		<artifactId>demoiselle-jpa-contrib</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1</version>
 	</dependency>
