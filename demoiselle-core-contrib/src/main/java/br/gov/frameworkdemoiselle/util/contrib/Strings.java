@@ -42,6 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -168,9 +169,8 @@ public class Strings extends StringUtils {
 		return value;
 	}
 
-	@SuppressWarnings("deprecation")
-	public static String capitalizeBr(String str) {
-		String strTmp = capitaliseAllWords(str.toLowerCase());
+	public static String capitalize(String str) {
+		String strTmp = WordUtils.capitalize(str.toLowerCase());
 		strTmp = strTmp.replaceAll(" Da ", " da ");
 		strTmp = strTmp.replaceAll(" Das ", " das ");
 		strTmp = strTmp.replaceAll(" Dos ", " dos ");
