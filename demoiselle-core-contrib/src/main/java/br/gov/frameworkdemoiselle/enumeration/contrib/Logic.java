@@ -1,7 +1,7 @@
 package br.gov.frameworkdemoiselle.enumeration.contrib;
 
-public enum NotationEnum {
+public enum Logic {
 
-	PREFIX, INFIX, POSTFIX, EXACT
+	AND, OR, NAND, NOR
 
 }
