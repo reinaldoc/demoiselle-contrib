@@ -37,14 +37,17 @@
 package br.gov.frameworkdemoiselle.internal.implementation.contrib;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.inject.Alternative;
 
-import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
+import br.gov.frameworkdemoiselle.annotation.Ignore;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.util.contrib.Reflections;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 /**
@@ -66,7 +69,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private int currentPage;
 
-	private int pageSize;
+	private int maxResult;
 
 	private int totalResults;
 
@@ -78,16 +81,16 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private Map<String, Object> filter;
 
-	private NotationEnum filterNotation;
+	private Comparison filterComparison;
 
-	private LogicEnum filterLogic;
+	private Logic filterLogic;
 
 	private boolean filterCaseInsensitive;
-	
+
 	private Object generic;
 
 	public QueryConfigImpl() {
-		pageSize = 0;
+		maxResult = 0;
 		totalResults = 0;
 		reset();
 	}
@@ -98,8 +101,8 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		sorting = new String[0];
 		sortOrder = true;
 		filter = new HashMap<String, Object>();
-		filterNotation = NotationEnum.INFIX;
-		filterLogic = LogicEnum.AND;
+		filterComparison = Comparison.EQUALS;
+		filterLogic = Logic.AND;
 		filterCaseInsensitive = true;
 	}
 
@@ -138,8 +141,8 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		this.currentPage = currentPage;
 	}
 
-	public int getPageSize() {
-		return pageSize;
+	public int getMaxResults() {
+		return maxResult;
 	}
 
 	public int getTotalResults() {
@@ -159,7 +162,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private void setTotalPages() {
 		if (totalResults > 0) {
-			setTotalPages((int) Math.ceil(totalResults * 1d / getPageSize()));
+			setTotalPages((int) Math.ceil(totalResults * 1d / getMaxResults()));
 		} else {
 			setTotalPages(0);
 		}
@@ -170,14 +173,14 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	}
 
 	public int getFirstResult() {
-		return getCurrentPage() * getPageSize();
+		return getCurrentPage() * getMaxResults();
 	}
 
-	public void setPageSize(int pageSize) {
-		validateNegativeValue(pageSize);
-		this.pageSize = pageSize;
+	public void setMaxResults(int maxResult) {
+		validateNegativeValue(maxResult);
+		this.maxResult = maxResult;
 
-		if (pageSize > 0) {
+		if (maxResult > 0) {
 			setTotalPages();
 		} else {
 			reset();
@@ -197,7 +200,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		validateFirstResult(firstResult);
 
 		if (firstResult > 0) {
-			setCurrentPage(firstResult / pageSize);
+			setCurrentPage(firstResult / maxResult);
 		} else {
 			setCurrentPage(0);
 		}
@@ -241,22 +244,29 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	}
 
 	public void setFilter(T domain) {
-
+		Field[] fields = Reflections.getSuperClassesFields(domain.getClass());
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(Ignore.class) || filter.containsKey(field.getName()))
+				continue;
+			Object value = Reflections.getFieldValue(field, domain);
+			if (value != null)
+				filter.put(field.getName(), value);
+		}
 	}
 
-	public NotationEnum getFilterNotation() {
-		return filterNotation;
+	public Comparison getFilterComparison() {
+		return filterComparison;
 	}
 
-	public void setFilterNotation(NotationEnum filtersNotation) {
-		this.filterNotation = filtersNotation;
+	public void setFilterComparison(Comparison filtersComparison) {
+		this.filterComparison = filtersComparison;
 	}
 
-	public LogicEnum getFilterLogic() {
+	public Logic getFilterLogic() {
 		return filterLogic;
 	}
 
-	public void setFilterLogic(LogicEnum filtersLogic) {
+	public void setFilterLogic(Logic filtersLogic) {
 		this.filterLogic = filtersLogic;
 	}
 
