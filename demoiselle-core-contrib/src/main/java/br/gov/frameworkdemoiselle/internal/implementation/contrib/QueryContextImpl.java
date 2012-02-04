@@ -74,7 +74,7 @@ public class QueryContextImpl implements Serializable, QueryContext {
 
 		if (queryConfig == null || create) {
 			queryConfig = new QueryConfigImpl<T>();
-			queryConfig.setPageSize(paginationConfig.getPageSize());
+			queryConfig.setMaxResults(paginationConfig.getPageSize());
 			cache.put(clazz, queryConfig);
 		}
 

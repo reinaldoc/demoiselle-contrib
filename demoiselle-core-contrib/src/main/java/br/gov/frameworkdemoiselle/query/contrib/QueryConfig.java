@@ -38,8 +38,8 @@ package br.gov.frameworkdemoiselle.query.contrib;
 
 import java.util.Map;
 
-import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 
 /**
  * Structure used to handle query configuration of data results on both
@@ -61,14 +61,14 @@ public interface QueryConfig<T> {
 	void setCurrentPage(int currentPage);
 
 	/**
-	 * Returns the page size.
+	 * Returns the max results that means the page size for paginated query.
 	 */
-	int getPageSize();
+	int getMaxResults();
 
 	/**
-	 * Sets the page size.
+	 * Sets the max results that means the page size for paginated query.
 	 */
-	void setPageSize(int pageSize);
+	void setMaxResults(int maxResult);
 
 	/**
 	 * Returns the total number of results.
@@ -97,36 +97,138 @@ public interface QueryConfig<T> {
 	 */
 	void setFirstResult(int firstResult);
 
+	/**
+	 * Returns the attributes names for sorting query, means
+	 * "sort by attr1, attr2, ..."
+	 */
 	String[] getSorting();
 
+	/**
+	 * Set the attributes names for sorting query, means
+	 * "sort by attr1, attr2, ..."
+	 */
 	void setSorting(String... attributesName);
 
+	/**
+	 * Returns the sort order, means 'asc' for true, and 'desc' for false.
+	 * Default is true (asc).
+	 */
 	boolean isSortOrder();
 
+	/**
+	 * Set the sort order, means 'asc' for true, and 'desc' for false
+	 */
 	void setSortOrder(boolean ordering);
 
+	/**
+	 * Returns the Map to create filters, means 'where attr1=value1'
+	 */
 	Map<String, Object> getFilter();
 
+	/**
+	 * Set filters, means 'where attr1=value1'
+	 */
 	void setFilterStr(Map<String, String> filters);
 
+	/**
+	 * Set filters, means 'where attr1=value1'. Object can be a array that means
+	 * 'where attr1=value1 and attr1=value2'. Default logic is AND but can be
+	 * change to OR.
+	 */
 	void setFilter(Map<String, Object> filters);
 
+	/**
+	 * Set filters reading by Reflection not null attributes. See below a sample
+	 * of its usage:
+	 * 
+	 * Attention for default attributes values! Will be included on query.
+	 * 
+	 * Employee example = new Employee();
+	 * example.setName("John Doe");
+	 * example.setMail("john@example.com");
+	 * setFilter(exmaple);
+	 * 
+	 * This means 'where name = "John Doe" and mail = "john@example.com"'
+	 * 
+	 * Default logic is AND but can be change to OR. Default comparison is
+	 * EQUALS, but can be changed to CONTAINS, STARTSWITH or ENDSWITH.
+	 */
 	void setFilter(T filter);
 
-	NotationEnum getFilterNotation();
+	/**
+	 * Returns the comparison mode between filters for String attributes. Others
+	 * types is always EQUALS.
+	 * 
+	 * Comparison.EQUALS means 'where name like "John Doe"'
+	 * Comparison.CONTAINS means 'where name like "%John Doe%"'
+	 * Comparison.STARTSWITH means 'where name like "John Doe%"'
+	 * Comparison.ENDSWITH means 'where name like "%John Doe"'
+	 * 
+	 */
+	Comparison getFilterComparison();
 
-	void setFilterNotation(NotationEnum notationEnum);
+	/**
+	 * Set the comparison mode between filters for String attributes. Others
+	 * types is always EQUALS.
+	 * 
+	 * Comparison.EQUALS means 'where name = "John Doe"'
+	 * Comparison.CONTAINS means 'where name like "%John Doe%"'
+	 * Comparison.STARTSWITH means 'where name like "John Doe%"'
+	 * Comparison.ENDSWITH means 'where name like "%John Doe"'
+	 * 
+	 */
+	void setFilterComparison(Comparison comparisonEnum);
 
-	LogicEnum getFilterLogic();
+	/**
+	 * Returns the logic mode between filters.
+	 * 
+	 * Logic.AND means 'where name like "John Doe" and age = 10'
+	 * Logic.OR means 'where name like "John Doe" or age = 10'
+	 * Logic.NAND means 'where name not like "John Doe" and not age = 10'
+	 * Logic.NOR means 'where name not like "John Doe" or not age = 10'
+	 * 
+	 */
+	Logic getFilterLogic();
 
-	void setFilterLogic(LogicEnum logicEnum);
+	/**
+	 * Set the logic mode between filters.
+	 * 
+	 * Logic.AND means 'where name like "John Doe" and age = 10'
+	 * Logic.OR means 'where name like "John Doe" or age = 10'
+	 * Logic.NAND means 'where name not like "John Doe" and not age = 10'
+	 * Logic.NOR means 'where name not like "John Doe" or not age = 10'
+	 * 
+	 */
+	void setFilterLogic(Logic logicEnum);
 
+	/**
+	 * Returns the case mode for String attributes. Others types is ignored.
+	 * 
+	 * true means 'where lower(name) like "John Doe".toLower();
+	 * 
+	 */
 	boolean isFilterCaseInsensitive();
 
+	/**
+	 * Set the case mode for String attributes. Others types is ignored.
+	 * 
+	 * true means 'where lower(name) like "John Doe".toLower();
+	 * 
+	 */
 	void setFilterCaseInsensitive(boolean insensitive);
 
+	/**
+	 * Returns the a generic information for query implementation. Used for
+	 * options not especified on this interface.
+	 * 
+	 */
 	Object getGeneric();
 
+	/**
+	 * Set the a generic information for query implementation. Used for
+	 * options not especified on this interface.
+	 * 
+	 */
 	void setGeneric(Object object);
 
 }
