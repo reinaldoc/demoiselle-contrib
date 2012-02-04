@@ -38,9 +38,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-extension-parent</artifactId>
+		<version>2.2.1</version>
+	</parent>
+
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-util</artifactId>
-		<version>2.2.1</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-util</name>
@@ -57,7 +62,6 @@
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-core</artifactId>
-			<version>2.2.1</version>
 		</dependency>
 
 	</dependencies>
