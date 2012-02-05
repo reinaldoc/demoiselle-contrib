@@ -36,139 +36,23 @@
  */
 package br.gov.frameworkdemoiselle.util.contrib;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static javax.faces.application.FacesMessage.SEVERITY_FATAL;
-import static javax.faces.application.FacesMessage.SEVERITY_INFO;
-import static javax.faces.application.FacesMessage.SEVERITY_WARN;
-
 import java.util.List;
-import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
 import javax.faces.component.UIInput;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 
-import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
-import br.gov.frameworkdemoiselle.util.Strings;
 
-public class Faces {
+public class Faces extends br.gov.frameworkdemoiselle.util.Faces {
 
-	public static void addMessages(final List<Message> messages) {
-		if (messages != null) {
-			for (Message m : messages) {
-				addMessage(m);
-			}
-		}
-	}
-
-	public static void addMessage(final Message message) {
-		getFacesContext().addMessage(null, parse(message));
-	}
-
-	public static void addMessage(final String clientId, final Message message) {
-		getFacesContext().addMessage(clientId, parse(message));
-	}
-
-	public static void addMessage(final String clientId, final Throwable throwable) {
-		getFacesContext().addMessage(clientId, parse(throwable));
-	}
-
-	public static void addMessage(final Throwable throwable) {
-		addMessage(null, throwable);
-	}
-
-	private static FacesContext getFacesContext() {
+	public static FacesContext getFacesContext() {
 		return Beans.getReference(FacesContext.class);
-	}
-
-	public static Severity parse(final SeverityType severityType) {
-		Severity result = null;
-
-		switch (severityType) {
-		case INFO:
-			result = SEVERITY_INFO;
-			break;
-		case WARN:
-			result = SEVERITY_WARN;
-			break;
-		case ERROR:
-			result = SEVERITY_ERROR;
-			break;
-		case FATAL:
-			result = SEVERITY_FATAL;
-		}
-
-		return result;
-	}
-
-	public static FacesMessage parse(final Throwable throwable) {
-		FacesMessage facesMessage = new FacesMessage();
-		ApplicationException annotation = throwable.getClass().getAnnotation(ApplicationException.class);
-
-		if (annotation != null) {
-			facesMessage.setSeverity(parse(annotation.severity()));
-		} else {
-			facesMessage.setSeverity(SEVERITY_ERROR);
-		}
-
-		if (throwable.getMessage() != null) {
-			facesMessage.setSummary(throwable.getMessage());
-		} else {
-			facesMessage.setSummary(throwable.toString());
-		}
-
-		return facesMessage;
-	}
-
-	public static FacesMessage parse(final Message message) {
-		FacesMessage facesMessage = new FacesMessage();
-		facesMessage.setSeverity(parse(message.getSeverity()));
-		facesMessage.setSummary(message.getText());
-		return facesMessage;
-	}
-
-	public static Object convert(final String value, final Converter converter) {
-		Object result = null;
-
-		if (!Strings.isEmpty(value)) {
-			if (converter != null) {
-				result = converter.getAsObject(getFacesContext(), getFacesContext().getViewRoot(), value);
-			} else {
-				result = new String(value);
-			}
-		}
-
-		return result;
-	}
-
-	public static Converter getConverter(Class<?> targetClass) {
-		Converter result;
-
-		try {
-			Application application = getFacesContext().getApplication();
-			result = application.createConverter(targetClass);
-
-		} catch (Exception e) {
-			result = null;
-		}
-
-		return result;
-	}
-
-	public static Map<String, Object> getViewMap() {
-		UIViewRoot viewRoot = getFacesContext().getViewRoot();
-		return viewRoot.getViewMap(true);
 	}
 
 	public static void validationFailed() {
