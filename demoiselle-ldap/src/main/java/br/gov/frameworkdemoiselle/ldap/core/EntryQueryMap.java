@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
@@ -249,6 +250,7 @@ public class EntryQueryMap implements Serializable {
 		if (resultMap == null || resultMap.size() == 0 || (singleResult && enforceSingleResult && resultMap.size() > 1))
 			return null;
 
+		loggerArgs(searchFilter, resultMap.size());
 		return resultMap;
 	}
 
@@ -302,11 +304,12 @@ public class EntryQueryMap implements Serializable {
 	 */
 	public String getSingleDn() {
 		List<String> dnList = getDnList();
-		if (dnList.size() == 1) {
+		if (dnList != null && dnList.size() == 1) {
+			loggerArgs(dnList.get(0));
 			return dnList.get(0);
-		} else {
-			return null;
 		}
+		loggerArgs("no entry found");
+		return null;
 	}
 
 	/**
@@ -317,11 +320,16 @@ public class EntryQueryMap implements Serializable {
 	public List<String> getDnList() {
 		List<String> dnList = new ArrayList<String>();
 		Map<String, Map<String, Object>> result = find(new String[] { "-" });
-		if (result == null)
+
+		if (result == null) {
+			loggerArgs("no entry found");
 			return null;
-		for (String dn : result.keySet()) {
-			dnList.add(dn);
 		}
+
+		for (String dn : result.keySet())
+			dnList.add(dn);
+
+		loggerArgs(dnList.size() + " dn(s) found");
 		return dnList;
 	}
 
@@ -386,6 +394,11 @@ public class EntryQueryMap implements Serializable {
 
 	public void setLdapConstraints(LDAPSearchConstraints ldapConstraints) {
 		this.ldapConstraints = ldapConstraints;
+	}
+
+	private void loggerArgs(Object... arg) {
+		if (verbose)
+			logger.info("@" + Thread.currentThread().getStackTrace()[2].getMethodName() + "(" + StringUtils.join(arg, ", ") + ")");
 	}
 
 }
