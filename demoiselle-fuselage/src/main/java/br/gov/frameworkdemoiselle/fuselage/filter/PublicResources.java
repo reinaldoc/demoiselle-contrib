@@ -43,11 +43,11 @@ public class PublicResources implements Serializable {
 	public boolean hasPermission(String resourceName, String resourceValue, Comparison comparison) {
 		if (comparison == Comparison.EQUALS && resourceMap.get(resourceName).contains(resourceValue))
 			return true;
-		if (comparison == Comparison.STARTSWITH) {
+		else if (comparison == Comparison.STARTSWITH)
 			for (String url : resourceMap.get(resourceName))
 				if (resourceValue.startsWith(url))
 					return true;
-		}
+
 		return false;
 	}
 }

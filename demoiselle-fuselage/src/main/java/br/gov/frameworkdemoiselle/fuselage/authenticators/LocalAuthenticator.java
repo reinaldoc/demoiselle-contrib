@@ -50,9 +50,9 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 			return false;
 		}
 
-		if (DigestUtils.sha512Hex(password).equals(securityUser.getPassword())) {
+		if (DigestUtils.sha512Hex(password).equals(securityUser.getPassword()))
 			return true;
-		}
+
 		return false;
 	}
 	
