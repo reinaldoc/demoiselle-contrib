@@ -28,10 +28,6 @@ public class MenuContextConfig implements Serializable {
 	@Name("permitUnselect")
 	private boolean permitUnselect = false;
 
-	public String getSelectedStyleClass() {
-		return selectedStyleClass;
-	}
-
 	/**
 	 * The list of menu items that will be seleteds on startup
 	 * For each selectItems property like
@@ -61,6 +57,15 @@ public class MenuContextConfig implements Serializable {
 			}
 		}
 		return selectItemsList;
+	}
+
+	/**
+	 * The default styleClass for select menu item
+	 * 
+	 * @return util.menucontext.selectedStyleClass property;
+	 */
+	public String getSelectedStyleClass() {
+		return selectedStyleClass;
 	}
 
 	/**
