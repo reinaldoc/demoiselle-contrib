@@ -48,15 +48,15 @@ public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 
 	public SecurityUser loadByLogin(String login) {
 		List<SecurityUser> userList = findByLogin(login);
-		if (userList.size() != 1) {
+		if (userList.size() != 1)
 			return new SecurityUser();
-		} else {
+		else
 			return userList.get(0);
-		}
 	}
 
 	public List<SecurityUser> findByLogin(String login) {
 		getQueryConfig().getFilter().put("login", login);
+		getQueryConfig().setFilterCaseInsensitive(false);
 		return findAll();
 	}
 
