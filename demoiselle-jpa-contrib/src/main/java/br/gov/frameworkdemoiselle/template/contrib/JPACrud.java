@@ -104,6 +104,13 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return this.beanClass;
 	}
 
+	protected CriteriaQuery<T> getCriteria() {
+		this.cBuilder = getCriteriaBuilder();
+		CriteriaQuery<T> criteria = this.cBuilder.createQuery(getBeanClass());
+		this.cRoot = criteria.from(getBeanClass());
+		return criteria;
+	}
+
 	protected CriteriaBuilder getCriteriaBuilder() {
 		return getEntityManager().getCriteriaBuilder();
 	}
@@ -112,10 +119,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return this.entityManager;
 	}
 
-	protected QueryConfig<T> getQueryConfig() {
+	protected QueryConfig<T> setQueryConfig() {
 		if (queryConfig == null) {
-			QueryContext context = queryContext.get();
-			queryConfig = context.getQueryConfig(getBeanClass());
+			queryConfig = queryContext.get().getQueryConfig(getBeanClass());
 		}
 		return queryConfig;
 	}
@@ -191,13 +197,13 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			attr = this.cBuilder.lower(attr);
 			value = value.toLowerCase();
 		}
-		if (queryConfig.getFilterLogic() == Logic.AND || queryConfig.getFilterLogic() == Logic.OR)
-			return this.cBuilder.like(attr, getComparison(value));
-		else
+		if (queryConfig.isFilterLogicNegation())
 			return this.cBuilder.notLike(attr, getComparison(value));
+		else
+			return this.cBuilder.like(attr, getComparison(value));
 	}
 
-	protected Predicate getPredicateAsString(Expression<String> attr, Object value) {
+	protected Predicate getPredicate(Expression<String> attr, Object value) {
 		if (queryConfig.getFilterLogic() == Logic.AND || queryConfig.getFilterLogic() == Logic.OR)
 			return this.cBuilder.equal(attr, value);
 		else
@@ -219,43 +225,35 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		// GambiModeOff
 	}
 
-	private Predicate getWhere() {
+	protected Predicate getWhere() {
 		List<Predicate> predicates = new ArrayList<Predicate>();
-
 		for (Map.Entry<String, Object> entry : queryConfig.getFilter().entrySet()) {
-			String entityAttr = entry.getKey();
-			if (entityAttr == null)
-				continue;
-			Object entityAttrValue = queryConfig.getFilter().get(entityAttr);
-			if (entityAttrValue == null)
+			if (entry.getKey() == null || entry.getValue() == null)
 				continue;
 
-			if (entityAttrValue instanceof String)
-				predicates.add(getPredicateForString(getAttributeExpression(entityAttr), (String) entityAttrValue));
-			else if (entityAttrValue.getClass().isArray())
-				for (Object value : (Object[]) entityAttrValue)
-					if (value instanceof String)
-						predicates.add(getPredicateForString(getAttributeExpression(entityAttr), (String) value));
-					else
-						predicates.add(getPredicateAsString(getAttributeExpression(entityAttr), value));
-			else
-				predicates.add(getPredicateAsString(getAttributeExpression(entityAttr), entityAttrValue));
+			if (!entry.getValue().getClass().isArray())
+				entry.setValue(new Object[] { entry.getValue() });
+
+			for (Object value : (Object[]) entry.getValue())
+				if (value instanceof String && queryConfig.getFilterComparison() != Comparison.EQUALS)
+					predicates.add(getPredicateForString(getAttributeExpression(entry.getKey()), (String) value));
+				else
+					predicates.add(getPredicate(getAttributeExpression(entry.getKey()), value));
 
 		}
 
-		if (queryConfig.getFilterLogic() == Logic.OR || queryConfig.getFilterLogic() == Logic.NOR)
-			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
-		else
+		if (queryConfig.isFilterLogicConjunction())
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
+		else
+			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
+
 	}
 
 	@Override
 	public List<T> findAll() {
-		this.cBuilder = getCriteriaBuilder();
-		CriteriaQuery<T> criteria = this.cBuilder.createQuery(getBeanClass());
-		this.cRoot = criteria.from(getBeanClass());
+		CriteriaQuery<T> criteria = getCriteria();
 
-		final QueryConfig<T> queryConfig = getQueryConfig();
+		setQueryConfig();
 		if (queryConfig != null) {
 			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
 				criteria.where(getWhere());
@@ -266,11 +264,12 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		TypedQuery<T> query = getEntityManager().createQuery(criteria);
 
 		if (queryConfig != null) {
-			queryConfig.setTotalResults(countAll(queryConfig));
-			if (queryConfig.getMaxResults() > 0) {
+			if (queryConfig.isPaginated()) {
 				query.setFirstResult(queryConfig.getFirstResult());
-				query.setMaxResults(queryConfig.getMaxResults());
+				queryConfig.setTotalResults(countAll());
 			}
+			if (queryConfig.getMaxResults() > 0)
+				query.setMaxResults(queryConfig.getMaxResults());
 		}
 
 		return query.getResultList();
@@ -281,8 +280,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * 
 	 * @return the row count
 	 */
-	private int countAll(QueryConfig<T> queryConfig) {
+	protected int countAll() {
 		CriteriaQuery<Long> criteria = this.cBuilder.createQuery(Long.class);
+		criteria.from(getBeanClass());
 		criteria.select(this.cBuilder.count(this.cRoot));
 
 		if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
