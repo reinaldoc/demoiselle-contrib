@@ -63,8 +63,8 @@ import org.apache.commons.lang.ArrayUtils;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.template.Crud;
@@ -181,16 +181,17 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	private String getNotationString(String entityAttrValue) {
-		if (entityAttrValue == null) {
+		if (entityAttrValue == null)
 			return "";
-		} else if (queryConfig.getFilterNotation() == NotationEnum.INFIX) {
+		else if (queryConfig.getFilterComparison() == Comparison.EQUALS)
+			return entityAttrValue;
+		else if (queryConfig.getFilterComparison() == Comparison.CONTAINS)
 			return "%" + entityAttrValue + "%";
-		} else if (queryConfig.getFilterNotation() == NotationEnum.PREFIX) {
+		else if (queryConfig.getFilterComparison() == Comparison.STARTSWITH)
 			return entityAttrValue + "%";
-		} else if (queryConfig.getFilterNotation() == NotationEnum.POSTFIX) {
+		else if (queryConfig.getFilterComparison() == Comparison.ENDSWITH)
 			return "%" + entityAttrValue;
-		}
-		return entityAttrValue;
+		return null;
 	}
 
 	protected Predicate getPredicateForString(Expression<String> attr, String value) {
@@ -198,14 +199,14 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			attr = this.cBuilder.lower(attr);
 			value = value.toLowerCase();
 		}
-		if (queryConfig.getFilterLogic() == LogicEnum.AND || queryConfig.getFilterLogic() == LogicEnum.OR)
+		if (queryConfig.getFilterLogic() == Logic.AND || queryConfig.getFilterLogic() == Logic.OR)
 			return this.cBuilder.like(attr, getNotationString(value));
 		else
 			return this.cBuilder.notLike(attr, getNotationString(value));
 	}
 
 	protected Predicate getPredicateAsString(Expression<String> attr, Object value) {
-		if (queryConfig.getFilterLogic() == LogicEnum.AND || queryConfig.getFilterLogic() == LogicEnum.OR)
+		if (queryConfig.getFilterLogic() == Logic.AND || queryConfig.getFilterLogic() == Logic.OR)
 			return this.cBuilder.equal(attr, value);
 		else
 			return this.cBuilder.notEqual(attr, value);
@@ -250,7 +251,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 		}
 
-		if (queryConfig.getFilterLogic() == LogicEnum.OR || queryConfig.getFilterLogic() == LogicEnum.NOR)
+		if (queryConfig.getFilterLogic() == Logic.OR || queryConfig.getFilterLogic() == Logic.NOR)
 			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
 		else
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
@@ -274,9 +275,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 		if (queryConfig != null) {
 			queryConfig.setTotalResults(countAll(queryConfig));
-			if (queryConfig.getPageSize() > 0) {
+			if (queryConfig.getMaxResults() > 0) {
 				query.setFirstResult(queryConfig.getFirstResult());
-				query.setMaxResults(queryConfig.getPageSize());
+				query.setMaxResults(queryConfig.getMaxResults());
 			}
 		}
 

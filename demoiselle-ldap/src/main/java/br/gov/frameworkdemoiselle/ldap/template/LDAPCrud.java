@@ -43,8 +43,8 @@ import java.util.Map;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
-import br.gov.frameworkdemoiselle.enumeration.contrib.NotationEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
@@ -123,17 +123,17 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 		final QueryConfig<T> queryConfig = this.getQueryConfig();
 		if (queryConfig != null)
 			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
-				filter = getFilter(getBeanClass(), queryConfig.getFilter(), queryConfig.getFilterLogic(), queryConfig.getFilterNotation());
+				filter = getFilter(getBeanClass(), queryConfig.getFilter(), queryConfig.getFilterLogic(), queryConfig.getFilterComparison());
 
 		EntryQuery query = getEntryManager().createQuery(filter);
 
 		if (queryConfig != null) {
 			// TODO: implement pagination with LDAP Asynchronous Query
 			// queryConfig.setTotalResults(countAll(queryConfig));
-			if (queryConfig.getPageSize() > 0) {
+			if (queryConfig.getMaxResults() > 0) {
 				// query.setFirstResult(queryConfig.getFirstResult());
 				query.setBaseDN((String) queryConfig.getGeneric());
-				query.setMaxResults(queryConfig.getPageSize());
+				query.setMaxResults(queryConfig.getMaxResults());
 			}
 		}
 
@@ -164,8 +164,8 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 *         or
 	 *         "(&(objectClass=className)(|(attribute1=value1)(attribute2=value2)))"
 	 */
-	public static String getFilter(Class<?> clazz, Map<String, Object> map, LogicEnum logic, NotationEnum notation) {
-		if (logic == LogicEnum.AND || logic == LogicEnum.NAND)
+	public static String getFilter(Class<?> clazz, Map<String, Object> map, Logic logic, Comparison notation) {
+		if (logic == Logic.AND || logic == Logic.NAND)
 			return "(&(objectClass=" + clazz.getSimpleName() + ")" + getPartialFilter(map, logic, notation) + ")";
 		else
 			return "(&(objectClass=" + clazz.getSimpleName() + ")(|" + getPartialFilter(map, logic, notation) + "))";
@@ -190,7 +190,7 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 * @return a partial filter like "(attribute1=value1)(attribute2=value2)" or
 	 *         "(!(attribute1=value1))(!(attribute2=value2))".
 	 */
-	public static String getPartialFilter(Map<String, Object> map, LogicEnum logic, NotationEnum notation) {
+	public static String getPartialFilter(Map<String, Object> map, Logic logic, Comparison notation) {
 		String partialFilter = "";
 		for (Map.Entry<String, Object> mapEntry : map.entrySet())
 			if (mapEntry.getValue() == null || !mapEntry.getValue().getClass().isArray())
@@ -219,21 +219,21 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 * @return a partial filter element like "(attribute=*value*)" or
 	 *         "(!(attribute=value))"
 	 */
-	public static String getPartialFilterElement(String attr, Object value, LogicEnum logic, NotationEnum notation) {
+	public static String getPartialFilterElement(String attr, Object value, Logic logic, Comparison notation) {
 		String partialFilter;
 
 		if (value == null)
 			partialFilter = "(" + attr + "=*)";
-		else if (notation == NotationEnum.INFIX)
-			partialFilter = "(" + attr + "=*" + value + "*)";
-		else if (notation == NotationEnum.PREFIX)
-			partialFilter = "(" + attr + "=" + value + "*)";
-		else if (notation == NotationEnum.POSTFIX)
-			partialFilter = "(" + attr + "=*" + value + ")";
-		else
+		else if (notation == Comparison.EQUALS)
 			partialFilter = "(" + attr + "=" + value + ")";
+		else if (notation == Comparison.CONTAINS)
+			partialFilter = "(" + attr + "=*" + value + "*)";
+		else if (notation == Comparison.STARTSWITH)
+			partialFilter = "(" + attr + "=" + value + "*)";
+		else
+			partialFilter = "(" + attr + "=*" + value + ")";
 
-		if (logic == LogicEnum.NAND || logic == LogicEnum.NOR)
+		if (logic == Logic.NAND || logic == Logic.NOR)
 			partialFilter = "(!" + partialFilter + ")";
 
 		return partialFilter;
