@@ -1,7 +1,6 @@
-package br.gov.frameworkdemoiselle.fuselage.filters;
+package br.gov.frameworkdemoiselle.fuselage.filter;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
@@ -28,6 +28,9 @@ public class AuthorizerURL implements Filter {
 
 	@Inject
 	private SecurityContext securityContext;
+
+	@Inject
+	private PublicResources publicResources;
 
 	@Inject
 	private JsfSecurityConfig config;
@@ -49,18 +52,13 @@ public class AuthorizerURL implements Filter {
 		this.request = (HttpServletRequest) request;
 		String url = this.request.getRequestURI().replaceAll("^/.+?/", "/");
 
-		List<String> publicurls = getPublicUrls("public_url_startswith");
-		if (publicurls != null) {
-			for (String publicurl : publicurls) {
-				if (url.startsWith(publicurl)) {
-					info("permitted by public resource", url);
-					chain.doFilter(request, response);
-					return;
-				}
-			}
+		if (publicResources.hasPermission("public_url", url, Comparison.EQUALS) || url.equals(config.getLoginPage())) {
+			info("permitted by public resource", url);
+			chain.doFilter(request, response);
+			return;
 		}
 
-		if (getPublicUrls("public_url").contains(url) || url.equals(config.getLoginPage())) {
+		if (publicResources.hasPermission("public_url_startswith", url, Comparison.STARTSWITH)) {
 			info("permitted by public resource", url);
 			chain.doFilter(request, response);
 			return;
@@ -94,23 +92,6 @@ public class AuthorizerURL implements Filter {
 		try {
 			if (securityContext.isLoggedIn())
 				return ((SecurityUser) securityContext.getUser().getAttribute("user")).getLogin();
-		} catch (Exception e) {
-			// Ignore
-		}
-		return null;
-	}
-
-	/**
-	 * Only resources "public_url_startswith" and "public_url" are available;
-	 * 
-	 * @param resourceName
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private List<String> getPublicUrls(String resourceName) {
-		try {
-			if (securityContext.isLoggedIn())
-				return ((List<String>) securityContext.getUser().getAttribute(resourceName));
 		} catch (Exception e) {
 			// Ignore
 		}
