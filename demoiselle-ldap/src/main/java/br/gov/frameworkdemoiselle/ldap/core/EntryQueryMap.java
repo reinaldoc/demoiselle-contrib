@@ -247,8 +247,10 @@ public class EntryQueryMap implements Serializable {
 		else
 			resultMap = find();
 
-		if (resultMap == null || resultMap.size() == 0 || (singleResult && enforceSingleResult && resultMap.size() > 1))
+		if (resultMap == null || resultMap.size() == 0 || (singleResult && enforceSingleResult && resultMap.size() > 1)) {
+			loggerArgs(searchFilter, 0);
 			return null;
+		}
 
 		loggerArgs(searchFilter, resultMap.size());
 		return resultMap;
