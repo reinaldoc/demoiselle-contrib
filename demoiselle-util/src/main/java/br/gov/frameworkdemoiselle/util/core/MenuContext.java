@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.util.configuration.MenuContextConfig;
 
-public abstract class MenuContext implements Serializable {
+public class MenuContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,7 @@ public abstract class MenuContext implements Serializable {
 	private final static String KEY_COUNTER = "Counter";
 
 	private String selectedStyleClass;
-	
+
 	private boolean singleSelect = true;
 
 	private boolean permitUnselect = false;
@@ -56,7 +56,7 @@ public abstract class MenuContext implements Serializable {
 				if ("true".equals(menuItem[3]))
 					permitUnselect(menuItem[3], true);
 			}
-		
+
 		selectedStyleClass = config.getSelectedStyleClass();
 		singleSelect = config.isSingleSelect();
 		permitUnselect = config.isPermitedUnselect();
