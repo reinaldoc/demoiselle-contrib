@@ -36,18 +36,13 @@
  */
 package br.gov.frameworkdemoiselle.template.contrib;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.Enumerated;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
@@ -57,8 +52,6 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang.ArrayUtils;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -169,7 +162,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return getEntityManager().find(getBeanClass(), id);
 	}
 
-	private Order[] getOrder() {
+	protected Order[] getOrder() {
 		List<Order> orderList = new ArrayList<Order>();
 		for (String sortAtrr : queryConfig.getSorting())
 			if (sortAtrr != null)
@@ -180,7 +173,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return orderList.toArray(new Order[] {});
 	}
 
-	private String getNotationString(String entityAttrValue) {
+	protected String getComparison(String entityAttrValue) {
 		if (entityAttrValue == null)
 			return "";
 		else if (queryConfig.getFilterComparison() == Comparison.EQUALS)
@@ -189,9 +182,8 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			return "%" + entityAttrValue + "%";
 		else if (queryConfig.getFilterComparison() == Comparison.STARTSWITH)
 			return entityAttrValue + "%";
-		else if (queryConfig.getFilterComparison() == Comparison.ENDSWITH)
+		else
 			return "%" + entityAttrValue;
-		return null;
 	}
 
 	protected Predicate getPredicateForString(Expression<String> attr, String value) {
@@ -200,9 +192,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			value = value.toLowerCase();
 		}
 		if (queryConfig.getFilterLogic() == Logic.AND || queryConfig.getFilterLogic() == Logic.OR)
-			return this.cBuilder.like(attr, getNotationString(value));
+			return this.cBuilder.like(attr, getComparison(value));
 		else
-			return this.cBuilder.notLike(attr, getNotationString(value));
+			return this.cBuilder.notLike(attr, getComparison(value));
 	}
 
 	protected Predicate getPredicateAsString(Expression<String> attr, Object value) {
@@ -212,18 +204,18 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			return this.cBuilder.notEqual(attr, value);
 	}
 
-	protected Expression<String> getAttributeExpression(Root<T> criteriaEntity, String attributeName) {
-		// TODO: made generic to support any navigation level
+	protected Expression<String> getAttributeExpression(String attributeName) {
+		// TODO: fix GabiMode making generic to support any navigation level
 		// GambiModeOn to support 4 level entity navigation
 		String[] attrNameList = attributeName.split("\\.");
 		if (attrNameList.length == 4)
-			return criteriaEntity.get(attrNameList[0]).get(attrNameList[1]).get(attrNameList[2]).get(attrNameList[3]);
+			return this.cRoot.get(attrNameList[0]).get(attrNameList[1]).get(attrNameList[2]).get(attrNameList[3]);
 		else if (attrNameList.length == 3)
-			return criteriaEntity.get(attrNameList[0]).get(attrNameList[1]).get(attrNameList[2]);
+			return this.cRoot.get(attrNameList[0]).get(attrNameList[1]).get(attrNameList[2]);
 		else if (attrNameList.length == 2)
-			return criteriaEntity.get(attrNameList[0]).get(attrNameList[1]);
+			return this.cRoot.get(attrNameList[0]).get(attrNameList[1]);
 		else
-			return criteriaEntity.get(attributeName);
+			return this.cRoot.get(attributeName);
 		// GambiModeOff
 	}
 
@@ -239,15 +231,15 @@ public class JPACrud<T, I> implements Crud<T, I> {
 				continue;
 
 			if (entityAttrValue instanceof String)
-				predicates.add(getPredicateForString(getAttributeExpression(this.cRoot, entityAttr), (String) entityAttrValue));
+				predicates.add(getPredicateForString(getAttributeExpression(entityAttr), (String) entityAttrValue));
 			else if (entityAttrValue.getClass().isArray())
 				for (Object value : (Object[]) entityAttrValue)
 					if (value instanceof String)
-						predicates.add(getPredicateForString(getAttributeExpression(this.cRoot, entityAttr), (String) value));
+						predicates.add(getPredicateForString(getAttributeExpression(entityAttr), (String) value));
 					else
-						predicates.add(getPredicateAsString(getAttributeExpression(this.cRoot, entityAttr), value));
+						predicates.add(getPredicateAsString(getAttributeExpression(entityAttr), value));
 			else
-				predicates.add(getPredicateAsString(getAttributeExpression(this.cRoot, entityAttr), entityAttrValue));
+				predicates.add(getPredicateAsString(getAttributeExpression(entityAttr), entityAttrValue));
 
 		}
 
@@ -297,127 +289,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			criteria.where(getWhere());
 
 		return getEntityManager().createQuery(criteria).getSingleResult().intValue();
-	}
-
-	/**
-	 * Retrieves a list of entities based on a single example instance with
-	 * conjunction (AND) or disjunction (OR) between not null attributes of it.
-	 * Attention for default fields values.
-	 * <p>
-	 * See below a sample of its usage:
-	 * 
-	 * <pre>
-	 * Employee example = new Employee();
-	 * example.setId(12345);
-	 * return (List&lt;Employee&gt;) findByExample(example);
-	 * </pre>
-	 * 
-	 * @param example
-	 *            an entity example
-	 * @return a list of entities
-	 */
-	public List<T> find(final T example) {
-		boolean isConjunction = true;
-		int maxResult = 0;
-		final CriteriaQuery<T> criteria = createCriteriaByExample(example, isConjunction);
-		TypedQuery<T> query = getEntityManager().createQuery(criteria);
-		if (maxResult > 0)
-			query.setMaxResults(maxResult);
-		return query.getResultList();
-	}
-
-	/**
-	 * Support method which will be used for construction of criteria-based
-	 * queries.
-	 * 
-	 * @param example
-	 *            an example of the given entity
-	 * @return an instance of {@code CriteriaQuery}
-	 */
-	private CriteriaQuery<T> createCriteriaByExample(final T example, boolean logic) {
-
-		final CriteriaBuilder builder = getCriteriaBuilder();
-		final CriteriaQuery<T> query = builder.createQuery(getBeanClass());
-		final Root<T> entity = query.from(getBeanClass());
-
-		final List<Predicate> predicates = new ArrayList<Predicate>();
-		final Field[] fields = getSuperClassesFields(example.getClass());
-
-		for (Field field : fields) {
-
-			if (!field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Basic.class) && !field.isAnnotationPresent(Enumerated.class)) {
-				continue;
-			}
-
-			Object value = null;
-
-			try {
-				field.setAccessible(true);
-				value = field.get(example);
-			} catch (IllegalArgumentException e) {
-				continue;
-			} catch (IllegalAccessException e) {
-				continue;
-			}
-
-			if (value == null) {
-				continue;
-			}
-
-			Predicate pred;
-			if (logic)
-				pred = builder.equal(entity.get(field.getName()), value);
-			else {
-				if (value instanceof String) {
-					Expression<String> expField = entity.get(field.getName());
-					pred = builder.like(builder.lower(expField), "%" + ((String) value).toLowerCase() + "%");
-				} else
-					pred = builder.equal(entity.get(field.getName()), value);
-			}
-			predicates.add(pred);
-		}
-		if (logic)
-			return query.where(builder.and(predicates.toArray(new Predicate[0]))).select(entity);
-		else
-			return query.where(builder.or(predicates.toArray(new Predicate[0]))).select(entity);
-	}
-
-	/**
-	 * Build a array of super classes fields
-	 * 
-	 * @return Array of Super Classes Fields
-	 */
-	public static Field[] getSuperClassesFields(Class<?> entryClass) {
-		Field[] fieldArray = null;
-		fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entryClass.getDeclaredFields());
-		Class<?> superClazz = entryClass.getSuperclass();
-		while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
-			fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());
-			superClazz = superClazz.getSuperclass();
-		}
-		return fieldArray;
-	}
-
-	/**
-	 * Get annotated value
-	 * 
-	 * @param entry
-	 */
-	public static Object getAnnotatedValue(Object entry, Class<? extends Annotation> aclazz, boolean required) {
-		Field field = getFieldAnnotatedAs(entry.getClass(), aclazz, required);
-		if (field != null)
-			return Reflections.getFieldValue(field, entry);
-		return null;
-	}
-
-	public static Field getFieldAnnotatedAs(Class<?> clazz, Class<? extends Annotation> aclazz, boolean required) {
-		for (Field field : getSuperClassesFields(clazz))
-			if (field.isAnnotationPresent(aclazz))
-				return field;
-		if (required)
-			throw new DemoiselleException("Field with @" + aclazz.getSimpleName() + " not found on class " + clazz.getSimpleName());
-		else
-			return null;
 	}
 
 }

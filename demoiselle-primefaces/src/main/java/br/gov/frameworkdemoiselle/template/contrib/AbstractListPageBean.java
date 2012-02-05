@@ -85,7 +85,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 			}
 			QueryConfig<T> queryConfig = getQueryConfig();
 			queryConfig.setFirstResult(first);
-			queryConfig.setPageSize(pageSize);
+			queryConfig.setMaxResults(pageSize);
 			queryConfig.setSorting(sortAttribute);
 			queryConfig.setSortOrder(sortOrder.equals(SortOrder.ASCENDING));
 			queryConfig.setFilterStr(filters);
