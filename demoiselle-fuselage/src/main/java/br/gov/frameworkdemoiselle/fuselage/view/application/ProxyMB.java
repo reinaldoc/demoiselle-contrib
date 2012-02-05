@@ -30,7 +30,7 @@ public class ProxyMB implements Serializable {
 
 	public String getUserNameProperCase() {
 		try {
-			return Strings.capitalizeBr(this.securityContext.getUser().getId().toLowerCase());
+			return Strings.capitalize(this.securityContext.getUser().getId().toLowerCase());
 		} catch (Exception e) {
 			return "null";
 		}

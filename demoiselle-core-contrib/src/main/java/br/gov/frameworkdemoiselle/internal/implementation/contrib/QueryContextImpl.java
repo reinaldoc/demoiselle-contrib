@@ -72,7 +72,7 @@ public class QueryContextImpl implements Serializable, QueryContext {
 		@SuppressWarnings("unchecked")
 		QueryConfig<T> queryConfig = (QueryConfig<T>) cache.get(clazz);
 
-		if (queryConfig == null || create) {
+		if (queryConfig == null && create) {
 			queryConfig = new QueryConfigImpl<T>();
 			queryConfig.setMaxResults(paginationConfig.getPageSize());
 			cache.put(clazz, queryConfig);

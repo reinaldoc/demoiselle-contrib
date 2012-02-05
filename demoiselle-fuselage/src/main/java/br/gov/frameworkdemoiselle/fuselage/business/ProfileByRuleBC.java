@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.fuselage.persistence.ProfileByRuleDAO;
-import br.gov.frameworkdemoiselle.template.DelegateCrud;
+import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 
 public class ProfileByRuleBC extends DelegateCrud<SecurityProfileByRule, Long, ProfileByRuleDAO> {
 
@@ -21,10 +21,9 @@ public class ProfileByRuleBC extends DelegateCrud<SecurityProfileByRule, Long, P
 	}
 
 	public List<SecurityProfileByRule> findByImplementation(String implementation) {
-		SecurityProfileByRule conditionLoad = new SecurityProfileByRule();
-		conditionLoad.setImplementation(implementation);
-		conditionLoad.setAvailable(1);
-		return getDelegate().find(conditionLoad);
+		getQueryConfig().getFilter().put("implementation", implementation);
+		getQueryConfig().getFilter().put("available", 1);
+		return findAll();
 	}
 
 	public void disable(SecurityProfileByRule securityProfileByRule) {

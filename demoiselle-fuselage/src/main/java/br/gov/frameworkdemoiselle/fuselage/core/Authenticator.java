@@ -23,7 +23,6 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -52,9 +51,6 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 
 	@Inject
 	private ResourceBC resourceBC;
-
-	@Inject
-	private QueryContext queryContext;
 
 	@Override
 	public void unAuthenticate() {
@@ -231,23 +227,17 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 
 	private void setPublicResources() {
 		List<String> publicUrl = new ArrayList<String>();
-		List<SecurityResource> resources = findResourceByName("public_url");
+		List<SecurityResource> resources = resourceBC.findResourceByName("public_url");
 		for (SecurityResource resource : resources)
 			publicUrl.add(resource.getValue());
 		user.setAttribute("public_url", publicUrl);
-		
+
 		List<String> publicUrlStartsWith = new ArrayList<String>();
-		resources = findResourceByName("public_url_startswith");
+		resources = resourceBC.findResourceByName("public_url_startswith");
 		for (SecurityResource resource : resources)
 			publicUrlStartsWith.add(resource.getValue());
 		user.setAttribute("public_url_startswith", publicUrlStartsWith);
 
-	}
-
-	private List<SecurityResource> findResourceByName(String resourceName) {
-		queryContext.getQueryConfig(SecurityResource.class, true).getFilter().put("name", resourceName);
-		queryContext.getQueryConfig(SecurityResource.class).setPageSize(0);
-		return resourceBC.findAll();
 	}
 
 }

@@ -8,7 +8,7 @@ import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.fuselage.persistence.UserDAO;
-import br.gov.frameworkdemoiselle.template.DelegateCrud;
+import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
 public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
@@ -56,19 +56,9 @@ public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	}
 
 	public List<SecurityUser> findByLogin(String login) {
-		SecurityUser userLoad = new SecurityUser();
-		userLoad.setLogin(login);
-		return getDelegate().find(userLoad);
+		getQueryConfig().getFilter().put("login", login);
+		return findAll();
 	}
-
-//	public List<SecurityUser> findUsers(String query) {
-//		SecurityUser userLoad = new SecurityUser();
-//		userLoad.setLogin(query);
-//		userLoad.setName(query);
-//		userLoad.setDescription(query);
-//		userLoad.getDomainFinder().setConjunction(false);
-//		return getDelegate().find(userLoad);
-//	}
 
 	public void disable(SecurityUser securityUser) {
 		securityUser.setAvailable(0);

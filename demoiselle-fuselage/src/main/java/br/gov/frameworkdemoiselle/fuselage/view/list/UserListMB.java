@@ -7,7 +7,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.enumeration.contrib.LogicEnum;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.message.SeverityType;
@@ -46,7 +47,8 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 				getQueryConfig().getFilter().put("login", getResultFilter());
 				getQueryConfig().getFilter().put("name", getResultFilter());
 				getQueryConfig().getFilter().put("description", getResultFilter());
-				getQueryConfig().setFilterLogic(LogicEnum.OR);
+				getQueryConfig().setFilterComparison(Comparison.CONTAINS);
+				getQueryConfig().setFilterLogic(Logic.OR);
 			}
 			return bc.findAll();
 		} catch (RuntimeException e) {
