@@ -5,7 +5,7 @@ import java.io.Serializable;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "fuselage", prefix = "fuselage.authenticators.module.LdapAuthenticator")
+@Configuration(resource = "demoiselle", prefix = "fuselage.authenticators.module.LdapAuthenticator")
 public class LdapAuthenticatorConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
