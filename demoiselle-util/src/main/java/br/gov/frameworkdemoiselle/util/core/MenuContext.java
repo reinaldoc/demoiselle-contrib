@@ -8,10 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.util.configuration.MenuContextConfig;
 
+@Named
+@SessionScoped
 public class MenuContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,6 +51,9 @@ public class MenuContext implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		selectedStyleClass = config.getSelectedStyleClass();
+		singleSelect = config.isSingleSelect();
+		permitUnselect = config.isPermitedUnselect();
 		List<String[]> selectItems = config.getSelectItems();
 		if (selectItems != null)
 			for (String[] menuItem : selectItems) {
@@ -56,16 +63,11 @@ public class MenuContext implements Serializable {
 				if ("true".equals(menuItem[3]))
 					permitUnselect(menuItem[3], true);
 			}
-
-		selectedStyleClass = config.getSelectedStyleClass();
-		singleSelect = config.isSingleSelect();
-		permitUnselect = config.isPermitedUnselect();
 	}
 
 	/**
-	 * Retrive menu from XHTML;
+	 * Retrieve menu from XHTML;
 	 * 
-	 * @return
 	 */
 	public Map<String, Map<String, Map<String, String>>> getMenu() {
 		return menu;
@@ -129,9 +131,8 @@ public class MenuContext implements Serializable {
 
 	public boolean isSelected(String menuName, String itemName) {
 		try {
-			if (menu.get(menuName).get(itemName).get(KEY_STYLECLASS) != null) {
+			if (menu.get(menuName).get(itemName).get(KEY_STYLECLASS) != null)
 				return true;
-			}
 		} catch (Exception e) {
 			// Ignore
 		}
