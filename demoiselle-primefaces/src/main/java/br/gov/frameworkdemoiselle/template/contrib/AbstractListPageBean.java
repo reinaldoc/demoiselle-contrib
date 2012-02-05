@@ -80,12 +80,10 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 		@Override
 		public List<T> load(int first, int pageSize, String sortAttribute, SortOrder sortOrder, Map<String, String> filters) {
-			if (sortAttribute == null) {
+			if (sortAttribute == null)
 				sortAttribute = getSortAttribute();
-			}
 			QueryConfig<T> queryConfig = getQueryConfig();
-			queryConfig.setFirstResult(first);
-			queryConfig.setMaxResults(pageSize);
+			queryConfig.setPagination(first, pageSize);
 			queryConfig.setSorting(sortAttribute);
 			queryConfig.setSortOrder(sortOrder.equals(SortOrder.ASCENDING));
 			queryConfig.setFilterStr(filters);
