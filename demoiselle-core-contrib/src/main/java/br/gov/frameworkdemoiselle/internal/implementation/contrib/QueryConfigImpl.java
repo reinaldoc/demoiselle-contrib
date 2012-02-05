@@ -71,6 +71,8 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private int maxResult;
 
+	private boolean pagination;
+
 	private int totalResults;
 
 	private int totalPages;
@@ -91,48 +93,35 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	public QueryConfigImpl() {
 		maxResult = 0;
+		pagination = false;
 		totalResults = 0;
-		reset();
-	}
-
-	private void reset() {
-		currentPage = 0;
-		totalPages = 0;
 		sorting = new String[0];
 		sortOrder = true;
 		filter = new HashMap<String, Object>();
 		filterComparison = Comparison.EQUALS;
 		filterLogic = Logic.AND;
 		filterCaseInsensitive = true;
+		reset();
+	}
+
+	private void reset() {
+		currentPage = 0;
+		totalPages = 0;
+	}
+
+	private void validateNegativeValue(int input) throws IndexOutOfBoundsException {
+		if (input < 0)
+			throw new IndexOutOfBoundsException("colocar mensagem");
+	}
+
+	private void validateCurrentPage(int currentPage) throws IndexOutOfBoundsException {
+		if (currentPage >= this.totalPages)
+			if (this.totalPages > 0)
+				throw new IndexOutOfBoundsException("colocar mensagem");
 	}
 
 	public int getCurrentPage() {
 		return currentPage;
-	}
-
-	private void setTotalPages(int totalPages) {
-		validateNegativeValue(totalPages);
-		this.totalPages = totalPages;
-
-		if (totalPages == 0) {
-			reset();
-		} else if (getCurrentPage() >= totalPages) {
-			setCurrentPage(totalPages - 1);
-		}
-	}
-
-	private void validateNegativeValue(int input) throws IndexOutOfBoundsException {
-		if (input < 0) {
-			throw new IndexOutOfBoundsException("colocar mensagem");
-		}
-	}
-
-	private void validateCurrentPage(int currentPage) throws IndexOutOfBoundsException {
-		if (currentPage >= this.totalPages) {
-			if (this.totalPages > 0) {
-				throw new IndexOutOfBoundsException("colocar mensagem");
-			}
-		}
 	}
 
 	public void setCurrentPage(int currentPage) {
@@ -141,8 +130,40 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		this.currentPage = currentPage;
 	}
 
+	public int getTotalPages() {
+		return totalPages;
+	}
+
+	private void setTotalPages(int totalPages) {
+		validateNegativeValue(totalPages);
+		this.totalPages = totalPages;
+		if (totalPages == 0)
+			reset();
+		else if (getCurrentPage() >= totalPages)
+			setCurrentPage(totalPages - 1);
+	}
+
+	public boolean isPaginated() {
+		return pagination;
+	}
+
+	public void setPagination(int firstResult, int maxResult) {
+		this.pagination = true;
+		setFirstResult(firstResult);
+		setMaxResults(maxResult);
+	}
+
 	public int getMaxResults() {
 		return maxResult;
+	}
+
+	public void setMaxResults(int maxResult) {
+		validateNegativeValue(maxResult);
+		this.maxResult = maxResult;
+		if (maxResult > 0)
+			setTotalPages();
+		else
+			reset();
 	}
 
 	public int getTotalResults() {
@@ -152,50 +173,30 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	public void setTotalResults(int totalResults) {
 		validateNegativeValue(totalResults);
 		this.totalResults = totalResults;
-
-		if (totalResults > 0) {
+		if (totalResults > 0)
 			setTotalPages();
-		} else {
+		else
 			reset();
-		}
 	}
 
 	private void setTotalPages() {
-		if (totalResults > 0) {
+		if (totalResults > 0)
 			setTotalPages((int) Math.ceil(totalResults * 1d / getMaxResults()));
-		} else {
+		else
 			setTotalPages(0);
-		}
-	}
-
-	public int getTotalPages() {
-		return totalPages;
 	}
 
 	public int getFirstResult() {
 		return getCurrentPage() * getMaxResults();
 	}
 
-	public void setMaxResults(int maxResult) {
-		validateNegativeValue(maxResult);
-		this.maxResult = maxResult;
-
-		if (maxResult > 0) {
-			setTotalPages();
-		} else {
-			reset();
-		}
-	}
-
 	private void validateFirstResult(int firstResult) throws IndexOutOfBoundsException {
-		if (firstResult >= this.totalResults) {
-			if (this.totalResults > 0) {
+		if (firstResult >= this.totalResults)
+			if (this.totalResults > 0)
 				throw new IndexOutOfBoundsException("colocar mensagem");
-			}
-		}
 	}
 
-	public void setFirstResult(int firstResult) {
+	private void setFirstResult(int firstResult) {
 		validateNegativeValue(firstResult);
 		validateFirstResult(firstResult);
 
@@ -260,6 +261,18 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	public void setFilterComparison(Comparison filtersComparison) {
 		this.filterComparison = filtersComparison;
+	}
+
+	public boolean isFilterLogicNegation() {
+		if (filterLogic == Logic.NAND || filterLogic == Logic.NOR)
+			return true;
+		return false;
+	}
+
+	public boolean isFilterLogicConjunction() {
+		if (filterLogic == Logic.AND || filterLogic == Logic.NAND)
+			return true;
+		return false;
 	}
 
 	public Logic getFilterLogic() {

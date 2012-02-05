@@ -71,6 +71,18 @@ public interface QueryConfig<T> {
 	void setMaxResults(int maxResult);
 
 	/**
+	 * Returns true if pagination is enabled.
+	 */
+	boolean isPaginated();
+
+	/**
+	 * To enable pagination, you must inform the first item (aka firstResult)
+	 * and number of result items (aka page size). getTotalResults() and
+	 * getTotalPages() can be read after query.
+	 */
+	void setPagination(int firstResult, int maxResult);
+
+	/**
 	 * Returns the total number of results.
 	 */
 	int getTotalResults();
@@ -90,12 +102,6 @@ public interface QueryConfig<T> {
 	 * page size.
 	 */
 	int getFirstResult();
-
-	/**
-	 * Sets the position for the first record and hence calculates current page
-	 * according to page size.
-	 */
-	void setFirstResult(int firstResult);
 
 	/**
 	 * Returns the attributes names for sorting query, means
@@ -178,6 +184,20 @@ public interface QueryConfig<T> {
 	 * 
 	 */
 	void setFilterComparison(Comparison comparisonEnum);
+
+	/**
+	 * Returns true if logic mode between filters is Logic.NAND or Logic.NOR
+	 * otherwise return false
+	 * 
+	 */
+	boolean isFilterLogicNegation();
+
+	/**
+	 * Returns true if logic mode between filters is Logic.AND or Logic.NAND
+	 * otherwise return false
+	 * 
+	 */
+	boolean isFilterLogicConjunction();
 
 	/**
 	 * Returns the logic mode between filters.
