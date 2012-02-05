@@ -91,8 +91,10 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 					return authenticatorResults;
 			} catch (RuntimeException e) {
 				logger.info(bundle.getString("fuselage.authenticators.moduleunavailable", module));
+				e.printStackTrace();
 			} catch (Exception e) {
 				logger.info(bundle.getString("fuselage.authenticators.moduleunavailable", module));
+				e.printStackTrace();
 			}
 		}
 
