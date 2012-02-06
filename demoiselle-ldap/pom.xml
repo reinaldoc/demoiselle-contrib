@@ -101,6 +101,11 @@
 			<id>demoiselle.sourceforge.net</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
 		</repository>
+		<repository>
+			<id>reinaldoc-repo</id>
+			<name>Reinaldo Github Maven Repository</name>
+			<url>http://reinaldoc.github.com/maven</url>
+		</repository>
 	</repositories>
 
 </project>
