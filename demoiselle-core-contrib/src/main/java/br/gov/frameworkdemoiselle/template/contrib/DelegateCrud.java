@@ -122,4 +122,8 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		return queryContext.getQueryConfig(getBeanClass(), true);
 	}
 
+	protected QueryConfig<?> getQueryConfig(Class<?> clazz) {
+		return queryContext.getQueryConfig(clazz, true);
+	}
+
 }
