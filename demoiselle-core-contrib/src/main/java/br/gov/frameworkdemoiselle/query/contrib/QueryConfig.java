@@ -165,7 +165,7 @@ public interface QueryConfig<T> {
 	 * Returns the comparison mode between filters for String attributes. Others
 	 * types is always EQUALS.
 	 * 
-	 * Comparison.EQUALS means 'where name like "John Doe"'
+	 * Comparison.EQUALS means 'where name = "John Doe"'
 	 * Comparison.CONTAINS means 'where name like "%John Doe%"'
 	 * Comparison.STARTSWITH means 'where name like "John Doe%"'
 	 * Comparison.ENDSWITH means 'where name like "%John Doe"'
