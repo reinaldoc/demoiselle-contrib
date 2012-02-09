@@ -171,7 +171,10 @@ public class ClazzUtils {
 	public static Class<?> getRequiredClassForSearchFilter(String searchFilter, List<String> packageNames) {
 		Class<?> clazz = getClassForSearchFilter(searchFilter, packageNames);
 		if (clazz == null)
-			throw new EntryException("Can't find a @LDAPEntry object for search filter " + searchFilter);
+			throw new EntryException(
+					"Can't find a @LDAPEntry object for search filter "
+							+ searchFilter
+							+ ". Please, add all packages with @LDAPEntry classes to property list EntryManager.ldapentry.packages at demoiselle.properties file");
 		return clazz;
 	}
 
@@ -193,7 +196,6 @@ public class ClazzUtils {
 				try {
 					return Class.forName(packageName + "." + Character.toUpperCase(matcher.group(1).charAt(0)) + matcher.group(1).substring(1));
 				} catch (Exception e) {
-					return null;
 				}
 		return null;
 	}
