@@ -59,17 +59,28 @@ public class QueryContextImpl implements Serializable, QueryContext {
 
 	private final Map<Class<?>, QueryConfig<?>> cache = new HashMap<Class<?>, QueryConfig<?>>();
 
+	/**
+	 * Method called by persistence layer (DAO), if queryConfig isn't create
+	 * from view layer must return null;
+	 */
 	public <T> QueryConfig<T> getQueryConfig(final Class<T> clazz) {
 		return (QueryConfig<T>) this.getQueryConfig(clazz, false);
 	}
 
+	/**
+	 * Method called by view layer (Manage Bean), should create a queryConfig
+	 * instance or reset values (filters, sort, case, ...);
+	 */
 	public <T> QueryConfig<T> getQueryConfig(final Class<T> clazz, final boolean create) {
 		@SuppressWarnings("unchecked")
 		QueryConfig<T> queryConfig = (QueryConfig<T>) cache.get(clazz);
 
-		if (queryConfig == null && create) {
-			queryConfig = new QueryConfigImpl<T>();
-			cache.put(clazz, queryConfig);
+		if (create) {
+			if (queryConfig == null) {
+				queryConfig = new QueryConfigImpl<T>();
+				cache.put(clazz, queryConfig);
+			}
+			queryConfig.init();
 		}
 
 		return queryConfig;

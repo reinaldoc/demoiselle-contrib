@@ -51,6 +51,12 @@ import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 public interface QueryConfig<T> {
 
 	/**
+	 * Clear all values except currentPage (from firstResult), totalPages and
+	 * totalResults (values that are defined from persistence layer);
+	 */
+	void init();
+
+	/**
 	 * Returns the current page.
 	 */
 	int getCurrentPage();
@@ -88,7 +94,8 @@ public interface QueryConfig<T> {
 	int getTotalResults();
 
 	/**
-	 * Sets the total number of results and calculates the number of pages.
+	 * Sets the total number of results and calculates the number of pages by
+	 * Persistence Layer.
 	 */
 	void setTotalResults(int totalResults);
 
@@ -245,8 +252,8 @@ public interface QueryConfig<T> {
 	Object getGeneric();
 
 	/**
-	 * Set the a generic information for query implementation. Used for
-	 * options not especified on this interface.
+	 * Set the a generic information for query implementation. Used for options
+	 * not especified on this interface.
 	 * 
 	 */
 	void setGeneric(Object object);
