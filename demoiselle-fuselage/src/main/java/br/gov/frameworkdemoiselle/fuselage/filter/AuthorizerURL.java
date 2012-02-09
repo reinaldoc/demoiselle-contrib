@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.fuselage.configuration.WebfilterConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
-import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 
@@ -34,7 +34,7 @@ public class AuthorizerURL implements Filter {
 	private PublicResources publicResources;
 
 	@Inject
-	private JsfSecurityConfig config;
+	private WebfilterConfig config;
 
 	private HttpServletRequest request;
 
@@ -50,6 +50,11 @@ public class AuthorizerURL implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		if (!config.isWebfilterEnabled()) {
+			chain.doFilter(request, response);
+			return;
+		}
+
 		this.request = (HttpServletRequest) request;
 		String url = this.request.getRequestURI().replaceAll("^/.+?/", "/");
 
