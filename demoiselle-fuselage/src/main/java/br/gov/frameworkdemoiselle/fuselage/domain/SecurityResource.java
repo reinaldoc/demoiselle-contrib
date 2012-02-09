@@ -103,4 +103,15 @@ public class SecurityResource implements Serializable {
 		this.description = description;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || id == null || getClass() != obj.getClass())
+			return false;
+		if (id.equals(((SecurityResource) obj).id))
+			return true;
+		return false;
+	}
+
 }

@@ -15,9 +15,11 @@ public class RoleBC extends DelegateCrud<SecurityRole, Long, RoleDAO> {
 	@Inject
 	private ResourceBC resourceBC;
 
-	public List<SecurityResource> getResources() {
-		getQueryConfig(SecurityResource.class).getFilter().clear();
-		return resourceBC.findAll();
+	/**
+	 * Get all resources except listed in @param securityResources
+	 */
+	public List<SecurityResource> getResourcesExceptList(List<SecurityResource> securityResources) {
+		return resourceBC.findResourceExceptList(securityResources);
 	}
 
 }

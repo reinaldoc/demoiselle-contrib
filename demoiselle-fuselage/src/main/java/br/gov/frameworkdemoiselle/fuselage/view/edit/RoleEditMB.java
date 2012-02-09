@@ -1,6 +1,6 @@
 package br.gov.frameworkdemoiselle.fuselage.view.edit;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -69,33 +69,39 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 	}
 
 	/**
-	 * Get all SecurityResources for datatable
-	 * 
-	 * @return list of all SecurityResources
+	 * Get all resources except already in bean
 	 */
 	public List<SecurityResource> getResourceList() {
-		return bc.getResources();
+		return bc.getResourcesExceptList(getBean().getResources());
+	}
+
+	public void unselectResource(SecurityResource securityResource) {
+		getBean().getResources().remove(securityResource);
 	}
 
 	/**
-	 * Get SecurityResources from current bean as array for datatable selection
-	 * 
-	 * @return array of bean SecurityResources
+	 * null array for datatable selection
 	 */
 	public SecurityResource[] getResourceArray() {
-		if (getBean().getResources() == null)
-			return null;
-		return getBean().getResources().toArray(new SecurityResource[0]);
+		return null;
 	}
 
 	/**
 	 * Set SecurityResources on current bean from datatable selection array
 	 * 
-	 * @param resources
+	 * @param selectedResources
 	 *            array of SecurityResources to set current bean
 	 */
-	public void setResourceArray(SecurityResource[] resources) {
-		getBean().setResources(Arrays.asList(resources));
+	public void setResourceArray(SecurityResource[] selectedResources) {
+		if (selectedResources == null || selectedResources.length == 0)
+			getBean().setResources(null);
+		List<SecurityResource> securityResources = new ArrayList<SecurityResource>();
+		for (SecurityResource securityResource : selectedResources)
+			securityResources.add(securityResource);
+		if (getBean().getResources() == null)
+			getBean().setResources(securityResources);
+		else
+			getBean().getResources().addAll(securityResources);
 	}
 
 }
