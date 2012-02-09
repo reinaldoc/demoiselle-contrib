@@ -8,6 +8,7 @@ import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.fuselage.persistence.UserDAO;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
@@ -55,8 +56,9 @@ public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	}
 
 	public List<SecurityUser> findByLogin(String login) {
-		getQueryConfig().getFilter().put("login", login);
-		getQueryConfig().setFilterCaseInsensitive(false);
+		QueryConfig<SecurityUser> queryConfig = getQueryConfig();
+		queryConfig.getFilter().put("login", login);
+		queryConfig.setFilterCaseInsensitive(false);
 		return findAll();
 	}
 

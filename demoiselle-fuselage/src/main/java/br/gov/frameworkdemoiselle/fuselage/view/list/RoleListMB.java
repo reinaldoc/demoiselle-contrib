@@ -10,6 +10,7 @@ import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.business.RoleBC;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
@@ -30,11 +31,12 @@ public class RoleListMB extends AbstractListPageBean<SecurityRole, Long> {
 	protected List<SecurityRole> handleResultList() {
 		try {
 			if (Strings.isNotBlank(getResultFilter())) {
-				getQueryConfig().getFilter().put("name", getResultFilter());
-				getQueryConfig().getFilter().put("description", getResultFilter());
-				getQueryConfig().getFilter().put("shortDescription", getResultFilter());
-				getQueryConfig().setFilterComparison(Comparison.CONTAINS);
-				getQueryConfig().setFilterLogic(Logic.OR);
+				QueryConfig<SecurityRole> queryConfig = getQueryConfig();
+				queryConfig.getFilter().put("name", getResultFilter());
+				queryConfig.getFilter().put("description", getResultFilter());
+				queryConfig.getFilter().put("shortDescription", getResultFilter());
+				queryConfig.setFilterComparison(Comparison.CONTAINS);
+				queryConfig.setFilterLogic(Logic.OR);
 			}
 			return bc.findAll();
 		} catch (RuntimeException e) {

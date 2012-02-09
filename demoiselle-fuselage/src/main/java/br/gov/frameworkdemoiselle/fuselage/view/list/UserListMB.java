@@ -12,6 +12,7 @@ import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.report.Report;
 import br.gov.frameworkdemoiselle.report.Type;
 import br.gov.frameworkdemoiselle.report.annotation.Path;
@@ -44,11 +45,12 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 	protected List<SecurityUser> handleResultList() {
 		try {
 			if (Strings.isNotBlank(getResultFilter())) {
-				getQueryConfig().getFilter().put("login", getResultFilter());
-				getQueryConfig().getFilter().put("name", getResultFilter());
-				getQueryConfig().getFilter().put("description", getResultFilter());
-				getQueryConfig().setFilterComparison(Comparison.CONTAINS);
-				getQueryConfig().setFilterLogic(Logic.OR);
+				QueryConfig<SecurityUser> queryConfig = getQueryConfig();
+				queryConfig.getFilter().put("login", getResultFilter());
+				queryConfig.getFilter().put("name", getResultFilter());
+				queryConfig.getFilter().put("description", getResultFilter());
+				queryConfig.setFilterComparison(Comparison.CONTAINS);
+				queryConfig.setFilterLogic(Logic.OR);
 			}
 			return bc.findAll();
 		} catch (RuntimeException e) {

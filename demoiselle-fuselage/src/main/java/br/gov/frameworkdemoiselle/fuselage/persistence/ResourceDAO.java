@@ -6,6 +6,7 @@ import br.gov.frameworkdemoiselle.template.contrib.JPACrud;
 
 @PersistenceController
 public class ResourceDAO extends JPACrud<SecurityResource, Long> {
+
 	private static final long serialVersionUID = 1L;
-	
+
 }
