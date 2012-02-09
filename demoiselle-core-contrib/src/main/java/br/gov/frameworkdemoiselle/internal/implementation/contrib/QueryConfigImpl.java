@@ -111,6 +111,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		filterComparison = Comparison.EQUALS;
 		filterLogic = Logic.AND;
 		filterCaseInsensitive = true;
+		generic = null;
 	}
 
 	private void resetPagination() {
