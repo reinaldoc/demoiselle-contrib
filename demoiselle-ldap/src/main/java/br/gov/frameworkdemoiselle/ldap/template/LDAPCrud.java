@@ -132,9 +132,9 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 			// queryConfig.setTotalResults(countAll(queryConfig));
 			if (queryConfig.getMaxResults() > 0) {
 				// query.setFirstResult(queryConfig.getFirstResult());
-				query.setBaseDN((String) queryConfig.getGeneric());
 				query.setMaxResults(queryConfig.getMaxResults());
 			}
+			query.setBaseDN((String) queryConfig.getGeneric());
 		}
 
 		return query.getResultList();
