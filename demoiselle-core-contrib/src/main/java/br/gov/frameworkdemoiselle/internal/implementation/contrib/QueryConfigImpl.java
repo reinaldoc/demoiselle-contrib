@@ -91,33 +91,84 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 
 	private Object generic;
 
+	@Override
+	public String toString() {
+		return Strings.toString(this);
+	}
+
 	public QueryConfigImpl() {
-		maxResult = 0;
-		pagination = false;
 		totalResults = 0;
+		resetPagination();
+		init();
+	}
+
+	public void init() {
+		pagination = false;
+		maxResult = 0;
 		sorting = new String[0];
 		sortOrder = true;
 		filter = new HashMap<String, Object>();
 		filterComparison = Comparison.EQUALS;
 		filterLogic = Logic.AND;
 		filterCaseInsensitive = true;
-		reset();
 	}
 
-	private void reset() {
+	private void resetPagination() {
+		pagination = false;
 		currentPage = 0;
 		totalPages = 0;
 	}
 
-	private void validateNegativeValue(int input) throws IndexOutOfBoundsException {
-		if (input < 0)
-			throw new IndexOutOfBoundsException("colocar mensagem");
+	private void requireNonNegativeValue(int value) throws IndexOutOfBoundsException {
+		if (value < 0)
+			throw new IndexOutOfBoundsException("value must be non negative");
 	}
 
-	private void validateCurrentPage(int currentPage) throws IndexOutOfBoundsException {
-		if (currentPage >= this.totalPages)
-			if (this.totalPages > 0)
-				throw new IndexOutOfBoundsException("colocar mensagem");
+
+	public boolean isPaginated() {
+		return pagination;
+	}
+
+	/**
+	 * Pagination is based on slice of a table. Then is required a initial
+	 * (first result) and a final values (max result that means page size) for
+	 * retrieve the slice. To enable pagination maxResult must be greater then
+	 * zero
+	 */
+	public void setPagination(int firstResult, int maxResult) {
+		this.pagination = true;
+		setMaxResults(maxResult);
+		setFirstResult(firstResult);
+	}
+
+	public int getFirstResult() {
+		return currentPage * maxResult;
+	}
+
+	private void setFirstResult(int firstResult) {
+		requireNonNegativeValue(firstResult);
+		if (firstResult >= totalResults && totalResults > 0)
+			throw new IndexOutOfBoundsException("colocar mensagem");
+
+		if (firstResult > 0)
+			setCurrentPage(firstResult / maxResult);
+		else
+			setCurrentPage(0);
+	}
+
+	public int getMaxResults() {
+		return maxResult;
+	}
+
+	/**
+	 * Max results means page size for pagination concept. In general is the
+	 * query limit;
+	 */
+	public void setMaxResults(int maxResult) {
+		requireNonNegativeValue(maxResult);
+		this.maxResult = maxResult;
+		if (maxResult == 0)
+			resetPagination();
 	}
 
 	public int getCurrentPage() {
@@ -125,8 +176,9 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 	}
 
 	public void setCurrentPage(int currentPage) {
-		validateNegativeValue(currentPage);
-		validateCurrentPage(currentPage);
+		requireNonNegativeValue(currentPage);
+		if (currentPage >= totalPages && totalPages > 0)
+			throw new IndexOutOfBoundsException("current page should be lower then total papes");
 		this.currentPage = currentPage;
 	}
 
@@ -134,82 +186,34 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		return totalPages;
 	}
 
-	private void setTotalPages(int totalPages) {
-		validateNegativeValue(totalPages);
-		this.totalPages = totalPages;
+	private void setTotalPages() {
+		requireNonNegativeValue(totalPages);
+		if (totalResults > 0 && maxResult > 0)
+			this.totalPages = (int) Math.ceil(totalResults * 1d / maxResult);
+		else
+			this.totalPages = 0;
 		if (totalPages == 0)
-			reset();
-		else if (getCurrentPage() >= totalPages)
+			resetPagination();
+		else if (currentPage >= totalPages)
 			setCurrentPage(totalPages - 1);
 	}
-
-	public boolean isPaginated() {
-		return pagination;
-	}
-
-	public void setPagination(int firstResult, int maxResult) {
-		this.pagination = true;
-		setFirstResult(firstResult);
-		setMaxResults(maxResult);
-	}
-
-	public int getMaxResults() {
-		return maxResult;
-	}
-
-	public void setMaxResults(int maxResult) {
-		validateNegativeValue(maxResult);
-		this.maxResult = maxResult;
-		if (maxResult > 0)
-			setTotalPages();
-		else
-			reset();
-	}
-
+	
+	/**
+	 * Method called by manage bean to retrieve the count all value defined by
+	 * persistence layer;
+	 */
 	public int getTotalResults() {
 		return totalResults;
 	}
 
-	public void setTotalResults(int totalResults) {
-		validateNegativeValue(totalResults);
-		this.totalResults = totalResults;
-		if (totalResults > 0)
-			setTotalPages();
-		else
-			reset();
-	}
-
-	private void setTotalPages() {
-		if (totalResults > 0)
-			setTotalPages((int) Math.ceil(totalResults * 1d / getMaxResults()));
-		else
-			setTotalPages(0);
-	}
-
-	public int getFirstResult() {
-		return getCurrentPage() * getMaxResults();
-	}
-
-	private void validateFirstResult(int firstResult) throws IndexOutOfBoundsException {
-		if (firstResult >= this.totalResults)
-			if (this.totalResults > 0)
-				throw new IndexOutOfBoundsException("colocar mensagem");
-	}
-
-	private void setFirstResult(int firstResult) {
-		validateNegativeValue(firstResult);
-		validateFirstResult(firstResult);
-
-		if (firstResult > 0) {
-			setCurrentPage(firstResult / maxResult);
-		} else {
-			setCurrentPage(0);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return Strings.toString(this);
+	/**
+	 * Method called by persistence to inform value from count all operation;
+	 * And calculate the total pages (totalResults / pageSize);
+	 */
+	public void setTotalResults(int countall) {
+		requireNonNegativeValue(countall);
+		totalResults = countall;
+		setTotalPages();
 	}
 
 	public String[] getSorting() {
