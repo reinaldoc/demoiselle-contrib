@@ -1,7 +1,6 @@
 package br.gov.frameworkdemoiselle.fuselage.view.edit;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,6 +21,10 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 
 	@Inject
 	private ProfileBC bc;
+
+	private List<SecurityRole> roles;
+
+	private List<SecurityRole> selectedRoles;
 
 	@Override
 	public String insert() {
@@ -106,12 +109,30 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	 */
 	public List<SecurityRole> getRoleList() {
 		try {
-			return bc.getRoles();
+			if (roles == null)
+				roles = bc.getRolesExceptList(getBean().getRoles());
+			return roles;
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
 			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityRole>();
+	}
+
+	public void clearRoleList() {
+		roles = null;
+		selectedRoles = new ArrayList<SecurityRole>();
+	}
+
+	public void unselectRole(SecurityRole securityRole) {
+		getBean().getRoles().remove(securityRole);
+	}
+
+	public void selectRoles() {
+		if (getBean().getRoles() == null)
+			getBean().setRoles(selectedRoles);
+		else
+			getBean().getRoles().addAll(selectedRoles);
 	}
 
 	/**
@@ -120,19 +141,19 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	 * @return array of bean SecurityRoles
 	 */
 	public SecurityRole[] getRoleArray() {
-		if (getBean().getRoles() == null)
-			return null;
-		return getBean().getRoles().toArray(new SecurityRole[0]);
+		return selectedRoles.toArray(new SecurityRole[0]);
 	}
 
 	/**
 	 * Set SecurityRoles on current bean from datatable selection array
 	 * 
-	 * @param roles
+	 * @param selectedRoles
 	 *            array of SecurityRoles to set current bean
 	 */
-	public void setRoleArray(SecurityRole[] roles) {
-		getBean().setRoles(Arrays.asList(roles));
+	public void setRoleArray(SecurityRole[] selectedRolesArray) {
+		for (SecurityRole role : selectedRolesArray)
+			if (!selectedRoles.contains(role))
+				selectedRoles.add(role);
 	}
 
 }

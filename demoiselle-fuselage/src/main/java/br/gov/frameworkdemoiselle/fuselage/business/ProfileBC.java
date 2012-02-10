@@ -9,7 +9,8 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.fuselage.persistence.ProfileDAO;
-import br.gov.frameworkdemoiselle.template.DelegateCrud;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 
 public class ProfileBC extends DelegateCrud<SecurityProfile, Long, ProfileDAO> {
 	private static final long serialVersionUID = 1L;
@@ -27,11 +28,12 @@ public class ProfileBC extends DelegateCrud<SecurityProfile, Long, ProfileDAO> {
 		return usedPriorities;
 	}
 
-	public List<SecurityRole> getRoles() {
-		return roleBC.findAll();
+	public List<SecurityRole> getRolesExceptList(List<SecurityRole> securityRoles) {
+		return roleBC.findRolesExceptList(securityRoles);
 	}
 
 	public List<SecurityResource> getResources() {
+		//getQueryConfig(SecurityResource.class);
 		return resourceBC.findAll();
 	}
 
