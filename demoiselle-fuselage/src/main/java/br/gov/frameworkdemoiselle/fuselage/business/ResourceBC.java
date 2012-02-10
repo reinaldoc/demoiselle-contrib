@@ -36,6 +36,7 @@ public class ResourceBC extends DelegateCrud<SecurityResource, Long, ResourceDAO
 	 */
 	public List<SecurityResource> findResourceExceptList(List<SecurityResource> securityResources) {
 		QueryConfig<SecurityResource> queryConfig = getQueryConfig();
+		queryConfig.setSorting("name");
 		if (securityResources != null) {
 			Long[] ids = new Long[securityResources.size()];
 			for (int i = 0; i != securityResources.size(); i++)
