@@ -75,6 +75,17 @@ public class SecurityUser implements Serializable {
 		setPassword(password);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || id == null || getClass() != obj.getClass())
+			return false;
+		if (id.equals(((SecurityUser) obj).id))
+			return true;
+		return false;
+	}
+
 	public Long getId() {
 		return id;
 	}

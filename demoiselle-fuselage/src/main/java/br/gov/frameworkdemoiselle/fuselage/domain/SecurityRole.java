@@ -54,6 +54,17 @@ public class SecurityRole implements Serializable {
 	@JoinTable(name = "SECURITYPROFILE_ROLE", joinColumns = { @JoinColumn(name = "ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "PROFILE_ID") })
 	private List<SecurityProfile> profiles;
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || id == null || getClass() != obj.getClass())
+			return false;
+		if (id.equals(((SecurityRole) obj).id))
+			return true;
+		return false;
+	}
+
 	public Long getId() {
 		return id;
 	}

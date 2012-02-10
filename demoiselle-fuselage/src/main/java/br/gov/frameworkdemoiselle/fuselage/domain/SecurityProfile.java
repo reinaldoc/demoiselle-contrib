@@ -60,6 +60,17 @@ public class SecurityProfile implements Serializable {
 	@JoinTable(name = "SECURITYPROFILE_BYRULE", joinColumns = { @JoinColumn(name = "PROFILE_ID") }, inverseJoinColumns = { @JoinColumn(name = "RULE_ID") })
 	private List<SecurityProfileByRule> rules;
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || id == null || getClass() != obj.getClass())
+			return false;
+		if (id.equals(((SecurityProfile) obj).id))
+			return true;
+		return false;
+	}
+
 	public Long getId() {
 		return id;
 	}
