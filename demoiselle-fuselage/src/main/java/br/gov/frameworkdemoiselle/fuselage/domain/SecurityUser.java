@@ -41,9 +41,12 @@ public class SecurityUser implements Serializable {
 
 	@Column
 	@Size(max = 255, message = "Especifique melhor a senha")
+	private String passwordhash;
+
+	@Transient
+	@Size(max = 255, message = "Especifique melhor a senha")
 	private String password;
 
-	@Column
 	@Transient
 	@Size(max = 255, message = "Especifique melhor a senha")
 	private String passwordrepeat;
@@ -72,7 +75,8 @@ public class SecurityUser implements Serializable {
 		this.login = login;
 		this.name = name;
 		this.available = 1;
-		setPassword(password);
+		this.password = password;
+		setPasswordhash();
 	}
 
 	@Override
@@ -110,12 +114,30 @@ public class SecurityUser implements Serializable {
 		this.name = name;
 	}
 
+	public boolean isPassword(String password) {
+		if (passwordhash != null && passwordhash.equals(DigestUtils.sha512Hex(password)))
+			return true;
+		return false;
+	}
+
+	public void setPasswordhash() {
+		this.passwordhash = DigestUtils.sha512Hex(password);
+	}
+
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
-		this.password = DigestUtils.sha512Hex(password);
+		this.password = password;
+	}
+
+	public String getPasswordrepeat() {
+		return passwordrepeat;
+	}
+
+	public void setPasswordrepeat(String passwordrepeat) {
+		this.passwordrepeat = passwordrepeat;
 	}
 
 	public List<SecurityProfile> getProfiles() {
@@ -154,14 +176,6 @@ public class SecurityUser implements Serializable {
 		if (this.available != null && this.available.intValue() == 1)
 			return true;
 		return false;
-	}
-
-	public String getPasswordrepeat() {
-		return passwordrepeat;
-	}
-
-	public void setPasswordrepeat(String passwordrepeat) {
-		this.passwordrepeat = passwordrepeat;
 	}
 
 }
