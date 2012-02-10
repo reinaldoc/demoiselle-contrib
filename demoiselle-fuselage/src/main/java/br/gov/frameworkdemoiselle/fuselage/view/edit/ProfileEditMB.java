@@ -24,7 +24,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 
 	private List<SecurityRole> roles;
 
-	private List<SecurityRole> selectedRoles;
+	private List<SecurityRole> selectedRoles = new ArrayList<SecurityRole>();
 
 	@Override
 	public String insert() {
@@ -103,9 +103,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	}
 
 	/**
-	 * Get all SecurityRoles for datatable
-	 * 
-	 * @return list of all SecurityRoles
+	 * Get all roles except already in bean
 	 */
 	public List<SecurityRole> getRoleList() {
 		try {
@@ -121,7 +119,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 
 	public void clearRoleList() {
 		roles = null;
-		selectedRoles = new ArrayList<SecurityRole>();
+		selectedRoles.clear();
 	}
 
 	public void unselectRole(SecurityRole securityRole) {

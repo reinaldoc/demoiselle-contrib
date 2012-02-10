@@ -26,8 +26,8 @@ public class UserBC extends DelegateCrud<SecurityUser, Long, UserDAO> {
 	@Inject
 	private ProfileBC profileBC;
 
-	public List<SecurityProfile> getProfiles() {
-		return profileBC.findAll();
+	public List<SecurityProfile> getProfilesExceptList(List<SecurityProfile> securityProfiles) {
+		return profileBC.findProfilesExceptList(securityProfiles);
 	}
 
 	public boolean userAvailable(String login) {
