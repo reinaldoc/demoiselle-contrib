@@ -21,6 +21,10 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 	@Inject
 	private RoleBC bc;
 
+	private List<SecurityResource> resources;
+
+	private List<SecurityResource> selectedResources = new ArrayList<SecurityResource>();
+
 	@Override
 	public String insert() {
 		try {
@@ -73,7 +77,9 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 	 */
 	public List<SecurityResource> getResourceList() {
 		try {
-			return bc.getResourcesExceptList(getBean().getResources());
+			if (resources == null)
+				resources = bc.getResourcesExceptList(getBean().getResources());
+			return resources;
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
 			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
@@ -81,15 +87,27 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 		return new ArrayList<SecurityResource>();
 	}
 
+	public void clearResourceList() {
+		resources = null;
+		selectedResources.clear();
+	}
+
 	public void unselectResource(SecurityResource securityResource) {
 		getBean().getResources().remove(securityResource);
 	}
 
+	public void selectResources() {
+		if (getBean().getResources() == null)
+			getBean().setResources(selectedResources);
+		else
+			getBean().getResources().addAll(selectedResources);
+	}
+
 	/**
-	 * null array for datatable selection
+	 * Get SecurityResources from current bean as array for datatable selection
 	 */
 	public SecurityResource[] getResourceArray() {
-		return null;
+		return selectedResources.toArray(new SecurityResource[0]);
 	}
 
 	/**
@@ -98,16 +116,10 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 	 * @param selectedResources
 	 *            array of SecurityResources to set current bean
 	 */
-	public void setResourceArray(SecurityResource[] selectedResources) {
-		if (selectedResources == null || selectedResources.length == 0)
-			getBean().setResources(null);
-		List<SecurityResource> securityResources = new ArrayList<SecurityResource>();
-		for (SecurityResource securityResource : selectedResources)
-			securityResources.add(securityResource);
-		if (getBean().getResources() == null)
-			getBean().setResources(securityResources);
-		else
-			getBean().getResources().addAll(securityResources);
+	public void setResourceArray(SecurityResource[] selectedResourcesArray) {
+		for (SecurityResource resource : selectedResourcesArray)
+			if (!selectedResources.contains(resource))
+				selectedResources.add(resource);
 	}
 
 }

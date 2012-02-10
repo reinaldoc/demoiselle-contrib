@@ -22,6 +22,7 @@ public class RoleBC extends DelegateCrud<SecurityRole, Long, RoleDAO> {
 	 */
 	public List<SecurityRole> findRolesExceptList(List<SecurityRole> securityRoles) {
 		QueryConfig<SecurityRole> queryConfig = getQueryConfig();
+		queryConfig.setSorting("name");
 		if (securityRoles != null) {
 			Long[] ids = new Long[securityRoles.size()];
 			for (int i = 0; i != securityRoles.size(); i++)
