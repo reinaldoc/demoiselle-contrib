@@ -72,7 +72,13 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 	 * Get all resources except already in bean
 	 */
 	public List<SecurityResource> getResourceList() {
-		return bc.getResourcesExceptList(getBean().getResources());
+		try {
+			return bc.getResourcesExceptList(getBean().getResources());
+		} catch (RuntimeException e) {
+			Faces.validationFailed();
+			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
+		}
+		return new ArrayList<SecurityResource>();
 	}
 
 	public void unselectResource(SecurityResource securityResource) {
