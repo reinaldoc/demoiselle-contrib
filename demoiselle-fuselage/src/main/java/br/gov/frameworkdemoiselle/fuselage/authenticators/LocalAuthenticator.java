@@ -2,8 +2,6 @@ package br.gov.frameworkdemoiselle.fuselage.authenticators;
 
 import javax.inject.Inject;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import br.gov.frameworkdemoiselle.fuselage.business.UserBC;
 import br.gov.frameworkdemoiselle.fuselage.configuration.LocalAuthenticatorConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
@@ -38,7 +36,7 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 
 	private boolean login(String username, String password) {
 		validateAdmin(username);
-		
+
 		if (Strings.isBlank(username) || Strings.isBlank(password))
 			return false;
 
@@ -50,12 +48,12 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 			return false;
 		}
 
-		if (DigestUtils.sha512Hex(password).equals(securityUser.getPassword()))
+		if (securityUser.isPassword(password))
 			return true;
 
 		return false;
 	}
-	
+
 	private void validateAdmin(String username) {
 		if (config.getAdmins().contains(username))
 			results.getGenericResults().put("admin", "true");

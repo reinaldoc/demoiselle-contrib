@@ -29,7 +29,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 	@Override
 	public String insert() {
 		try {
-			if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().length() < 8) {
+			if (getBean().getPassword().length() < 8) {
 				Faces.validationFailed();
 				Faces.addI18nMessage("fuselage.user.password.notstrong");
 				return null;
@@ -39,7 +39,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 				Faces.addI18nMessage("fuselage.user.available.unavailable", getBean().getLogin());
 				return null;
 			}
-			if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
+			if (!getBean().getPassword().equals(getBean().getPasswordrepeat())) {
 				Faces.validationFailed();
 				Faces.addI18nMessage("fuselage.user.password.notmatch");
 				return null;
@@ -50,6 +50,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 			return null;
 		}
 
+		getBean().setPasswordhash();
 		getBean().setAvailable(1);
 
 		try {
@@ -66,17 +67,17 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 	@Override
 	public String update() {
 		try {
-			if (Strings.isBlank(getBean().getPassword()) && Strings.isBlank(getBean().getPasswordrepeat())) {
-				SecurityUser securityUser = bc.load(getBean().getId());
-				getBean().setPassword(securityUser.getPassword());
-			} else if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().length() < 8) {
-				Faces.validationFailed();
-				Faces.addI18nMessage("fuselage.user.password.notstrong");
-				return null;
-			} else if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
-				Faces.validationFailed();
-				Faces.addI18nMessage("fuselage.user.password.notmatch");
-				return null;
+			if (Strings.isNotBlank(getBean().getPassword()) || Strings.isNotBlank(getBean().getPasswordrepeat())) {
+				if (Strings.isNotBlank(getBean().getPassword()) && getBean().getPassword().length() < 8) {
+					Faces.validationFailed();
+					Faces.addI18nMessage("fuselage.user.password.notstrong");
+					return null;
+				} else if (Strings.isNotBlank(getBean().getPassword()) && !getBean().getPassword().equals(getBean().getPasswordrepeat())) {
+					Faces.validationFailed();
+					Faces.addI18nMessage("fuselage.user.password.notmatch");
+					return null;
+				}
+				getBean().setPasswordhash();
 			}
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
