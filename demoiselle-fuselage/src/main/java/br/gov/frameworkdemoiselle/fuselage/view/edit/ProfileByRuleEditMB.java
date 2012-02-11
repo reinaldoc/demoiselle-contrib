@@ -133,7 +133,7 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 		getBean().getProfiles().remove(securityProfile);
 	}
 
-	public void selectResources() {
+	public void selectProfiles() {
 		if (getBean().getProfiles() == null)
 			getBean().setProfiles(selectedProfiles);
 		else

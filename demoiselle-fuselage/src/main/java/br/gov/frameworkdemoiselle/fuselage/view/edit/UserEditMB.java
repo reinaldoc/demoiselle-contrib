@@ -182,7 +182,7 @@ public class UserEditMB extends AbstractEditPageBean<SecurityUser, Long> {
 		getBean().getProfiles().remove(securityProfile);
 	}
 
-	public void selectResources() {
+	public void selectProfiles() {
 		if (getBean().getProfiles() == null)
 			getBean().setProfiles(selectedProfiles);
 		else
