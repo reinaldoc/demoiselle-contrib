@@ -1,7 +1,6 @@
 package br.gov.frameworkdemoiselle.fuselage.view.edit;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +22,10 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 
 	@Inject
 	private ProfileByRuleBC bc;
+
+	private List<SecurityProfile> profiles;
+
+	private List<SecurityProfile> selectedProfiles = new ArrayList<SecurityProfile>();
 
 	@Inject
 	private ViewConfig viewConfig;
@@ -105,18 +108,36 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	}
 
 	/**
-	 * Get all SecurityProfiles for datatable
+	 * Get all profiles except already in bean
 	 * 
 	 * @return list of all SecurityProfiles
 	 */
 	public List<SecurityProfile> getProfileList() {
 		try {
-			return bc.getProfiles();
+			if (profiles == null)
+				profiles = bc.getProfilesExceptList(getBean().getProfiles());
+			return profiles;
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
 			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
 		}
 		return new ArrayList<SecurityProfile>();
+	}
+
+	public void clearProfileList() {
+		profiles = null;
+		selectedProfiles.clear();
+	}
+
+	public void unselectProfile(SecurityProfile securityProfile) {
+		getBean().getProfiles().remove(securityProfile);
+	}
+
+	public void selectResources() {
+		if (getBean().getProfiles() == null)
+			getBean().setProfiles(selectedProfiles);
+		else
+			getBean().getProfiles().addAll(selectedProfiles);
 	}
 
 	/**
@@ -125,9 +146,7 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	 * @return array of bean SecurityProfiles
 	 */
 	public SecurityProfile[] getProfileArray() {
-		if (getBean().getProfiles() == null)
-			return null;
-		return getBean().getProfiles().toArray(new SecurityProfile[0]);
+		return selectedProfiles.toArray(new SecurityProfile[0]);
 	}
 
 	/**
@@ -136,8 +155,10 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	 * @param profiles
 	 *            array of SecurityProfiles to set current bean
 	 */
-	public void setProfileArray(SecurityProfile[] profiles) {
-		getBean().setProfiles(Arrays.asList(profiles));
+	public void setProfileArray(SecurityProfile[] selectedProfilesArray) {
+		for (SecurityProfile profile : selectedProfilesArray)
+			if (!selectedProfiles.contains(profile))
+				selectedProfiles.add(profile);
 	}
 
 }

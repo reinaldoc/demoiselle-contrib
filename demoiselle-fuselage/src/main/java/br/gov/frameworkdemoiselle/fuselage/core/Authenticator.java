@@ -45,7 +45,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 	private AuthenticatorResults authResults;
 
 	@Inject
-	private ProfileByRuleBC profileDetectBC;
+	private ProfileByRuleBC profileByRuleBC;
 
 	@Override
 	public void unAuthenticate() {
@@ -106,7 +106,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		 * Set all profiles to admin
 		 */
 		if (authResults.getGenericResults().containsKey("admin")) {
-			setPermissionsByProfiles(profileDetectBC.getProfiles(), false);
+			setPermissionsByProfiles(profileByRuleBC.getProfiles(), false);
 			return;
 		}
 
@@ -118,7 +118,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		/*
 		 * SecurityProfileDetect.implementation.ALL-LOGGED-IN
 		 */
-		List<SecurityProfileByRule> allLoggedIn = profileDetectBC.findByImplementation("ALL-LOGGED-IN");
+		List<SecurityProfileByRule> allLoggedIn = profileByRuleBC.findByImplementation("ALL-LOGGED-IN");
 		if (allLoggedIn != null)
 			for (SecurityProfileByRule profileDetect : allLoggedIn)
 				setPermissionsByProfiles(profileDetect.getProfiles(), true);
@@ -130,7 +130,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			/*
 			 * SecurityProfileDetect.implementation.LDAP-USER-ATTR
 			 */
-			List<SecurityProfileByRule> ldapUserAttr = profileDetectBC.findByImplementation("LDAP-USER-ATTR");
+			List<SecurityProfileByRule> ldapUserAttr = profileByRuleBC.findByImplementation("LDAP-USER-ATTR");
 			if (ldapUserAttr != null) {
 				for (SecurityProfileByRule profileDetect : ldapUserAttr) {
 					if (profileDetect.getKeyname() != null && profileDetect.getValue() != null && profileDetect.getValuenotation() != null) {
@@ -152,7 +152,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			/*
 			 * SecurityProfileDetect.implementation.LDAP-USER-DN
 			 */
-			List<SecurityProfileByRule> ldapUserDn = profileDetectBC.findByImplementation("LDAP-USER-DN");
+			List<SecurityProfileByRule> ldapUserDn = profileByRuleBC.findByImplementation("LDAP-USER-DN");
 			String dn = authResults.getGenericResults().get("dn");
 			if (ldapUserDn != null && dn != null)
 				for (SecurityProfileByRule profileDetect : ldapUserDn)

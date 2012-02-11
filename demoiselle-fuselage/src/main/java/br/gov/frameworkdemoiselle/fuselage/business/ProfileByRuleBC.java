@@ -18,7 +18,12 @@ public class ProfileByRuleBC extends DelegateCrud<SecurityProfileByRule, Long, P
 	private ProfileBC profileBC;
 
 	public List<SecurityProfile> getProfiles() {
+		getQueryConfig(SecurityProfile.class).setSorting("name");
 		return profileBC.findAll();
+	}
+
+	public List<SecurityProfile> getProfilesExceptList(List<SecurityProfile> securityProfiles) {
+		return profileBC.findProfilesExceptList(securityProfiles);
 	}
 
 	public List<SecurityProfileByRule> findByImplementation(String implementation) {
