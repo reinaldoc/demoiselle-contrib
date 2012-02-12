@@ -10,6 +10,7 @@ import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
 import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
@@ -25,13 +26,10 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 	@Inject
 	private ProfileByRuleBC bc;
 
-	public String getSortAttribute() {
-		return "name";
-	}
-
 	@Override
-	protected List<SecurityProfileByRule> handleResultList() {
+	protected List<SecurityProfileByRule> handleResultList(QueryConfig<SecurityProfileByRule> queryConfig) {
 		try {
+			queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

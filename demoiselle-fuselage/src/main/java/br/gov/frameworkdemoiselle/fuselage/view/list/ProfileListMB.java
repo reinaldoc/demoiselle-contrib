@@ -24,21 +24,17 @@ public class ProfileListMB extends AbstractListPageBean<SecurityProfile, Long> {
 	@Inject
 	private ProfileBC bc;
 
-	public String getSortAttribute() {
-		return "name";
-	}
-
 	@Override
-	protected List<SecurityProfile> handleResultList() {
+	protected List<SecurityProfile> handleResultList(QueryConfig<SecurityProfile> queryConfig) {
 		try {
 			if (Strings.isNotBlank(getResultFilter())) {
-				QueryConfig<SecurityProfile> queryConfig = getQueryConfig();
 				queryConfig.getFilter().put("name", getResultFilter());
 				queryConfig.getFilter().put("description", getResultFilter());
 				queryConfig.getFilter().put("shortDescription", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
 			}
+			queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

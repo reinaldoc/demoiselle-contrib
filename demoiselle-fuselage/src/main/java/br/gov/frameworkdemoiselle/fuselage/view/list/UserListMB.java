@@ -37,21 +37,17 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 	@Inject
 	private FileRenderer renderer;
 
-	public String getSortAttribute() {
-		return "name";
-	}
-
 	@Override
-	protected List<SecurityUser> handleResultList() {
+	protected List<SecurityUser> handleResultList(QueryConfig<SecurityUser> queryConfig) {
 		try {
 			if (Strings.isNotBlank(getResultFilter())) {
-				QueryConfig<SecurityUser> queryConfig = getQueryConfig();
 				queryConfig.getFilter().put("login", getResultFilter());
 				queryConfig.getFilter().put("name", getResultFilter());
 				queryConfig.getFilter().put("description", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
 			}
+			queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

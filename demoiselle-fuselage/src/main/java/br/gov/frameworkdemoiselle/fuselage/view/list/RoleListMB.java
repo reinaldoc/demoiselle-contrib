@@ -24,20 +24,16 @@ public class RoleListMB extends AbstractListPageBean<SecurityRole, Long> {
 	@Inject
 	private RoleBC bc;
 
-	public String getSortAttribute() {
-		return "name";
-	}
-
-	protected List<SecurityRole> handleResultList() {
+	protected List<SecurityRole> handleResultList(QueryConfig<SecurityRole> queryConfig) {
 		try {
 			if (Strings.isNotBlank(getResultFilter())) {
-				QueryConfig<SecurityRole> queryConfig = getQueryConfig();
 				queryConfig.getFilter().put("name", getResultFilter());
 				queryConfig.getFilter().put("description", getResultFilter());
 				queryConfig.getFilter().put("shortDescription", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
 			}
+			queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

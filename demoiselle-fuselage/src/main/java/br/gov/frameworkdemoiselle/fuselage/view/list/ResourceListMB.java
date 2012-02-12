@@ -24,21 +24,17 @@ public class ResourceListMB extends AbstractListPageBean<SecurityResource, Long>
 	@Inject
 	private ResourceBC bc;
 
-	public String getSortAttribute() {
-		return "name";
-	}
-
 	@Override
-	protected List<SecurityResource> handleResultList() {
+	protected List<SecurityResource> handleResultList(QueryConfig<SecurityResource> queryConfig) {
 		try {
 			if (Strings.isNotBlank(getResultFilter())) {
-				QueryConfig<SecurityResource> queryConfig = getQueryConfig();
 				queryConfig.getFilter().put("name", getResultFilter());
 				queryConfig.getFilter().put("value", getResultFilter());
 				queryConfig.getFilter().put("description", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
 			}
+			queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

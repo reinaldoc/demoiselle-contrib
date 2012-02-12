@@ -71,24 +71,20 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	@Inject
 	private QueryContext queryContext;
 
-	protected String sortAttribute;
-
-	protected abstract String getSortAttribute();
+	protected abstract List<T> handleResultList(QueryConfig<T> queryConfig);
 
 	private LazyDataModel<T> lazyDataModel = new LazyDataModel<T>() {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public List<T> load(int first, int pageSize, String sortAttribute, SortOrder sortOrder, Map<String, String> filters) {
-			if (sortAttribute == null)
-				sortAttribute = getSortAttribute();
 			QueryConfig<T> queryConfig = getQueryConfig();
 			queryConfig.setPagination(first, pageSize);
 			queryConfig.setSorting(sortAttribute);
 			queryConfig.setSortOrder(sortOrder.equals(SortOrder.ASCENDING));
 			queryConfig.setFilterStr(filters);
 
-			List<T> t = handleResultList();
+			List<T> t = handleResultList(queryConfig);
 			this.setRowCount(queryConfig.getTotalResults());
 			this.setPageSize(pageSize);
 
@@ -111,32 +107,24 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	private Class<T> beanClass;
 
 	protected Class<T> getBeanClass() {
-		if (this.beanClass == null) {
+		if (this.beanClass == null)
 			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
-		}
-
 		return this.beanClass;
 	}
 
 	@Override
 	public DataModel<T> getDataModel() {
-		if (this.dataModel == null) {
+		if (this.dataModel == null)
 			this.dataModel = new ListDataModel<T>(this.getResultList());
-		}
-
 		return this.dataModel;
 	}
 
 	@Override
 	public List<T> getResultList() {
-		if (this.resultList == null) {
-			this.resultList = handleResultList();
-		}
-
+		if (this.resultList == null)
+			this.resultList = handleResultList(getQueryConfig());
 		return this.resultList;
 	}
-
-	protected abstract List<T> handleResultList();
 
 	@Override
 	public String list() {
@@ -185,6 +173,8 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	public void setResultFilter(String resultFilter) {
+		if (this.resultFilter == null || !this.resultFilter.equals(resultFilter))
+			clearResultList();
 		this.resultFilter = resultFilter;
 	}
 
