@@ -240,16 +240,17 @@ public class EntryQueryMap implements Serializable {
 	 * @return
 	 */
 	private Map<String, Map<String, Object>> getResult(boolean singleResult) {
-		Map<String, Map<String, Object>> resultMap = new HashMap<String, Map<String, Object>>();
+		Map<String, Map<String, Object>> resultMap;
 
 		if (singleResult)
 			resultMap = find(2);
 		else
 			resultMap = find();
 
+		// getResult should't return null to avoid repeated queries by JSF;
 		if (resultMap == null || resultMap.size() == 0 || (singleResult && enforceSingleResult && resultMap.size() > 1)) {
 			loggerArgs(searchFilter, 0);
-			return null;
+			return new HashMap<String, Map<String, Object>>();
 		}
 
 		loggerArgs(searchFilter, resultMap.size());
