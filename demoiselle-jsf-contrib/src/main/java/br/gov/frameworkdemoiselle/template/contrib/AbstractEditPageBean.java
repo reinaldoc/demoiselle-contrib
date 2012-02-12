@@ -66,9 +66,8 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean {
 	}
 
 	public T getBean() {
-		if (this.bean == null) {
+		if (this.bean == null)
 			editBean();
-		}
 		return this.bean;
 	}
 
