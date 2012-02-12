@@ -56,9 +56,6 @@ public class EntryManagerConfig implements Serializable {
 	@Name("ldapentry.packages")
 	private List<String> ldapentry_packages;
 
-	@Name("findByExample.maxresult")
-	private int findByExampleMaxresult = 0;
-
 	@Name("query.enforceSingleResult")
 	private boolean enforceSingleResult = true;
 
@@ -150,13 +147,6 @@ public class EntryManagerConfig implements Serializable {
 	 */
 	public List<String> getLdapentryPackages() {
 		return ldapentry_packages;
-	}
-
-	/**
-	 * @return EntryManager.findByExample.maxresult property
-	 */
-	public int getFindByExampleMaxresult() {
-		return findByExampleMaxresult;
 	}
 
 	/**
