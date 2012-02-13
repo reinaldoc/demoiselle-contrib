@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+		<h:panelGrid id="faa-resource-edit-panel-id" cellpadding="0" cellspacing="0">
+			<p:dialog id="faa-resource-edit-dlg-id" header="FAA - Cadastro de Recursos" widgetVar="faa_resource_edit_dlg" modal="true" width="480"
+				resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body" id="faa-resource-edit-dlg-body-id">
+					<h:outputText value="Tipo:" />
+					<p:autoComplete value="#{resourceEditMB.bean.name}" completeMethod="#{resourceEditMB.names}" onkeypress="return event.keyCode!=13" />
+
+					<h:outputText value="Valor:" />
+					<h:inputText value="#{resourceEditMB.bean.value}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+					<h:outputText value="Descrição:" />
+					<h:inputTextarea value="#{resourceEditMB.bean.description}" onkeypress="return event.keyCode!=13" />
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-resource-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="faa-resource-edit-dlg-save-id" dialogId="faa-resource-edit-dlg-id" dialogWidgetVar="faa_resource_edit_dlg"
+						updateMode="#{resourceEditMB.updateMode}" actionUpdater="#{resourceEditMB.update}" actionInserter="#{resourceEditMB.insert}"
+						actionCloser="#{resourceListMB.clearValidation}" updateOnClose="faa-resource-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+		</h:panelGrid>
+	</h:form>
+</ui:composition>

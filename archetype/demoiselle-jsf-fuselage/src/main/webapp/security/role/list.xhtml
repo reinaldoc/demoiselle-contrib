@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+
+		<p:confirmDialog message="Deseja excluir o papél: #{roleEditMB.bean.name} ?" header="Atenção!" severity="alert"
+			id="faa-role-delete-dlg-id" widgetVar="faa_role_delete_dlg">
+
+			<p:commandButton value="Sim" oncomplete="faa_role_delete_dlg.hide()" update="faa-role-list-datatable-id, faa-growl-id"
+				action="#{roleEditMB.delete}" actionListener="#{roleListMB.clearResultList}" style="margin-right: 20px;" />
+
+			<p:commandButton value="Não" onclick="faa_role_delete_dlg.hide()" type="button" style="margin-left: 20px;" />
+
+		</p:confirmDialog>
+
+		<h:panelGroup id="faa-role-list-id">
+
+			<p:dataTable id="faa-role-list-datatable-id" widgetVar="faa_role_dt_wv" emptyMessage="Não há registros"
+				value="#{roleListMB.lazyDataModel}" var="faa_role_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+				<p:column styleClass="faa-label faa-label-role">
+					<h:outputText value="Role" />
+				</p:column>
+
+				<p:column headerText="Nome" sortBy="#{faa_role_dt_row.name}">
+					<h:panelGroup layout="block" style="width: 200px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_role_dt_row.name}" title="#{faa_role_dt_row.shortDescription}" />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column headerText="Descrição" sortBy="#{faa_role_dt_row.description}">
+					<h:panelGroup layout="block" style="width: 500px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_role_dt_row.description}" title="#{faa_role_dt_row.description}" />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column headerText="Restritiva">
+					<h:panelGroup layout="block" style="width: 50px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_role_dt_row.restriction ? 'Sim' : '' }" />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column style="text-align: right; padding: 0px">
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
+						<p:commandButton icon="ui-icon-search" immediate="true" update="faa-role-edit-dlg-body-id, faa-role-edit-dlg-buttons-id"
+							styleClass="margin" action="#{roleEditMB.editById(faa_role_dt_row.id)}" oncomplete="faa_role_edit_dlg.show()"
+							title="Editar Informações" />
+						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-role-delete-dlg-id" styleClass="margin"
+							action="#{roleEditMB.editById(faa_role_dt_row.id)}" oncomplete="faa_role_delete_dlg.show()" title="Excluir Recurso" />
+					</h:panelGroup>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+
+		<p:confirmDialog message="Deseja excluir o fingerprint: #{fingerprintEditMB.bean.serverName} ?" header="Atenção!" severity="alert"
+			id="myapp-fingerprint-delete-dlg-id" widgetVar="myapp_fingerprint_delete_dlg">
+
+			<p:commandButton value="Sim" oncomplete="myapp_fingerprint_delete_dlg.hide()" update="myapp-fingerprint-list-datatable-id, faa-growl-id"
+				action="#{fingerprintEditMB.delete}" actionListener="#{fingerprintListMB.clearResultList}" style="margin-right: 20px;" />
+
+			<p:commandButton value="Não" onclick="myapp_fingerprint_delete_dlg.hide()" type="button" style="margin-left: 20px;" />
+
+		</p:confirmDialog>
+
+		<h:panelGroup id="myapp-fingerprint-list-panel-id">
+
+			<p:dataTable id="myapp-fingerprint-list-datatable-id" widgetVar="myapp_fingerprint_list_datatable" emptyMessage="Não há registros"
+				value="#{fingerprintListMB.resultList}" var="fingerprint" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+				<p:column headerText="Id" sortBy="#{fingerprint.id}">
+
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre; width: 30px;">
+						<h:outputText value="#{fingerprint.id} " />
+					</h:panelGroup>
+
+				</p:column>
+
+				<p:column headerText="Descrição" sortBy="#{fingerprint.serverName}">
+
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre; width: 180px;">
+						<h:outputText value="#{fingerprint.serverName}" title="#{fingerprint.serverName}" />
+					</h:panelGroup>
+
+				</p:column>
+
+				<p:column headerText="Categoria" sortBy="#{fingerprint.category}">
+
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre; width: 120px;">
+						<h:outputText value="#{fingerprint.category}" title="#{fingerprint.category}" />
+					</h:panelGroup>
+
+				</p:column>
+
+				<p:column headerText="Link" sortBy="#{fingerprint.fingerprint}">
+
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre;  width: 320px;">
+						<h:outputText value="#{fingerprint.fingerprint}" title="#{fingerprint.fingerprint}" />
+					</h:panelGroup>
+
+				</p:column>
+
+				<p:column style="text-align: right; padding: 0px">
+
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
+
+						<p:commandButton icon="ui-icon-search" title="Editar Informações" oncomplete="myapp_fingerprint_edit_dlg.show()" styleClass="margin"
+							action="#{fingerprintEditMB.editById(fingerprint.id)}" update="myapp-fingerprint-edit-dlg-body-id, myapp-fingerprint-edit-dlg-buttons-id"
+							immediate="true" />
+
+						<p:commandButton icon="ui-icon-trash" title="Excluir fingerprint" oncomplete="myapp_fingerprint_delete_dlg.show()"
+							action="#{fingerprintEditMB.editBean(fingerprint)}" update="myapp-fingerprint-delete-dlg-id" />
+
+					</h:panelGroup>
+
+				</p:column>
+
+			</p:dataTable>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

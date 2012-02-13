@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+
+		<h:panelGroup id="faa-security-menu-id">
+
+			<p:commandLink value="Usuários" immediate="true" update="faa-body-id, faa-header-id" actionListener="#{menuContext.select('Security', 'User')}"
+				styleClass="#{menuContext.menu['Security']['User']['Style']}" />
+
+			<p:commandLink value="Perfis" immediate="true" update="faa-body-id, faa-header-id"
+				actionListener="#{menuContext.select('Security', 'Profile')}" styleClass="#{menuContext.menu['Security']['Profile']['Style']}" />
+
+			<p:commandLink value="Papéis" immediate="true" update="faa-body-id, faa-header-id" actionListener="#{menuContext.select('Security', 'Role')}"
+				styleClass="#{menuContext.menu['Security']['Role']['Style']}" />
+
+			<p:commandLink value="Recursos" immediate="true" update="faa-body-id, faa-header-id"
+				actionListener="#{menuContext.select('Security', 'Resource')}" styleClass="#{menuContext.menu['Security']['Resource']['Style']}" />
+
+			<p:spacer height="10px" />
+
+			<p:commandLink value="Configuração" immediate="true" update="faa-body-id, faa-header-id"
+				actionListener="#{menuContext.select('Security', 'Configuração')}" styleClass="#{menuContext.menu['Security']['Configuração']['Style']}" />
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

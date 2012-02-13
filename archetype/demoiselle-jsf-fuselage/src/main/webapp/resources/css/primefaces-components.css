@@ -1,0 +1,274 @@
+@CHARSET "UTF-8";
+
+/* Font */
+.ui-widget {
+	font: small-caption !important;
+	font-size: 12px !important;
+	text-shadow: 1px 1px 9px #D6D6D6;
+}
+
+/*  Permit no spacing in <p:dataGrid>  */
+.ui-datagrid-data {
+	border-collapse: collapse;
+}
+
+.ui-datagrid-column {
+	padding: 0px !important;
+}
+
+.ui-widget-content {
+	border: none;
+}
+
+/* Buttons */
+button.ui-button,button.ui-button-text-only {
+	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5),
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #74FFCC !important;
+	border: 0px solid #DEE5F2 !important;
+	border-radius: 6px;
+	font-weight: bold !important;
+	box-shadow: 2px 2px 4px #CCCCCC;
+}
+
+button.ui-button:hover {
+	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.3),
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #2EC890 !important;
+	border: 0px;
+	border-radius: 6px;
+	font-weight: bold;
+}
+
+button.ui-button-icon-only,button.ui-button-icon-only.ui-state-default {
+	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5),
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #74FFCC;
+	height: 24px;
+	width: 24px;
+}
+
+/*  DataTable  */
+.ui-datatable {
+	font-family: inherit !important;
+}
+
+.ui-datatable div.ui-dt-c {
+	width: 100%;
+}
+
+.ui-datatable th.ui-state-default {
+	background: none;
+	background-color: #E8E8E8;
+	border: 0px;
+	padding: 5px 10px;
+	text-align: left;
+}
+
+.ui-datatable th.ui-state-hover {
+	background: none;
+	background-color: #E0E0E0 !important;
+}
+
+
+.ui-datatable th.ui-paginator {
+	text-align: center;
+}
+
+.ui-datatable-odd {
+	background: none repeat scroll 0 0 #F9F9F9;
+}
+
+.ui-datatable-even {
+	background: none repeat scroll 0 0 #F3F3F3;
+}
+
+.ui-datatable td {
+	border: 0px !important;
+	border-bottom: 1px solid #D6D6D6 !important;
+	padding: 2px 4px 3px !important;
+}
+
+.ui-datatable-data-empty td {
+	border-bottom: 0px !important;
+}
+
+.ui-datatable-data tr {
+	color: #3f586d;
+	border: 0px !important;
+	border-bottom: 1px solid #b9c7d3;
+}
+
+.ui-datatable-data .ui-state-highlight {
+	background: #74FFCC;
+	text-shadow: 1px 1px 1px #AAAAAA;
+}
+
+.ui-datatable-data-empty tr {
+	border: 0px !important;
+	text-align: center !important;
+	height: 347px;
+}
+
+.ui-datatable-data-empty tr td div {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.ui-state-default {
+	box-shadow: none;
+}
+
+/* Dialog */
+.ui-dialog {
+	padding: 0px !important;
+	border: 3px solid white;
+	border-radius: 3px 3px 3px 3px !important;
+	-moz-box-shadow: 2px 2px 2px #aaa;
+	-webkit-box-shadow: 2px 2px 2px #aaa;
+	box-shadow: 2px 2px 2px 2px #aaa;
+}
+
+.ui-dialog-titlebar {
+	border-radius: 2px 2px 2px 2px !important;
+	margin: 0px !important;
+	border: 0px !important;
+	background-image: none !important;
+	background-color: #2EC890;
+	color: white;
+	padding: 0px 0px 5px 7px !important;
+	height: 19px;
+}
+
+.ui-state-hover {
+	background: none !important;
+}
+
+label.ui-state-focus {
+	background: none !important;
+}
+
+input[type=text].ui-state-focus,input[type=password].ui-state-focus,textarea.ui-state-focus,select.ui-state-focus
+	{
+	background-color: #FFFFE0 !important;
+}
+
+.ui-selectonemenu-panel {
+	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Confirm Dialog*/
+.ui-confirm-dialog .ui-dialog-buttonpane {
+	text-align: center !important;
+	padding: 0 1em 0.5em 0.4em;
+}
+
+.ui-confirm-dialog .ui-dialog-content {
+	padding: 10px 20px 0 !important;
+}
+
+.ui-confirm-dialog .ui-dialog-content .ui-icon {
+	background-image:
+		url("/archetype-fuselage/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
+	height: 32px;
+	width: 32px;
+	margin-right: 20px;
+}
+
+.ui-confirm-dialog .ui-dialog-content .ui-icon-alert {
+	background-position: 0 0 !important;
+}
+
+/* Growl */
+div.ui-growl {
+	right: 40px;
+	top: 40px;
+	width: 380px;
+}
+
+div.ui-growl .ui-widget-content {
+	background: none repeat scroll 0 0 #6EF8C0;
+	border: 1px solid #A8A8A8 !important;
+}
+
+div.ui-growl-message {
+	width: 300px;
+}
+
+/* Menu */
+.ui-menu {
+	background: #FAFAFA;
+	border-radius: 6px;
+	border: 2px solid #74ffcc;
+	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ui-menu .ui-menu-list .ui-state-hover {
+	background-color: #74ffcc !important;
+	color: white;
+	font-weight: bold;
+}
+
+/* TavView */
+div.ui-tabs ul.ui-helper-clearfix {
+	display: inline-block;
+}
+
+div.ui-tabs div.ui-tabs-panel {
+	padding: 8px 4px 2px;
+}
+
+div.ui-tabs ul.ui-tabs-nav {
+	background: none;
+}
+
+div.ui-tabs ul.ui-tabs-nav li {
+	border-bottom: 1px solid #A8A8A8 !important;
+	background-color: #74ffcc;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+	padding-bottom: 0;
+	border-bottom: 1px solid #A8A8A8 !important;
+	background-color: #54dfac;
+	box-shadow: 4px 4px 4px #CCCCCC;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected.ui-state-hover {
+	background-color: #54dfac !important;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-state-hover {
+	background-color: #64efbc !important;
+}
+
+/* File Upload */
+.fileupload-content div.ui-progressbar {
+	width: 150px;
+}
+
+.fileupload-content td {
+	vertical-align: middle;
+}
+
+.fileupload-buttonbar {
+	background: transparent;
+	border: 0px;
+}
+
+.fileupload-buttonbar label.ui-button {
+	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5),
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #74FFCC !important;
+	float: right;
+}
+
+.fileupload-buttonbar label.ui-button:hover {
+	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.3),
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #2EC890 !important;
+}
+
+/* Auto Complete */
+div.ui-autocomplete-panel {
+	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+div.ui-autocomplete-panel ul.ui-autocomplete-list {
+	border: 1px solid #D6D6D6;
+}

@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:panelGroup>
+
+		<h:form prependId="false">
+
+			<!-- MENU LADO ESQUERDO -->
+			<p:commandLink value="Bookmark" actionListener="#{menuContext.select('MenuTop', 'Bookmark')}"
+				styleClass="#{menuContext.menu['MenuTop']['Bookmark']['Style']}" ajax="false" immediate="true" />
+
+			<h:outputText value="|" styleClass="separator" />
+
+			<p:commandLink value="Fingerprint" actionListener="#{menuContext.select('MenuTop', 'Fingerprint')}"
+				styleClass="#{menuContext.menu['MenuTop']['Fingerprint']['Style']}" ajax="false" immediate="true" />
+
+			<!-- MENU LADO DIREITO -->
+			<p:commandLink value="Sair" style="float: right; margin-right: 20px;" ajax="false" immediate="true" action="#{authMB.logout}" />
+
+			<h:outputText value="|" styleClass="separator" style="float: right; line-height: 25px;" />
+
+			<p:commandLink value="#{proxyMB.userNameProperCase}" style="float: right" actionListener="#{menuContext.select('MenuTop', 'Usuário')}"
+				styleClass="#{menuContext.menu['MenuTop']['Usuário']['Style']}" ajax="false" immediate="true" />
+
+			<h:outputText value="|" styleClass="separator" style="float: right; line-height: 25px;" />
+
+			<p:commandLink value="Segurança" style="float: right" actionListener="#{menuContext.select('MenuTop', 'Segurança')}"
+				styleClass="#{menuContext.menu['MenuTop']['Segurança']['Style']}" ajax="false" immediate="true" />
+
+		</h:form>
+
+	</h:panelGroup>
+
+</ui:composition>

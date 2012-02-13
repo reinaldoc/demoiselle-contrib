@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-user-edit-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-user-edit-dlg-id" header="FAA - Cadastro de Usuários" widgetVar="faa_user_edit_dlg" modal="true" width="800"
+				resizable="false" closable="false">
+
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-user" id="faa-user-edit-dlg-body-id">
+
+					<h:panelGrid columns="1">
+
+						<h:outputText value="Nome:" />
+						<h:inputText value="#{userEditMB.bean.name}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Login:" />
+						<h:panelGroup>
+							<h:inputText id="faa-user-edit-login-id" value="#{userEditMB.bean.login}" autocomplete="off" onkeypress="return event.keyCode!=13"
+								style="width: #{userEditMB.updateMode ? '375px' : '337px' };" readonly="#{userEditMB.updateMode ? 'true' : 'false' }" />
+							<p:commandButton icon="ui-icon-gear" title="Verificar" action="#{userEditMB.userAvailable}"
+								update="faa-user-edit-dlg-save-id:messages" style="margin-left: 10px; margin-right: 0px; vertical-align: bottom;"
+								process="@this, faa-user-edit-login-id" oncomplete="showNotification('faa-user-edit-dlg-save-id');"
+								rendered="#{!userEditMB.updateMode}" />
+						</h:panelGroup>
+
+						<h:outputText value="Unidade:" />
+						<h:inputText value="#{userEditMB.bean.orgunit}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Comentários:" />
+						<h:inputTextarea value="#{userEditMB.bean.description}" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Password:" />
+						<h:panelGroup layout="block" style="display: inline-block; width: 100%;">
+							<h:inputSecret value="#{userEditMB.bean.password}" style="width: 120px;" autocomplete="off" onkeypress="return event.keyCode!=13" />
+							<p:commandButton id="faa-user-edit-info-passwordrepeat" icon="ui-icon-arrowthickstop-1-e" onclick="return false;"
+								style="margin-left: 7px; margin-right: 7px; vertical-align: bottom;" />
+							<p:tooltip for="faa-user-edit-info-passwordrepeat" value="Repita a senha para confirmação!" />
+							<h:inputSecret value="#{userEditMB.bean.passwordrepeat}" style="width: 120px;" autocomplete="off"
+								onkeypress="return event.keyCode!=13" />
+							<p:commandButton icon="ui-icon-plus" style="float: right; vertical-align: bottom;" immediate="true"
+								update="faa-user-edit-profile-panel-id" oncomplete="faa_user_edit_profile_dlg.show()" title="Selecionar perfis"
+								action="#{userEditMB.clearProfileList()}" />
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="1" id="faa-user-edit-panel-profile-id">
+
+						<p:dataTable id="faa-user-edit-datatable-profile-id" widgetVar="faa_user_dt_profile_wv" emptyMessage="Não há perfis selecionados"
+							value="#{userEditMB.bean.profiles}" var="faa_user_dt_profile_row" rows="9" paginator="true" paginatorAlwaysVisible="true"
+							pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
+
+							<p:column headerText="Perfis:" sortBy="#{faa_user_dt_profile_row.name}">
+
+								<h:panelGroup layout="block" style="width: 330px; overflow: hidden; white-space: pre; float: left">
+									<h:outputText value="#{faa_user_dt_profile_row.name}" title="#{faa_user_dt_profile_row.shortDescription}" />
+								</h:panelGroup>
+
+								<p:commandButton icon="ui-icon-close" style="float: right; margin-bottom: 2px;" immediate="true" title="Desvincular perfil"
+									update="faa-user-edit-panel-profile-id" action="#{userEditMB.unselectProfile(faa_user_dt_profile_row)}" />
+
+							</p:column>
+
+						</p:dataTable>
+
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-user-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="faa-user-edit-dlg-save-id" dialogId="faa-user-edit-dlg-id" dialogWidgetVar="faa_user_edit_dlg"
+						updateMode="#{userEditMB.updateMode}" actionUpdater="#{userEditMB.update}" actionInserter="#{userEditMB.insert}"
+						actionCloser="#{userListMB.clearValidation}" updateOnClose="faa-user-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+		</h:panelGrid>
+	</h:form>
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-user-edit-profile-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-user-edit-profile-dlg-id" header="FAA - Seleção de Perfis" widgetVar="faa_user_edit_profile_dlg" modal="true"
+				width="600" resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-user">
+
+					<p:dataTable id="faa-user-edit-datatable-profile-select-id" widgetVar="faa_user_dt_profile_select_wv"
+						emptyMessage="Não há perfis disponíveis" value="#{userEditMB.profileList}" var="faa_user_dt_profile_select_row" rows="10"
+						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						styleClass="dialog-datatable dialog-datatable-small" selection="#{userEditMB.profileArray}"
+						rowKey="#{faa_user_dt_profile_select_row.id}">
+
+						<p:column selectionMode="multiple" style="text-align: center" />
+
+						<p:column headerText="Perfil:">
+							<h:panelGroup layout="block" style="width: 470px; overflow: hidden; white-space: pre; float: left">
+								<h:outputText value="#{faa_user_dt_profile_select_row.name}" title="#{faa_user_dt_profile_select_row.shortDescription}" />
+							</h:panelGroup>
+						</p:column>
+
+					</p:dataTable>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-user-edit-profile-dlg-buttons-id">
+
+					<p:commandButton value="Selecionar" update="faa-user-edit-datatable-profile-id" oncomplete="faa_user_edit_profile_dlg.hide()"
+						action="#{userEditMB.selectProfiles()}" />
+
+					<p:commandLink value="Fechar" immediate="true" styleClass="dialog-close-link" process="@this"
+						onclick="faa_user_edit_profile_dlg.hide()" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</ui:composition>

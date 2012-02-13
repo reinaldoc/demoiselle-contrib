@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+
+		<h:panelGroup id="myapp-bookmark-menu-id">
+
+			<p:dataGrid value="#{bookmarkListMB.categories}" var="category" columns="1">
+
+				<p:column>
+
+					<p:commandLink value="#{category}" immediate="true" update="faa-body-id" action="#{bookmarkListMB.clearResultList()}"
+						actionListener="#{menuContext.select('Bookmark', category)}"
+						styleClass="#{menuContext.menu['Bookmark'][category]['Style']}" />
+
+				</p:column>
+
+			</p:dataGrid>
+
+			<p:commandLink value="Todos" immediate="true" update="faa-body-id" action="#{bookmarkListMB.clearResultList}"
+				actionListener="#{menuContext.select('Bookmark', 'Todos')}" styleClass="#{menuContext.menu['Bookmark']['Todos']['Style']}" />
+
+			<p:spacer height="10px" />
+
+			<p:commandLink value="Configuração" immediate="true" update="faa-body-id"
+				actionListener="#{menuContext.select('Bookmark', 'Configuração')}"
+				styleClass="#{menuContext.menu['Bookmark']['Configuração']['Style']}" />
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

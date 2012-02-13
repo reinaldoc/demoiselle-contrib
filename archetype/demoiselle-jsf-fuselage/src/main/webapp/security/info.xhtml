@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+		<h:panelGroup id="faa-user-id">
+			<h:panelGrid columns="1" columnClasses="top,top" style="width: 700px; padding-left: 60px; padding-top: 30px;">
+				<h:panelGrid columns="2" styleClass="faa-table">
+					<f:facet name="header">
+						<h:outputText value="Usuário" />
+					</f:facet>
+
+					<h:outputText value="Nome: " />
+					<h:outputText value="#{permissionsListMB.user.name}" />
+
+					<h:outputText value="Login: " />
+					<h:outputText value="#{permissionsListMB.user.login}" />
+
+					<h:outputText value="Unidade: " />
+					<h:outputText value="#{permissionsListMB.user.orgunit}" />
+				</h:panelGrid>
+
+				<p:spacer height="15px;" />
+				<p:dataTable id="faa-permissons-profiles-dt-id" widgetVar="faa_permissons_profiles_dt_wv" emptyMessage="Não há registros"
+					value="#{permissionsListMB.profileList}" var="faa_permissons_profiles_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+					paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+					<p:column headerText="Perfis" style="width: 250">
+
+						<h:panelGroup layout="block" style="width: 250px; overflow: hidden; white-space: pre">
+							<h:outputText value="#{faa_permissons_profiles_dt_row} " />
+						</h:panelGroup>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<p:spacer height="15px;" />
+
+				<p:dataTable id="faa-permissons-rolenames-dt-id" widgetVar="faa_permissons_rolenames_dt_wv" emptyMessage="Não há registros"
+					value="#{permissionsListMB.rolesNamesList}" var="faa_permissons_rolenames_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+					paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+					<p:column headerText="Papéis" style="width: 250">
+
+						<h:panelGroup layout="block" style="width: 250px; overflow: hidden; white-space: pre">
+							<h:outputText value="#{faa_permissons_rolenames_dt_row} " />
+						</h:panelGroup>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<!-- rendered="#{securityContext.hasPermission('operation','{user_details_resources}')}"  -->
+				<p:spacer height="15px;" />
+
+				<p:dataTable id="faa-permissons-roles-dt-id" widgetVar="faa_permissons_roles_dt_wv" emptyMessage="Não há registros"
+					value="#{permissionsListMB.rolesList}" var="faa_permissons_roles_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+					paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+					<p:column headerText="Papéis" style="width: 250">
+
+						<h:panelGroup layout="block" style="width: 250px; overflow: hidden; white-space: pre">
+							<h:outputText value="#{faa_permissons_roles_dt_row} " />
+						</h:panelGroup>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<!-- rendered="#{securityContext.hasPermission('operation','{user_details_resources}')}"  -->
+				<p:spacer height="15px;" />
+
+				<p:dataTable id="faa-permissons-resources-id" widgetVar="faa_permissons_resources_dt_wv" emptyMessage="Não há registros"
+					value="#{permissionsListMB.resourcesList}" var="faa_permissons_resources_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+					paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+					<p:column headerText="Resource" style="width: 20%">
+
+						<h:panelGroup layout="block" style="width: 100px; overflow: hidden; white-space: pre">
+							<h:outputText value="#{permissionsListMB.resources[faa_permissons_resources_dt_row]}" />
+						</h:panelGroup>
+
+					</p:column>
+
+					<p:column headerText="Value" style="width: 80%">
+
+						<h:panelGroup layout="block" style="width: 400px; overflow: hidden; white-space: pre">
+							<h:outputText value="#{faa_permissons_resources_dt_row}" />
+						</h:panelGroup>
+
+					</p:column>
+
+				</p:dataTable>
+
+			</h:panelGrid>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

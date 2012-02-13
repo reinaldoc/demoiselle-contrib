@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="myapp-bookmark-edit-panel-id">
+
+			<p:dialog id="myapp-bookmark-edit-dlg-id" header="Cadastro de Bookmarks" widgetVar="myapp_bookmark_edit_dlg" modal="true" width="480"
+				resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body" id="myapp-bookmark-edit-dlg-body-id">
+
+					<h:outputText value="Id:" rendered="#{bookmarkEditMB.updateMode}" />
+					<h:inputText value="#{bookmarkEditMB.bean.id}" autocomplete="off" onkeypress="return event.keyCode!=13" readonly="true"
+						rendered="#{bookmarkEditMB.updateMode}" />
+
+					<h:outputText value="Categoria:" />
+					<p:selectOneMenu value="#{bookmarkEditMB.bean.category}" effect="fade" styleClass="dialog-selectonemenu">
+						<f:selectItem itemLabel=" --- selecione ---" itemValue="" />
+						<f:selectItems value="#{bookmarkListMB.categories}" var="category" itemLabel="#{category}" itemValue="#{category}" />
+					</p:selectOneMenu>
+
+
+					<h:outputText value="Descrição:" />
+					<h:inputText value="#{bookmarkEditMB.bean.description}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+					<h:outputText value="Link:" />
+					<h:inputText value="#{bookmarkEditMB.bean.link}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+				</h:panelGrid>
+
+				<h:panelGroup id="myapp-bookmark-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="myapp-bookmark-edit-dlg-save-id" dialogId="myapp-bookmark-edit-dlg-id" dialogWidgetVar="myapp_bookmark_edit_dlg"
+						updateMode="#{bookmarkEditMB.updateMode}" actionUpdater="#{bookmarkEditMB.update}" actionInserter="#{bookmarkEditMB.insert}"
+						actionCloser="#{bookmarkListMB.clearValidation}" updateOnClose="myapp-bookmark-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</ui:composition>

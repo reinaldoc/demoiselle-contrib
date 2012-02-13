@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+
+		<p:confirmDialog message="Deseja excluir o recurso: #{resourceEditMB.bean.name}->#{resourceEditMB.bean.value} ?" header="Atenção!"
+			severity="alert" id="faa-resource-delete-dlg-id" widgetVar="faa_resource_delete_dlg">
+
+			<p:commandButton value="Sim" oncomplete="faa_resource_delete_dlg.hide()" update="faa-resource-list-datatable-id, faa-growl-id"
+				action="#{resourceEditMB.delete}" actionListener="#{resourceListMB.clearResultList}" style="margin-right: 20px;" />
+
+			<p:commandButton value="Não" onclick="faa_resource_delete_dlg.hide()" type="button" style="margin-left: 20px;" />
+
+		</p:confirmDialog>
+
+		<h:panelGroup id="faa-resource-list-id">
+
+			<p:dataTable id="faa-resource-list-datatable-id" widgetVar="faa_resource_dt_wv" emptyMessage="Não há registros"
+				value="#{resourceListMB.lazyDataModel}" var="faa_resource_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+				<p:column styleClass="faa-label faa-label-resource">
+					<h:outputText value="Resource" />
+				</p:column>
+
+				<p:column headerText="Tipo" sortBy="#{faa_resource_dt_row.name}">
+					<h:panelGroup layout="block" style="width: 200px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_resource_dt_row.name} " />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column headerText="Valor" sortBy="#{faa_resource_dt_row.value}">
+					<h:panelGroup layout="block" style="width: 350px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_resource_dt_row.value}" title="#{faa_resource_dt_row.description}" />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column style="text-align: right; padding: 0px">
+
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
+
+						<p:commandButton icon="ui-icon-search" style="icon" immediate="true"
+							update="faa-resource-edit-dlg-body-id, faa-resource-edit-dlg-buttons-id" action="#{resourceEditMB.editBean(faa_resource_dt_row)}"
+							oncomplete="faa_resource_edit_dlg.show()" title="Editar Informações" styleClass="margin" />
+
+						<p:commandButton icon="ui-icon-trash" style="icon" immediate="true" update="faa-resource-delete-dlg-id" styleClass="margin"
+							action="#{resourceEditMB.editBean(faa_resource_dt_row)}" oncomplete="faa_resource_delete_dlg.show()" title="Excluir Recurso" />
+
+					</h:panelGroup>
+
+				</p:column>
+
+			</p:dataTable>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:panelGrid columns="2">
+
+		<h:form prependId="false">
+
+			<h:panelGrid columns="2" styleClass="faa-header-items">
+
+				<h:panelGroup layout="block">
+
+					<h:inputText id="myapp-fingerprint-search-domain" value="#{fingerprintListMB.resultFilter}" autocomplete="off" styleClass="filter" />
+
+					<p:commandButton icon="ui-icon-search" value="Buscar" action="#{fingerprintListMB.clearResultList}"
+						update="myapp-fingerprint-list-datatable-id" process="myapp-fingerprint-search-domain, @this" />
+
+				</h:panelGroup>
+
+				<p:commandButton icon="ui-icon-plusthick" value="Novo fingerprint" immediate="true" action="#{fingerprintEditMB.editBean}"
+					update="myapp-fingerprint-edit-dlg-body-id, myapp-fingerprint-edit-dlg-buttons-id" oncomplete="myapp_fingerprint_edit_dlg.show()" />
+
+			</h:panelGrid>
+
+		</h:form>
+
+		<ui:include src="edit.xhtml" />
+
+	</h:panelGrid>
+
+</ui:composition>

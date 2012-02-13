@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<div id="faa-body-left-id">
+
+		<!-- Begin @BodyLeft  -->
+		<ui:include src="menu.xhtml" />
+		<!-- End @BodyLeft  -->
+
+	</div>
+
+	<div id="faa-body-right-id">
+
+		<!-- Begin @BodyRight  -->
+		<h:panelGroup rendered="#{menuContext.isSelected('Security', 'User')}">
+			<ui:include src="user/edit.xhtml" />
+			<ui:include src="user/list.xhtml" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{menuContext.isSelected('Security', 'Profile')}">
+			<ui:include src="profile/edit.xhtml" />
+			<ui:include src="profile/list.xhtml" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{menuContext.isSelected('Security', 'Role')}">
+			<ui:include src="role/edit.xhtml" />
+			<ui:include src="role/list.xhtml" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{menuContext.isSelected('Security', 'Resource')}">
+			<ui:include src="resource/edit.xhtml" />
+			<ui:include src="resource/list.xhtml" />
+		</h:panelGroup>
+
+		<h:panelGroup rendered="#{menuContext.isSelected('Security', 'Configuração')}">
+			<ui:include src="config/main.xhtml" />
+		</h:panelGroup>
+		<!-- Begin @BodyRight  -->
+
+	</div>
+
+</ui:composition>

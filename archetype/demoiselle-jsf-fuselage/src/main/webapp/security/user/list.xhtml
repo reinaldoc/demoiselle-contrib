@@ -1,0 +1,83 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<h:form prependId="false">
+
+		<p:confirmDialog message="Deseja excluir o usuário: #{userEditMB.bean.login} ?" header="Atenção!" severity="alert"
+			id="faa-user-delete-dlg-id" widgetVar="faa_user_delete_dlg">
+
+			<p:commandButton value="Sim" oncomplete="faa_user_delete_dlg.hide()" update="faa-user-list-datatable-id, faa-growl-id"
+				action="#{userEditMB.delete}" actionListener="#{userListMB.clearResultList}" style="margin-right: 20px;" />
+
+			<p:commandButton value="Não" onclick="faa_user_delete_dlg.hide()" type="button" style="margin-left: 20px;" />
+
+		</p:confirmDialog>
+
+		<p:confirmDialog message="Deseja #{userEditMB.bean.enabled ? 'desativar' : 'ativar' } o usuário: #{userEditMB.bean.login} ?"
+			header="Atenção!" severity="alert" id="faa-user-status-dlg-id" widgetVar="faa_user_status_dlg">
+
+			<p:commandButton value="Sim" oncomplete="faa_user_status_dlg.hide()" update="faa-user-list-datatable-id, faa-growl-id"
+				action="#{userEditMB.disable}" actionListener="#{userListMB.clearResultList}" style="margin-right: 20px;"
+				rendered="#{userEditMB.bean.enabled}" />
+
+			<p:commandButton value="Sim" oncomplete="faa_user_status_dlg.hide()" update="faa-user-list-datatable-id, faa-growl-id"
+				action="#{userEditMB.enable}" actionListener="#{userListMB.clearResultList}" style="margin-right: 20px;"
+				rendered="#{!userEditMB.bean.enabled}" />
+
+			<p:commandButton value="Não" onclick="faa_user_status_dlg.hide()" type="button" style="margin-left: 20px;" />
+
+		</p:confirmDialog>
+
+
+		<h:panelGroup id="faa-user-list-id">
+
+			<p:dataTable id="faa-user-list-datatable-id" widgetVar="faa_user_dt_wv" emptyMessage="Não há registros"
+				value="#{userListMB.lazyDataModel}" var="faa_user_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+
+				<p:column styleClass="faa-label faa-label-user">
+					<h:outputText value="User" />
+				</p:column>
+
+				<p:column headerText="Nome" sortBy="#{faa_user_dt_row.name}">
+					<h:panelGroup layout="block" style="width: 200px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_user_dt_row.name} " />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column headerText="Login" sortBy="#{faa_user_dt_row.login}">
+					<h:panelGroup layout="block" style="width: 300px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_user_dt_row.login}" title="#{faa_user_dt_row.description}" />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column headerText="Unidade" sortBy="#{faa_user_dt_row.orgunit}">
+					<h:panelGroup layout="block" style="width: 150px; overflow: hidden; white-space: pre">
+						<h:outputText value="#{faa_user_dt_row.orgunit}" />
+					</h:panelGroup>
+				</p:column>
+
+				<p:column style="text-align: right; padding: 0px">
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
+
+						<p:commandButton icon="ui-icon-search" immediate="true" update="faa-user-edit-dlg-body-id, faa-user-edit-dlg-buttons-id"
+							action="#{userEditMB.editById(faa_user_dt_row.id)}" oncomplete="faa_user_edit_dlg.show()" title="Editar Informações"
+							styleClass="margin" />
+
+						<p:commandButton icon="#{!faa_user_dt_row.enabled ? 'ui-icon-locked' : 'ui-icon-unlocked' }" immediate="true"
+							update="faa-user-status-dlg-id" action="#{userEditMB.editById(faa_user_dt_row.id)}" oncomplete="faa_user_status_dlg.show()"
+							title="#{!faa_user_dt_row.enabled ? 'Ativar' : 'Desativar' } Usuário" styleClass="margin" />
+
+						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-user-delete-dlg-id" styleClass="margin"
+							action="#{userEditMB.editById(faa_user_dt_row.id)}" oncomplete="faa_user_delete_dlg.show()" title="Excluir Usuário" />
+
+					</h:panelGroup>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:panelGroup>
+
+	</h:form>
+
+</ui:composition>

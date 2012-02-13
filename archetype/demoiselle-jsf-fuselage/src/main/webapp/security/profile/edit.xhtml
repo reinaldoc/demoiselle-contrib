@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-profile-edit-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-profile-edit-dlg-id" header="FAA - Cadastro de Perfis" widgetVar="faa_profile_edit_dlg" modal="true" width="800"
+				resizable="false" closable="false">
+
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-profile" id="faa-profile-edit-dlg-body-id">
+
+					<h:panelGrid columns="1">
+
+						<h:outputText value="Nome:" />
+						<h:inputText value="#{profileEditMB.bean.name}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Descrição curta:" />
+						<h:inputText value="#{profileEditMB.bean.shortDescription}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Descrição:" />
+						<h:inputTextarea value="#{profileEditMB.bean.description}" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Página inicial:" />
+						<p:selectOneMenu value="#{profileEditMB.bean.welcomePage}" effect="fade" converter="securityResource" style="float: left;"
+							styleClass="dialog-selectonemenu">
+
+							<f:selectItem itemLabel="--- selecione ---" itemValue="" />
+							<f:selectItems value="#{profileEditMB.resourceList}" var="selectResource" itemLabel="#{selectResource.label}"
+								itemValue="#{selectResource}" />
+
+						</p:selectOneMenu>
+
+						<h:outputText value="Prioridade:" />
+						<h:panelGroup layout="block" style="display: block;">
+							<p:selectOneMenu value="#{profileEditMB.bean.welcomePagePriority}" effect="fade" style="float: left;"
+								styleClass="dialog-selectonemenu-numbers">
+								<f:selectItem itemLabel="-" itemValue="" />
+								<f:selectItems value="#{profileEditMB.resourcePriorities}" />
+							</p:selectOneMenu>
+							<p:commandButton icon="ui-icon-plus" style="float: right;" immediate="true" update="faa-profile-edit-role-panel-id"
+								oncomplete="faa_profile_edit_role_dlg.show()" title="Selecionar papéis" actionListener="#{profileEditMB.clearRoleList()}" />
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="1" id="faa-profile-edit-panel-role-id">
+
+						<p:dataTable id="faa-profile-edit-datatable-role-id" widgetVar="faa_profile_dt_role_wv" emptyMessage="Não há papéis selecionados"
+							value="#{profileEditMB.bean.roles}" var="faa_profile_dt_role_row" rows="8" paginator="true" paginatorAlwaysVisible="true"
+							pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
+
+							<p:column headerText="Papéis:" sortBy="#{faa_profile_dt_role_row.name}">
+								<h:panelGroup layout="block" style="width: 320px; overflow: hidden; white-space: pre; float: left">
+									<h:outputText value="#{faa_profile_dt_role_row.name}" title="#{faa_profile_dt_role_row.shortDescription}" />
+								</h:panelGroup>
+
+								<p:commandButton icon="ui-icon-close" style="float: right; margin-bottom: 2px;" immediate="true" title="Desvincular role"
+									update="faa-profile-edit-panel-role-id" action="#{profileEditMB.unselectRole(faa_profile_dt_role_row)}" />
+
+
+							</p:column>
+
+						</p:dataTable>
+
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-profile-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="faa-profile-edit-dlg-save-id" dialogId="faa-profile-edit-dlg-id" dialogWidgetVar="faa_profile_edit_dlg"
+						updateMode="#{profileEditMB.updateMode}" actionUpdater="#{profileEditMB.update}" actionInserter="#{profileEditMB.insert}"
+						actionCloser="#{profileListMB.clearValidation}" updateOnClose="faa-profile-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+		</h:panelGrid>
+	</h:form>
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-profile-edit-role-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-profile-edit-role-dlg-id" header="FAA - Seleção de Papéis" widgetVar="faa_profile_edit_role_dlg" modal="true"
+				width="600" resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-profile">
+
+					<p:dataTable id="faa-profile-edit-datatable-role-select-id" widgetVar="faa_profile_dt_role_select_wv"
+						emptyMessage="Não há papéis disponíveis" value="#{profileEditMB.roleList}" var="faa_profile_dt_role_select_row" rows="10"
+						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						styleClass="dialog-datatable dialog-datatable-small" selection="#{profileEditMB.roleArray}"
+						rowKey="#{faa_profile_dt_role_select_row.id}">
+
+						<p:column selectionMode="multiple" style="text-align: center" />
+
+						<p:column headerText="Papel:">
+							<h:panelGroup layout="block" style="width: 470px; overflow: hidden; white-space: pre; float: left">
+								<h:outputText value="#{faa_profile_dt_role_select_row.name}" title="#{faa_profile_dt_role_select_row.shortDescription}" />
+							</h:panelGroup>
+						</p:column>
+
+					</p:dataTable>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-profile-edit-role-dlg-buttons-id">
+
+					<p:commandButton value="Selecionar" update="faa-profile-edit-datatable-role-id" oncomplete="faa_profile_edit_role_dlg.hide()"
+						action="#{profileEditMB.selectRoles()}" />
+
+					<p:commandLink value="Fechar" immediate="true" styleClass="dialog-close-link" process="@this"
+						onclick="faa_profile_edit_role_dlg.hide()" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</ui:composition>

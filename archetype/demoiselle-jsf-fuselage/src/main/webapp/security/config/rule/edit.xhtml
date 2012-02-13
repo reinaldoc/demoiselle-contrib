@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-profileByRule-edit-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-profileByRule-edit-dlg-id" header="FAA - Cadastro de Regras de Perfil" widgetVar="faa_profileByRule_edit_dlg" modal="true"
+				width="800" resizable="false" closable="false">
+
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-profileByRule" id="faa-profileByRule-edit-dlg-body-id">
+
+					<h:panelGrid columns="1">
+
+						<h:outputText value="Nome:" />
+						<h:inputText value="#{profileByRuleEditMB.bean.name}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Descrição:" />
+						<h:inputTextarea value="#{profileByRuleEditMB.bean.description}" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Implementação:" />
+						<p:selectOneMenu value="#{profileByRuleEditMB.bean.implementation}" effect="fade" style="float: left;" styleClass="dialog-selectonemenu">
+							<f:selectItem itemLabel="--- selecione ---" itemValue="" />
+							<f:selectItems value="#{profileByRuleEditMB.implementationList}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Chave:" />
+						<h:inputText value="#{profileByRuleEditMB.bean.keyname}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:panelGroup layout="block" style="display: inline-block; width: 100%; margin-top: 9px;">
+
+							<h:outputText value="Valor:" style="float: left; margin-right: 15px; margin-top: 3px;" />
+							<p:selectOneMenu value="#{profileByRuleEditMB.bean.valuenotation}" effect="fade" style="float: left; margin-right: 15px; width: 100px">
+								<f:selectItem itemLabel="-" itemValue="" />
+								<f:selectItem itemLabel="Igual" itemValue="EXACT" />
+								<f:selectItem itemLabel="Contém" itemValue="CONTAINS" />
+							</p:selectOneMenu>
+
+							<h:inputText value="#{profileByRuleEditMB.bean.value}" autocomplete="off" onkeypress="return event.keyCode!=13" style="width: 150px" />
+							<p:commandButton icon="ui-icon-plus" style="float: right; vertical-align: bottom;" immediate="true"
+								update="faa-profileByRule-edit-profile-panel-id" oncomplete="faa_profileByRule_edit_profile_dlg.show()" title="Selecionar perfis"
+								action="#{profileByRuleEditMB.clearProfileList()}" />
+
+						</h:panelGroup>
+
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="1" id="faa-profileByRule-edit-panel-profile-id">
+
+						<p:dataTable id="faa-profileByRule-edit-datatable-profile-id" widgetVar="faa_profileByRule_dt_profile_wv"
+							emptyMessage="Não há perfis selecionados" value="#{profileByRuleEditMB.bean.profiles}" var="faa_profileByRule_dt_profile_row" rows="9"
+							paginator="true" paginatorAlwaysVisible="true" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+							styleClass="dialog-datatable dialog-datatable-small">
+
+							<p:column headerText="Perfis:" sortBy="#{faa_profileByRule_dt_profile_row.name}">
+
+								<h:panelGroup layout="block" style="width: 330px; overflow: hidden; white-space: pre; float: left">
+									<h:outputText value="#{faa_profileByRule_dt_profile_row.name}" title="#{faa_profileByRule_dt_profile_row.shortDescription}" />
+								</h:panelGroup>
+
+								<p:commandButton icon="ui-icon-close" style="float: right; margin-bottom: 2px;" immediate="true" title="Desvincular perfil"
+									update="faa-profileByRule-edit-panel-profile-id" action="#{profileByRuleEditMB.unselectProfile(faa_profileByRule_dt_profile_row)}" />
+
+							</p:column>
+
+						</p:dataTable>
+
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-profileByRule-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="faa-profileByRule-edit-dlg-save-id" dialogId="faa-profileByRule-edit-dlg-id" dialogWidgetVar="faa_profileByRule_edit_dlg"
+						updateMode="#{profileByRuleEditMB.updateMode}" actionUpdater="#{profileByRuleEditMB.update}" actionInserter="#{profileByRuleEditMB.insert}"
+						actionCloser="#{profileByRuleListMB.clearValidation}" updateOnClose="faa-config-profileByRule-tabView-id:faa-profileByRule-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+		</h:panelGrid>
+	</h:form>
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-profileByRule-edit-profile-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-profileByRule-edit-profile-dlg-id" header="FAA - Seleção de Perfis" widgetVar="faa_profileByRule_edit_profile_dlg" modal="true"
+				width="600" resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-profileByRule">
+
+					<p:dataTable id="faa-profileByRule-edit-datatable-profile-select-id" widgetVar="faa_profileByRule_dt_profile_select_wv"
+						emptyMessage="Não há perfis" value="#{profileByRuleEditMB.profileList}" var="faa_profileByRule_dt_profile_select_row" rows="10" paginator="true"
+						paginatorAlwaysVisible="true" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						styleClass="dialog-datatable dialog-datatable-small" selection="#{profileByRuleEditMB.profileArray}"
+						rowKey="#{faa_profileByRule_dt_profile_select_row.id}">
+
+						<p:column selectionMode="multiple" style="text-align: center" />
+
+						<p:column headerText="Perfil:">
+							<h:panelGroup layout="block" style="width: 470px; overflow: hidden; white-space: pre; float: left">
+								<h:outputText value="#{faa_profileByRule_dt_profile_select_row.name}" title="#{faa_profileByRule_dt_profile_select_row.shortDescription}" />
+							</h:panelGroup>
+						</p:column>
+
+					</p:dataTable>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-profileByRule-edit-profile-dlg-buttons-id">
+
+					<p:commandButton value="Selecionar" update="faa-profileByRule-edit-datatable-profile-id" oncomplete="faa_profileByRule_edit_profile_dlg.hide()"
+						action="#{profileByRuleEditMB.selectProfiles()}" />
+
+					<p:commandLink value="Fechar" immediate="true" styleClass="dialog-close-link" process="@this" onclick="faa_profileByRule_edit_profile_dlg.hide()" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</ui:composition>

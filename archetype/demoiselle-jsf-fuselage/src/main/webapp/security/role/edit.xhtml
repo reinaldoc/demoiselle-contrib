@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-role-edit-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-role-edit-dlg-id" header="FAA - Cadastro de Papéis" widgetVar="faa_role_edit_dlg" modal="true" width="820"
+				resizable="false" closable="false">
+
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-role" id="faa-role-edit-dlg-body-id">
+
+					<h:panelGrid columns="1" style="width: 370px;">
+
+						<h:outputText value="Nome:" />
+						<h:inputText value="#{roleEditMB.bean.name}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Descrição curta:" />
+						<h:inputText value="#{roleEditMB.bean.shortDescription}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Descrição:" />
+						<h:inputTextarea value="#{roleEditMB.bean.description}" onkeypress="return event.keyCode!=13" />
+
+						<h:outputText value="Restritiva:" />
+						<h:panelGroup>
+
+							<h:selectBooleanCheckbox id="faa-role-edit-restriction-id" value="#{roleEditMB.bean.restriction}"
+								onkeypress="return event.keyCode!=13" />
+							<p:tooltip for="faa-role-edit-restriction-id" value="Apenas indica que este papél não deve ser adicionado a perfis administrativos." />
+
+							<p:commandButton icon="ui-icon-plus" style="float: right; margin-bottom: 2px; margin-right: 0px;" immediate="true"
+								update="faa-role-edit-resource-panel-id" oncomplete="faa_role_edit_resource_dlg.show()" title="Selecionar recursos"
+								actionListener="#{roleEditMB.clearResourceList()}" />
+
+						</h:panelGroup>
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="1" id="faa-role-edit-panel-resource-id">
+
+						<p:dataTable id="faa-role-edit-datatable-resource-id" widgetVar="faa_role_dt_resource_wv" emptyMessage="Não há recursos selecionados"
+							value="#{roleEditMB.bean.resources}" var="faa_role_dt_resource_row" rows="6" paginator="true" paginatorAlwaysVisible="true"
+							pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
+
+							<p:column headerText="Recursos:" sortBy="#{faa_role_dt_resource_row.name}">
+								<h:panelGroup layout="block" style="width: 130px;">
+									<h:outputText value="#{faa_role_dt_resource_row.name}" title="#{faa_role_dt_resource_row.name}" />
+								</h:panelGroup>
+
+								<h:panelGroup layout="block" style="width: 200px;">
+									<h:outputText value="#{faa_role_dt_resource_row.value}" title="#{faa_role_dt_resource_row.value}" />
+								</h:panelGroup>
+
+								<p:commandButton icon="ui-icon-close" style="float: right; margin-bottom: 2px;" immediate="true" title="Desvincular recurso"
+									update="faa-role-edit-panel-resource-id" action="#{roleEditMB.unselectResource(faa_role_dt_resource_row)}" />
+
+							</p:column>
+
+						</p:dataTable>
+
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-role-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="faa-role-edit-dlg-save-id" dialogId="faa-role-edit-dlg-id" dialogWidgetVar="faa_role_edit_dlg"
+						updateMode="#{roleEditMB.updateMode}" actionUpdater="#{roleEditMB.update}" actionInserter="#{roleEditMB.insert}"
+						actionCloser="#{roleListMB.clearValidation}" updateOnClose="faa-role-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+		</h:panelGrid>
+	</h:form>
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="faa-role-edit-resource-panel-id" cellpadding="0" cellspacing="0">
+
+			<p:dialog id="faa-role-edit-resource-dlg-id" header="FAA - Seleção de Recursos" widgetVar="faa_role_edit_resource_dlg" modal="true"
+				width="600" resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-role">
+
+					<p:dataTable id="faa-role-edit-datatable-resource-select-id" widgetVar="faa_role_dt_resource_select_wv"
+						emptyMessage="Não há recursos disponíveis" value="#{roleEditMB.resourceList}" var="faa_role_dt_resource_select_row" rows="10"
+						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						styleClass="dialog-datatable dialog-datatable-small" selection="#{roleEditMB.resourceArray}"
+						rowKey="#{faa_role_dt_resource_select_row.id}">
+
+						<p:column selectionMode="multiple" style="text-align: center" />
+
+						<p:column headerText="Recurso:">
+							<h:panelGroup layout="block" style="width: 130px; overflow: hidden; white-space: pre; float: left">
+								<h:outputText value="#{faa_role_dt_resource_select_row.name}" title="#{faa_role_dt_resource_select_row.name}" />
+							</h:panelGroup>
+							<h:panelGroup layout="block" style="width: 340px; overflow: hidden; white-space: pre; float: right">
+								<h:outputText value="#{faa_role_dt_resource_select_row.value}" title="#{faa_role_dt_resource_select_row.value}" />
+							</h:panelGroup>
+						</p:column>
+
+					</p:dataTable>
+
+				</h:panelGrid>
+
+				<h:panelGroup id="faa-role-edit-resource-dlg-buttons-id">
+
+					<p:commandButton value="Selecionar" update="faa-role-edit-datatable-resource-id" oncomplete="faa_role_edit_resource_dlg.hide()"
+						action="#{roleEditMB.selectResources()}" />
+
+					<p:commandLink value="Fechar" immediate="true" styleClass="dialog-close-link" process="@this"
+						onclick="faa_role_edit_resource_dlg.hide()" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</ui:composition>

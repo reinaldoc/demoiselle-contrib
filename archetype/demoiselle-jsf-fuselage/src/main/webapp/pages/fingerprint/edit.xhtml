@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:faa="http://java.sun.com/jsf/composite/faa">
+
+	<h:form prependId="false">
+
+		<h:panelGrid id="myapp-fingerprint-edit-panel-id">
+
+			<p:dialog id="myapp-fingerprint-edit-dlg-id" header="Cadastro de fingerprints" widgetVar="myapp_fingerprint_edit_dlg" modal="true" width="480"
+				resizable="false" closable="false">
+
+				<h:panelGrid columns="1" styleClass="dialog-body" id="myapp-fingerprint-edit-dlg-body-id">
+
+					<h:outputText value="Id:" rendered="#{fingerprintEditMB.updateMode}" />
+					<h:inputText value="#{fingerprintEditMB.bean.id}" autocomplete="off" onkeypress="return event.keyCode!=13" readonly="true"
+						rendered="#{fingerprintEditMB.updateMode}" />
+
+					<h:outputText value="Categoria:" />
+					<p:selectOneMenu value="#{fingerprintEditMB.bean.category}" effect="fade" styleClass="dialog-selectonemenu">
+						<f:selectItem itemLabel=" --- selecione ---" itemValue="" />
+						<f:selectItems value="#{fingerprintListMB.categories}" var="category" itemLabel="#{category}" itemValue="#{category}" />
+					</p:selectOneMenu>
+
+
+					<h:outputText value="Descrição:" />
+					<h:inputText value="#{fingerprintEditMB.bean.serverName}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+					<h:outputText value="Link:" />
+					<h:inputText value="#{fingerprintEditMB.bean.fingerprint}" autocomplete="off" onkeypress="return event.keyCode!=13" />
+
+				</h:panelGrid>
+
+				<h:panelGroup id="myapp-fingerprint-edit-dlg-buttons-id">
+
+					<faa:dialogButtons id="myapp-fingerprint-edit-dlg-save-id" dialogId="myapp-fingerprint-edit-dlg-id" dialogWidgetVar="myapp_fingerprint_edit_dlg"
+						updateMode="#{fingerprintEditMB.updateMode}" actionUpdater="#{fingerprintEditMB.update}" actionInserter="#{fingerprintEditMB.insert}"
+						actionCloser="#{fingerprintListMB.clearValidation}" updateOnClose="myapp-fingerprint-list-datatable-id" />
+
+				</h:panelGroup>
+
+			</p:dialog>
+
+		</h:panelGrid>
+
+	</h:form>
+
+</ui:composition>
