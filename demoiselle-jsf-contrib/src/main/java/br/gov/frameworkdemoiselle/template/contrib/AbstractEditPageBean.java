@@ -75,16 +75,31 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean {
 		this.bean = bean;
 	}
 
+	/**
+	 * Create a new bean for edition;
+	 */
 	public void editBean() {
 		updateMode = false;
 		this.bean = Beans.getReference(getBeanClass());
 	}
 
+	/**
+	 * Select bean to edition; Useful for entities without relationships or for
+	 * deletion; Please see editById(id);
+	 * 
+	 * @param bean
+	 */
 	public void editBean(T bean) {
 		updateMode = true;
 		setBean(bean);
 	}
 
+	/**
+	 * Select bean to edition loading from persistence layer; Useful to avoid
+	 * hibernate lazy exception;
+	 * 
+	 * @param id
+	 */
 	public void editById(I id) {
 		updateMode = true;
 		setBean(load(id));
