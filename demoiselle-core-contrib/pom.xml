@@ -57,6 +57,16 @@
 		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
 	</properties>
 
+	<dependencies>
+		<!-- Major Libraries -->
+		<dependency>
+			<groupId>demoiselle-contrib</groupId>
+			<artifactId>demoiselle-util</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -78,6 +88,11 @@
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+		<repository>
+			<id>reinaldoc-repo</id>
+			<name>Reinaldo Github Maven Repository</name>
+			<url>http://reinaldoc.github.com/maven</url>
 		</repository>
 	</repositories>
 
