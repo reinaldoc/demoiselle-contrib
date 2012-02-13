@@ -110,7 +110,7 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		filter = new HashMap<String, Object>();
 		filterComparison = Comparison.EQUALS;
 		filterLogic = Logic.AND;
-		filterCaseInsensitive = true;
+		filterCaseInsensitive = false;
 		generic = null;
 	}
 
