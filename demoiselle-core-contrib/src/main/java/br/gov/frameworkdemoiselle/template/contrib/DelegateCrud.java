@@ -130,15 +130,15 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		return queryContext.getQueryConfig(clazz, true);
 	}
 
-	protected MenuContext getMenuContext() {
+	public MenuContext getMenuContext() {
 		return menuContext;
 	}
 
-	protected String getSelectedMenu() {
+	public String getSelectedMenu() {
 		return menuContext.getSelected(getBeanClass().getSimpleName());
 	}
 
-	protected void selectMenu(String itemName) {
+	public void selectMenu(String itemName) {
 		menuContext.select(getBeanClass().getSimpleName(), itemName);
 	}
 
