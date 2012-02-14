@@ -169,11 +169,9 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 	}
 
 	private void setPermissionsByProfiles(List<SecurityProfile> profiles, boolean includeRestrictiveRole) {
-		if (profiles != null) {
-			for (SecurityProfile profile : profiles) {
+		if (profiles != null)
+			for (SecurityProfile profile : profiles)
 				setPermissionsByProfile(profile, includeRestrictiveRole);
-			}
-		}
 	}
 
 	private void setPermissionsByProfile(SecurityProfile profile, boolean includeRestrictiveRole) {
@@ -186,21 +184,19 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		List<SecurityRole> roleList = profile.getRoles();
 		if (roleList != null) {
 			for (SecurityRole role : roleList) {
-				if (!includeRestrictiveRole && role.getRestriction())
+				if (!includeRestrictiveRole && role.getRestriction().booleanValue())
 					continue;
 				roles.add(role.getName());
 				rolesNames.add(role.getShortDescription());
 				List<SecurityResource> resourceList = role.getResources();
-				if (resourceList != null) {
+				if (resourceList != null)
 					for (SecurityResource resource : resourceList)
 						resourceMap.put(resource.getValue(), resource.getName());
-				}
 			}
 		}
 
-		if (profile.getName() != null) {
+		if (profile.getName() != null)
 			user.addAttribute("profile_names", profile.getName());
-		}
 		user.addAllAttribute("role_names", rolesNames);
 		user.addAllAttribute("roles", roles);
 		user.putAllAttribute("resources", resourceMap);
