@@ -35,10 +35,12 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.ldap.annotation.DistinguishedName;
 import br.gov.frameworkdemoiselle.ldap.annotation.Id;
 import br.gov.frameworkdemoiselle.ldap.annotation.LDAPEntry;
+import br.gov.frameworkdemoiselle.ldap.annotation.ParentDN;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 public class ClazzUtils {
 
@@ -49,14 +51,37 @@ public class ClazzUtils {
 	public static final boolean EntryObjectCascade = true;
 
 	/**
-	 * Get @DistinguishedName value of a @LDAPEntry annotated object
+	 * Get Distinguished Name value of a @LDAPEntry annotated object. The
+	 * Distinguished Name will be get by annotation @DistinguishedName if not
+	 * present or is null, will be get from value of @ParentDN annotation
+	 * concatenate with @Id
 	 * 
 	 * @param entry
 	 * @return Distinguished Name
 	 */
 	public static String getDistinguishedName(Object entry) {
 		isAnnotationPresent(entry.getClass(), LDAPEntry.class, true);
-		return (String) getAnnotatedValue(entry, DistinguishedName.class, true);
+
+		Field idField = null;
+		Field parentDnField = null;
+
+		for (Field field : getSuperClassesFields(entry.getClass())) {
+			if (field.isAnnotationPresent(DistinguishedName.class)) {
+				Object dn = Reflections.getFieldValue(field, entry);
+				if (dn != null)
+					return (String) dn;
+			} else if (field.isAnnotationPresent(Id.class))
+				idField = field;
+			else if (field.isAnnotationPresent(ParentDN.class))
+				parentDnField = field;
+		}
+
+		if (parentDnField != null && idField != null)
+			return getFieldName(idField) + "=" + (String) Reflections.getFieldValue(idField, entry) + ","
+					+ (String) Reflections.getFieldValue(parentDnField, entry);
+
+		throw new EntryException("Field with @DistinguishedName or fields with @ParentDN and @Id not found on class "
+				+ entry.getClass().getSimpleName());
 	}
 
 	/**
@@ -72,7 +97,8 @@ public class ClazzUtils {
 
 		Field[] fields = getSuperClassesFields(entry.getClass());
 		for (Field field : fields) {
-			if (field.isAnnotationPresent(DistinguishedName.class) || field.isAnnotationPresent(Ignore.class))
+			if (field.isAnnotationPresent(DistinguishedName.class) || field.isAnnotationPresent(Ignore.class)
+					|| field.isAnnotationPresent(ParentDN.class))
 				continue;
 			if (map.containsKey(field.getName()))
 				continue;
@@ -150,15 +176,26 @@ public class ClazzUtils {
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Ignore.class))
 				continue;
-			if (field.isAnnotationPresent(DistinguishedName.class))
-				setFieldValue(field, entry, new String[] { dn });
-			else {
-				String fieldName = getFieldName(field);
-				if (map.containsKey(fieldName))
-					setFieldValue(field, entry, map.get(fieldName), cascade);
+
+			if (field.isAnnotationPresent(ParentDN.class)) {
+				setFieldValue(field, entry, new String[] { getParentDN(dn) });
+				continue;
 			}
+
+			if (field.isAnnotationPresent(DistinguishedName.class)) {
+				setFieldValue(field, entry, new String[] { dn });
+				continue;
+			}
+
+			String fieldName = getFieldName(field);
+			if (map.containsKey(fieldName))
+				setFieldValue(field, entry, map.get(fieldName), cascade);
 		}
 		return entry;
+	}
+
+	public static String getParentDN(String dn) {
+		return Strings.substringBeforeLast(dn, ",");
 	}
 
 	/**

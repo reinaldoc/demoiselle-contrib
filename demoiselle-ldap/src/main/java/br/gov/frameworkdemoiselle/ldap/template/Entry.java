@@ -17,12 +17,16 @@ package br.gov.frameworkdemoiselle.ldap.template;
 
 import br.gov.frameworkdemoiselle.ldap.annotation.DistinguishedName;
 import br.gov.frameworkdemoiselle.ldap.annotation.LDAPEntry;
+import br.gov.frameworkdemoiselle.ldap.annotation.ParentDN;
 
 @LDAPEntry
 public abstract class Entry {
 
 	@DistinguishedName
 	private String dn;
+
+	@ParentDN
+	private String parentDN;
 
 	private String[] objectClass;
 
@@ -43,6 +47,14 @@ public abstract class Entry {
 
 	public void setDn(String dn) {
 		this.dn = dn;
+	}
+
+	public String getParentDN() {
+		return parentDN;
+	}
+
+	public void setParentDN(String parentDN) {
+		this.parentDN = parentDN;
 	}
 
 	public String[] getObjectClass() {
