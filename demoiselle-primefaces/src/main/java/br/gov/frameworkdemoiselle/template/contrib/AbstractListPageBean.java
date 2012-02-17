@@ -178,4 +178,9 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		this.resultFilter = resultFilter;
 	}
 
+	public void clearResultFilter() {
+		resultFilter = null;
+		clearResultList();
+	}
+	
 }
