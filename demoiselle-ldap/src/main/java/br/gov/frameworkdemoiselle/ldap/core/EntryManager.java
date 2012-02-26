@@ -290,7 +290,8 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
-	 * Find a Entry by String Representation of Search Filters (RFC 4515)
+	 * Find a entry with objectClass equals entry class name and @id attribute
+	 * equals to id value, like &(objectClass=entryClass)(idattr=idvalue)
 	 * 
 	 * @param entryClass
 	 *            a entry class
@@ -303,7 +304,7 @@ public class EntryManager implements Serializable {
 	}
 
 	/**
-	 * Find a Entry with only DistinguishedName value by @id annotated value
+	 * Find a Entry by DN
 	 * 
 	 * @param entryClass
 	 *            a entry class
@@ -311,8 +312,22 @@ public class EntryManager implements Serializable {
 	 *            find a entry with @id attribute equals to id value
 	 * @return a entry object
 	 */
-	public <T> T getReference(Class<T> entryClass, Object id) {
-		return core.getReference(entryClass, id);
+	public <T> T getReference(Class<T> entryClass, String dn) {
+		return core.getReference(entryClass, dn);
+	}
+
+	/**
+	 * Find a DN with objectClass equals entry class name and @id attribute
+	 * equals to id value, like &(objectClass=entryClass)(idattr=idvalue)
+	 * 
+	 * @param entryClass
+	 *            a entry class
+	 * @param id
+	 *            find a entry with @id attribute equals to id value
+	 * @return String Representation of Distinguished Name (RFC 1485)
+	 */
+	public <T> String findReference(Class<T> entryClass, Object id) {
+		return core.findReference(entryClass, id);
 	}
 
 	/**
