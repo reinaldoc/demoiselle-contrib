@@ -43,10 +43,11 @@ import java.util.Map;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.core.EntryQuery;
+import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.template.Crud;
@@ -99,21 +100,91 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 		return queryConfig;
 	}
 
+	/**
+	 * Persist a @LDAPEntry annotated object. Use LDAP Add Operation
+	 * 
+	 * @param entry
+	 *            a entry annotated with LDAPEntry
+	 * @throws EntryException
+	 */
 	public void insert(final T entity) {
 		getEntryManager().persist(entity);
 	}
 
+	/**
+	 * Remove a @LDAPEntry annotated object. Use LDAP Del Operation
+	 * 
+	 * @param entry
+	 *            a entry annotated with LDAPEntry
+	 * @throws EntryException
+	 */
 	public void delete(final I id) {
-		T entry = getEntryManager().getReference(getBeanClass(), id);
+		T entry = getEntryManager().find(getBeanClass(), id);
 		getEntryManager().remove(entry);
 	}
 
+	/**
+	 * Remove a LDAP Entry. Use LDAP Del Operation
+	 * 
+	 * @param dn
+	 *            String Representation of Distinguished Name (RFC 1485)
+	 * @throws EntryException
+	 */
+	public void remove(final String dn) {
+		getEntryManager().remove(dn);
+	}
+
+	/**
+	 * Merge LDAP Entry from not null attributes only. Null attributes will
+	 * remain in DSA. Not null attributes will be replaced. Use LDAP Modify
+	 * Operation.
+	 * 
+	 * @param entry
+	 *            a entry annotated with LDAPEntry
+	 * @throws EntryException
+	 */
 	public void update(final T entity) {
 		getEntryManager().merge(entity);
 	}
 
+	/**
+	 * Update LDAP Entry to not null attributes only. Null attributes will be
+	 * removed from DSA. Not null attributes will be replaced. You must declare
+	 * all required attributes. Use LDAP Modify Operation
+	 * 
+	 * @param oldEntry
+	 *            the current entry annotated with LDAPEntry
+	 * @param entry
+	 *            entry annotated with LDAPEntry with values to update
+	 * @throws EntryException
+	 */
+	public void update(final T entry, final T newentry) {
+		getEntryManager().update(entry, newentry);
+	}
+
+	/**
+	 * Find a entry with objectClass equals entry class name and @id attribute
+	 * equals to id value, like &(objectClass=entryClass)(idattr=idvalue)
+	 * 
+	 * @param id
+	 *            find a entry with @id attribute equals to id value
+	 * @return a entry object
+	 */
 	public T load(final I id) {
 		return getEntryManager().find(getBeanClass(), id);
+	}
+
+	/**
+	 * Find a Entry by DN
+	 * 
+	 * @param entryClass
+	 *            a entry class
+	 * @param id
+	 *            find a entry with @id attribute equals to id value
+	 * @return String Representation of Distinguished Name (RFC 1485)
+	 */
+	public T getReference(String dn) {
+		return getEntryManager().getReference(getBeanClass(), dn);
 	}
 
 	@SuppressWarnings("unchecked")
