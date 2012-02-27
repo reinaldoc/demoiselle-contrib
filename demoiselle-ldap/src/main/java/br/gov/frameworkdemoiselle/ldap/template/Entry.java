@@ -41,6 +41,17 @@ public abstract class Entry {
 			setObjectClass(objectClass());
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || dn == null || getClass() != obj.getClass())
+			return false;
+		if (dn.equals(((Entry) obj).dn))
+			return true;
+		return false;
+	}
+
 	public String getDn() {
 		return dn;
 	}
