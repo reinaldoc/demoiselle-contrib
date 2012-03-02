@@ -66,32 +66,30 @@ public class EntryCoreMap implements Serializable {
 		return this.conn.initialized();
 	}
 
+	public static LDAPAttribute getAttribute(Map.Entry<String, Object> entry, String dn) {
+		if (entry.getValue() instanceof String)
+			return new LDAPAttribute(entry.getKey(), (String) entry.getValue());
+
+		else if (entry.getValue() instanceof String[])
+			return new LDAPAttribute(entry.getKey(), (String[]) entry.getValue());
+
+		else if (entry.getValue() instanceof byte[])
+			return new LDAPAttribute(entry.getKey(), (byte[]) entry.getValue());
+
+		throw new EntryException("Error merging entry " + dn + ". Attribute value should be String.class, String[].class or byte[].class");
+
+	}
+
 	public void persist(Map<String, Object> entry, String dn) {
 		loggerArgs(entry, dn);
 		try {
 			LDAPAttributeSet attributeSet = new LDAPAttributeSet();
-
-			for (Map.Entry<String, Object> attrMap : entry.entrySet()) {
-				loggerEntry(attrMap.getKey(), attrMap.getValue());
-
-				if (attrMap.getValue() instanceof String)
-					attributeSet.add(new LDAPAttribute(attrMap.getKey(), (String) attrMap.getValue()));
-
-				else if (attrMap.getValue() instanceof String[])
-					attributeSet.add(new LDAPAttribute(attrMap.getKey(), (String[]) attrMap.getValue()));
-
-				else if (attrMap.getValue() instanceof byte[])
-					attributeSet.add(new LDAPAttribute(attrMap.getKey(), (byte[]) attrMap.getValue()));
-
-				else
-					throw new EntryException("Error persisting entry " + dn
-							+ ". Attribute value should be String.class, String[].class or byte[].class");
-
+			for (Map.Entry<String, Object> mapEntry : entry.entrySet()) {
+				loggerEntry(mapEntry.getKey(), mapEntry.getValue());
+				attributeSet.add(getAttribute(mapEntry, dn));
 			}
-
 			LDAPEntry newEntry = new LDAPEntry(dn, attributeSet);
 			getConnection().add(newEntry);
-
 		} catch (LDAPException e) {
 			throw new EntryException("Error persisting entry " + dn, e);
 		}
@@ -101,25 +99,10 @@ public class EntryCoreMap implements Serializable {
 		loggerArgs(entry, dn);
 		try {
 			List<LDAPModification> modList = new ArrayList<LDAPModification>();
-			for (Map.Entry<String, Object> attrMap : entry.entrySet()) {
-				loggerEntry(attrMap.getKey(), attrMap.getValue());
-
-				LDAPAttribute attribute;
-				if (attrMap.getValue() instanceof String)
-					attribute = new LDAPAttribute(attrMap.getKey(), (String) attrMap.getValue());
-
-				else if (attrMap.getValue() instanceof String[])
-					attribute = new LDAPAttribute(attrMap.getKey(), (String[]) attrMap.getValue());
-
-				else if (attrMap.getValue() instanceof byte[])
-					attribute = new LDAPAttribute(attrMap.getKey(), (byte[]) attrMap.getValue());
-
-				else
-					throw new EntryException("Error merging entry " + dn + ". Attribute value should be String.class, String[].class or byte[].class");
-
-				modList.add(new LDAPModification(LDAPModification.REPLACE, attribute));
+			for (Map.Entry<String, Object> mapEntry : entry.entrySet()) {
+				loggerEntry(mapEntry.getKey(), mapEntry.getValue());
+				modList.add(new LDAPModification(LDAPModification.REPLACE, getAttribute(mapEntry, dn)));
 			}
-
 			LDAPModification[] modsList = modList.toArray(new LDAPModification[0]);
 			getConnection().modify(dn, modsList);
 
@@ -128,42 +111,26 @@ public class EntryCoreMap implements Serializable {
 		}
 	}
 
-	public void merge(Map<String, Object> oldEntry, Map<String, Object> newEntry, String dn) {
+	public void merge(Map<String, Object> entry, Map<String, Object> newEntry, String dn) {
 		loggerArgs(newEntry, dn);
 		try {
 			List<LDAPModification> modList = new ArrayList<LDAPModification>();
-			for (String attr : oldEntry.keySet()) {
-				LDAPAttribute attribute;
-
-				if (newEntry.containsKey(attr)) {
-					loggerEntry(attr, newEntry.get(attr));
-
-					if (newEntry.get(attr) instanceof String)
-						attribute = new LDAPAttribute(attr, (String) newEntry.get(attr));
-
-					else if (newEntry.get(attr) instanceof String[])
-						attribute = new LDAPAttribute(attr, (String[]) newEntry.get(attr));
-
-					else if (newEntry.get(attr) instanceof byte[])
-						attribute = new LDAPAttribute(attr, (byte[]) newEntry.get(attr));
-
-					else
-						throw new EntryException("Error merging entry " + dn
-								+ ". Attribute value should be String.class, String[].class or byte[].class");
-
-					modList.add(new LDAPModification(LDAPModification.REPLACE, attribute));
-
+			for (Map.Entry<String, Object> mapEntry : newEntry.entrySet()) {
+				if (entry.containsKey(mapEntry.getKey())) {
+					loggerEntry(mapEntry.getKey(), mapEntry.getValue());
+					modList.add(new LDAPModification(LDAPModification.REPLACE, getAttribute(mapEntry, dn)));
+					entry.remove(mapEntry.getKey());
 				} else {
-					loggerEntry(attr, null);
-
-					attribute = new LDAPAttribute(attr);
-					modList.add(new LDAPModification(LDAPModification.DELETE, attribute));
+					loggerEntry("+" + mapEntry.getKey(), mapEntry.getValue());
+					modList.add(new LDAPModification(LDAPModification.ADD, getAttribute(mapEntry, dn)));
 				}
 			}
-
+			for (Map.Entry<String, Object> mapEntry : entry.entrySet()) {
+				loggerEntry("-" + mapEntry.getKey(), mapEntry.getValue());
+				modList.add(new LDAPModification(LDAPModification.DELETE, new LDAPAttribute(mapEntry.getKey())));
+			}
 			LDAPModification[] modsList = modList.toArray(new LDAPModification[0]);
 			getConnection().modify(dn, modsList);
-
 		} catch (LDAPException e) {
 			throw new EntryException("Error merging entry " + dn + " - " + newEntry);
 		}

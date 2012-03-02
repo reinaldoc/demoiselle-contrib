@@ -107,8 +107,8 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 *            a entry annotated with LDAPEntry
 	 * @throws EntryException
 	 */
-	public void insert(final T entity) {
-		getEntryManager().persist(entity);
+	public void insert(final T entry) {
+		getEntryManager().persist(entry);
 	}
 
 	/**
@@ -143,8 +143,8 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 *            a entry annotated with LDAPEntry
 	 * @throws EntryException
 	 */
-	public void update(final T entity) {
-		getEntryManager().merge(entity);
+	public void update(final T entry) {
+		getEntryManager().merge(entry);
 	}
 
 	/**
@@ -158,8 +158,8 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 *            entry annotated with LDAPEntry with values to update
 	 * @throws EntryException
 	 */
-	public void update(final T entry, final T newentry) {
-		getEntryManager().update(entry, newentry);
+	public void merge(final T entry) {
+		getEntryManager().merge(getReference(((Entry) entry).getDn()), entry);
 	}
 
 	/**

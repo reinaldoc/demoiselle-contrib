@@ -274,7 +274,7 @@ public class EntryManager implements Serializable {
 	 *            entry annotated with LDAPEntry with values to update
 	 * @throws EntryException
 	 */
-	public void update(Object oldEntry, Object entry) {
+	public void merge(Object oldEntry, Object entry) {
 		core.merge(oldEntry, entry);
 	}
 
