@@ -152,10 +152,9 @@ public class MenuContext implements Serializable {
 
 	public String getSelected(String menuName) {
 		try {
-			for (String itemName : menu.get(menuName).keySet()) {
+			for (String itemName : menu.get(menuName).keySet())
 				if (isSelected(menuName, itemName))
 					return itemName;
-			}
 		} catch (Exception e) {
 			// Ignore
 		}
