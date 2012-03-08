@@ -128,7 +128,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 
 	public void selectRoles() {
 		if (getBean().getRoles() == null)
-			getBean().setRoles(selectedRoles);
+			getBean().setRoles(new ArrayList<SecurityRole>(selectedRoles));
 		else
 			getBean().getRoles().addAll(selectedRoles);
 	}

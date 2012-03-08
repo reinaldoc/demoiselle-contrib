@@ -98,7 +98,7 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 
 	public void selectResources() {
 		if (getBean().getResources() == null)
-			getBean().setResources(selectedResources);
+			getBean().setResources(new ArrayList<SecurityResource>(selectedResources));
 		else
 			getBean().getResources().addAll(selectedResources);
 	}
