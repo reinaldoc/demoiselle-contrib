@@ -57,7 +57,6 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
-import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.template.Crud;
@@ -204,10 +203,10 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	protected Predicate getPredicate(Expression<String> attr, Object value) {
-		if (queryConfig.getFilterLogic() == Logic.AND || queryConfig.getFilterLogic() == Logic.OR)
-			return this.cBuilder.equal(attr, value);
-		else
+		if (queryConfig.isFilterLogicNegation())
 			return this.cBuilder.notEqual(attr, value);
+		else
+			return this.cBuilder.equal(attr, value);
 	}
 
 	protected Expression<String> getAttributeExpression(String attributeName) {
@@ -231,22 +230,25 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			if (entry.getKey() == null || entry.getValue() == null)
 				continue;
 
-			if (!entry.getValue().getClass().isArray())
-				entry.setValue(new Object[] { entry.getValue() });
+			Object[] values;
+			if (entry.getValue().getClass().isArray()) {
+				values = (Object[]) entry.getValue();
+				if (values.length == 0)
+					throw new IllegalArgumentException("The filter for " + entry.getKey() + " have a empty array");
+			} else
+				values = new Object[] { entry.getValue() };
 
-			for (Object value : (Object[]) entry.getValue())
+			for (Object value : values)
 				if (value instanceof String && queryConfig.getFilterComparison() != Comparison.EQUALS)
 					predicates.add(getPredicateForString(getAttributeExpression(entry.getKey()), (String) value));
 				else
 					predicates.add(getPredicate(getAttributeExpression(entry.getKey()), value));
-
 		}
 
 		if (queryConfig.isFilterLogicConjunction())
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
 		else
 			return this.cBuilder.or(predicates.toArray(new Predicate[] {}));
-
 	}
 
 	@Override
