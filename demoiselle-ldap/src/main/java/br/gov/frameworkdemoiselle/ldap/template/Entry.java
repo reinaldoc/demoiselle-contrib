@@ -15,9 +15,12 @@
 
 package br.gov.frameworkdemoiselle.ldap.template;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import br.gov.frameworkdemoiselle.ldap.annotation.DistinguishedName;
 import br.gov.frameworkdemoiselle.ldap.annotation.LDAPEntry;
 import br.gov.frameworkdemoiselle.ldap.annotation.ParentDN;
+import br.gov.frameworkdemoiselle.ldap.annotation.RemoveOnMerge;
 
 @LDAPEntry
 public abstract class Entry {
@@ -29,6 +32,9 @@ public abstract class Entry {
 	private String parentDN;
 
 	private String[] objectClass;
+
+	@RemoveOnMerge
+	private String[] removeOnMerge;
 
 	protected abstract String[] objectClass();
 
@@ -74,6 +80,10 @@ public abstract class Entry {
 
 	public void setObjectClass(String[] objectClass) {
 		this.objectClass = objectClass;
+	}
+
+	public void removeAttribute(String attribute) {
+		ArrayUtils.add(removeOnMerge, attribute);
 	}
 
 }
