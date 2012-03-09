@@ -152,8 +152,6 @@ public class LDAPCrud<T, I> implements Crud<T, I> {
 	 * removed from DSA. Not null attributes will be replaced. You must declare
 	 * all required attributes. Use LDAP Modify Operation
 	 * 
-	 * @param oldEntry
-	 *            the current entry annotated with LDAPEntry
 	 * @param entry
 	 *            entry annotated with LDAPEntry with values to update
 	 * @throws EntryException
