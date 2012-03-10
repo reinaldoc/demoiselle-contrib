@@ -145,7 +145,7 @@ public class ProfileEditMB extends AbstractEditPageBean<SecurityProfile, Long> {
 	/**
 	 * Set SecurityRoles on current bean from datatable selection array
 	 * 
-	 * @param selectedRoles
+	 * @param selectedRolesArray
 	 *            array of SecurityRoles to set current bean
 	 */
 	public void setRoleArray(SecurityRole[] selectedRolesArray) {

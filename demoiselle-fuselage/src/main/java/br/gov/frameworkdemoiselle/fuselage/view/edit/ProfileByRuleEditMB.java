@@ -152,7 +152,7 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	/**
 	 * Set SecurityProfiles on current bean from datatable selection array
 	 * 
-	 * @param profiles
+	 * @param selectedProfilesArray
 	 *            array of SecurityProfiles to set current bean
 	 */
 	public void setProfileArray(SecurityProfile[] selectedProfilesArray) {

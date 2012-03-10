@@ -113,7 +113,7 @@ public class RoleEditMB extends AbstractEditPageBean<SecurityRole, Long> {
 	/**
 	 * Set SecurityResources on current bean from datatable selection array
 	 * 
-	 * @param selectedResources
+	 * @param selectedResourcesArray
 	 *            array of SecurityResources to set current bean
 	 */
 	public void setResourceArray(SecurityResource[] selectedResourcesArray) {
