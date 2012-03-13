@@ -1,11 +1,11 @@
-package org.example.project1.bookmark.business;
+package br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.business;
 
 import java.util.List;
 
-import org.example.project1.bookmark.domain.Bookmark;
-import org.example.project1.bookmark.persistence.BookmarkDAO;
 
 import br.gov.frameworkdemoiselle.annotation.Startup;
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark;
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.persistence.BookmarkDAO;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;

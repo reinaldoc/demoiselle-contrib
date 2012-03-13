@@ -1,10 +1,10 @@
-package org.example.project1.fingerprint.view.edit;
+package br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.view.edit;
 
 import javax.inject.Inject;
 
-import org.example.project1.fingerprint.business.FingerprintBC;
-import org.example.project1.fingerprint.domain.Fingerprint;
 
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.business.FingerprintBC;
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain.Fingerprint;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractEditPageBean;
 

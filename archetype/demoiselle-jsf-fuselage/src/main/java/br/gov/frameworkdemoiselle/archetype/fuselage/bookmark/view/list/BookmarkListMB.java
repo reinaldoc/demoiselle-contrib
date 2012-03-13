@@ -1,4 +1,4 @@
-package org.example.project1.bookmark.view.list;
+package br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.view.list;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.example.project1.bookmark.business.BookmarkBC;
-import org.example.project1.bookmark.domain.Bookmark;
 
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.business.BookmarkBC;
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;

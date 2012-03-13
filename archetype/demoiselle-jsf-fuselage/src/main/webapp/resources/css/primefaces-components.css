@@ -166,7 +166,7 @@ input[type=text].ui-state-focus,input[type=password].ui-state-focus,textarea.ui-
 
 .ui-confirm-dialog .ui-dialog-content .ui-icon {
 	background-image:
-		url("/archetype-fuselage/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
+		url("/${artifactId}/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
 	height: 32px;
 	width: 32px;
 	margin-right: 20px;

@@ -5,8 +5,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.example</groupId>
-	<artifactId>project1</artifactId>
+	<groupId>demoiselle-contrib</groupId>
+	<artifactId>demoiselle-jsf-fuselage</artifactId>
 	<packaging>war</packaging>
 
 	<name></name>

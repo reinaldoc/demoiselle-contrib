@@ -209,7 +209,7 @@ ul.dialog-messages li {
 	margin-left: 3px;
 	background-repeat: no-repeat;
 	background-image:
-		url('/archetype-fuselage/javax.faces.resource/faa-success.gif.jsf?ln=images');
+		url('/${artifactId}/javax.faces.resource/faa-success.gif.jsf?ln=images');
 }
 
 .dialog-close-link {
@@ -228,7 +228,7 @@ ul.dialog-messages li {
 	font-weight: bold;
 	background-repeat: no-repeat;
 	background-image:
-		url('/archetype-fuselage/javax.faces.resource/faa-wait.gif.jsf?ln=images');
+		url('/${artifactId}/javax.faces.resource/faa-wait.gif.jsf?ln=images');
 }
 
 .dialog-datatable td {

@@ -1,11 +1,11 @@
-package org.example.project1.fingerprint.business;
+package br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.business;
 
 import java.util.List;
 
-import org.example.project1.fingerprint.domain.Fingerprint;
-import org.example.project1.fingerprint.persistence.FingerprintDAO;
 
 import br.gov.frameworkdemoiselle.annotation.Startup;
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain.Fingerprint;
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.persistence.FingerprintDAO;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;

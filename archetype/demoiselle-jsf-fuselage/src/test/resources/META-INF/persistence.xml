@@ -7,7 +7,7 @@
 	-->
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 
-		<class>org.example.project1.domain.Bookmark</class>
+		<class>br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark</class>
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />

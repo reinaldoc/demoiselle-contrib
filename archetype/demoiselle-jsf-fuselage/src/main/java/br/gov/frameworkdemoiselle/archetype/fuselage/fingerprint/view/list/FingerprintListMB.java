@@ -1,4 +1,4 @@
-package org.example.project1.fingerprint.view.list;
+package br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.view.list;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.example.project1.fingerprint.business.FingerprintBC;
-import org.example.project1.fingerprint.domain.Fingerprint;
 
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.business.FingerprintBC;
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain.Fingerprint;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;

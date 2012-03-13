@@ -8,8 +8,8 @@
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:/DefaultDS</non-jta-data-source>
 		
-		<class>org.example.project1.bookmark.domain.Bookmark</class>
-		<class>org.example.project1.fingerprint.domain.Fingerprint</class>
+		<class>br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark</class>
+		<class>br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain.Fingerprint</class>
 		<class>br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser</class>
 		<class>br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile</class>
 		<class>br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule</class>

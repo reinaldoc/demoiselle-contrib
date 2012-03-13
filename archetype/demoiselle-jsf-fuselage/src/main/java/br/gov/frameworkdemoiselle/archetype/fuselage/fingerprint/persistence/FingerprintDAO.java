@@ -1,13 +1,13 @@
-package org.example.project1.fingerprint.persistence;
+package br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.persistence;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.Query;
 
-import org.example.project1.fingerprint.domain.Fingerprint;
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain.Fingerprint;
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
 import br.gov.frameworkdemoiselle.template.contrib.JPACrud;
 

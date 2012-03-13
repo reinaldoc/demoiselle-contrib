@@ -1,13 +1,13 @@
-package org.example.project1.bookmark.persistence;
+package br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.persistence;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.Query;
 
-import org.example.project1.bookmark.domain.Bookmark;
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark;
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
 import br.gov.frameworkdemoiselle.template.contrib.JPACrud;
 

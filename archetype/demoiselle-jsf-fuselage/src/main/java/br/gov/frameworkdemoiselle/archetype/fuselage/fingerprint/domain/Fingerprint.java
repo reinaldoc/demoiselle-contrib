@@ -1,4 +1,4 @@
-package org.example.project1.bookmark.domain;
+package br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class Bookmark implements Serializable {
+public class Fingerprint implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,21 +24,21 @@ public class Bookmark implements Serializable {
 	private String category;
 
 	@Column
-	@Size(min = 5, max = 255, message = "Especifique melhor a descrição")
-	private String description;
+	@Size(min = 5, max = 255, message = "Especifique melhor servidor")
+	private String serverName;
 
 	@Column
-	@Size(min = 5, max = 255, message = "Especifique melhor o link")
-	private String link;
+	@Size(min = 5, max = 255, message = "Especifique melhor fignerprint")
+	private String fingerprint;
 
-	public Bookmark() {
+	public Fingerprint() {
 		super();
 	}
 
-	public Bookmark(String category, String description, String link) {
+	public Fingerprint(String category, String description, String link) {
 		this.category = category;
-		this.description = description;
-		this.link = link;
+		this.serverName = description;
+		this.fingerprint = link;
 	}
 
 	public Long getId() {
@@ -57,20 +57,20 @@ public class Bookmark implements Serializable {
 		this.category = category;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getServerName() {
+		return serverName;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 
-	public String getLink() {
-		return link;
+	public String getFingerprint() {
+		return fingerprint;
 	}
 
-	public void setLink(String link) {
-		this.link = link;
+	public void setFingerprint(String fingerprint) {
+		this.fingerprint = fingerprint;
 	}
 
 }

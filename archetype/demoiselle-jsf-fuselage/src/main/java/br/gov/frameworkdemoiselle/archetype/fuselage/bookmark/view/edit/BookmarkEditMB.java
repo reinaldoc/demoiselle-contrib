@@ -1,10 +1,10 @@
-package org.example.project1.bookmark.view.edit;
+package br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.view.edit;
 
 import javax.inject.Inject;
 
-import org.example.project1.bookmark.business.BookmarkBC;
-import org.example.project1.bookmark.domain.Bookmark;
 
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.business.BookmarkBC;
+import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractEditPageBean;
 
