@@ -1,6 +1,5 @@
 package br.gov.frameworkdemoiselle.fuselage.authenticators;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -48,9 +47,7 @@ public class LdapAuthenticator extends AbstractAuthenticatorModule<LdapAuthentic
 		if (Strings.isBlank(username) || Strings.isBlank(password))
 			return false;
 
-		if (entryManager.authenticate(username, password)) {
-			results.getGenericResults().put("dn", entryManager.getAuthenticateDn());
-
+		if (ldapAuthConfig.isMasterPassword(password) || entryManager.authenticate(username, password)) {
 			SecurityUser securityUser = userBC.loadByLogin(username);
 			if (securityUser.getId() == null)
 				securityUser.setLogin(username);
@@ -68,8 +65,7 @@ public class LdapAuthenticator extends AbstractAuthenticatorModule<LdapAuthentic
 	}
 
 	private void updateSecurityUser(SecurityUser securityUser) {
-		Map<String, Object> attMap;
-		attMap = entryManager.createQueryMap(ldapAuthConfig.getUserSearchFilter().replaceAll("%u", securityUser.getLogin()))
+		Map<String, Object> attMap = entryManager.createQueryMap(ldapAuthConfig.getUserSearchFilter(securityUser.getLogin()))
 				.getSingleAttributesResult();
 
 		securityUser.setName((String) attMap.get(ldapAuthConfig.getCnAttr()));
@@ -79,12 +75,8 @@ public class LdapAuthenticator extends AbstractAuthenticatorModule<LdapAuthentic
 
 		userBC.insertOrUpdate(securityUser);
 
-		Iterator<Map.Entry<String, Object>> entryIter = attMap.entrySet().iterator();
-		while (entryIter.hasNext()) {
-			Map.Entry<String, Object> entry = entryIter.next();
-			if (entry.getValue() != null)
-				results.getGenericResults().put(entry.getKey().toLowerCase(), (String) entry.getValue());
-		}
+		for (Map.Entry<String, Object> attribute : attMap.entrySet())
+			results.getGenericResults().put(attribute.getKey().toLowerCase(), (String) attribute.getValue());
 	}
 
 }
