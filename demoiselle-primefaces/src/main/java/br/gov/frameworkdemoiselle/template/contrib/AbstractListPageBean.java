@@ -55,6 +55,7 @@ import br.gov.frameworkdemoiselle.template.AbstractPageBean;
 import br.gov.frameworkdemoiselle.template.ListPageBean;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.contrib.Faces;
+import br.gov.frameworkdemoiselle.util.core.MenuContext;
 
 public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implements ListPageBean<T, I> {
 
@@ -70,6 +71,9 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	@Inject
 	private QueryContext queryContext;
+
+	@Inject
+	private MenuContext menuContext;
 
 	protected abstract List<T> handleResultList(QueryConfig<T> queryConfig);
 
@@ -144,6 +148,18 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		return queryContext.getQueryConfig(getBeanClass(), true);
 	}
 
+	public MenuContext getMenuContext() {
+		return menuContext;
+	}
+
+	public String getSelectedMenu() {
+		return menuContext.getSelected(getBeanClass().getSimpleName());
+	}
+
+	public void selectMenu(String itemName) {
+		menuContext.select(getBeanClass().getSimpleName(), itemName);
+	}
+
 	public void clearSelection() {
 		setSelection(new HashMap<I, Boolean>());
 	}
@@ -182,5 +198,5 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		resultFilter = null;
 		clearResultList();
 	}
-	
+
 }

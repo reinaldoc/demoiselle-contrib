@@ -47,7 +47,6 @@ import br.gov.frameworkdemoiselle.template.Crud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
-import br.gov.frameworkdemoiselle.util.core.MenuContext;
 
 public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
@@ -55,9 +54,6 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	@Inject
 	private QueryContext queryContext;
-
-	@Inject
-	private MenuContext menuContext;
 
 	private Class<C> delegateClass;
 
@@ -128,18 +124,6 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	protected QueryConfig<?> getQueryConfig(Class<?> clazz) {
 		return queryContext.getQueryConfig(clazz, true);
-	}
-
-	public MenuContext getMenuContext() {
-		return menuContext;
-	}
-
-	public String getSelectedMenu() {
-		return menuContext.getSelected(getBeanClass().getSimpleName());
-	}
-
-	public void selectMenu(String itemName) {
-		menuContext.select(getBeanClass().getSimpleName(), itemName);
 	}
 
 }
