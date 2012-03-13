@@ -1,11 +1,9 @@
 package br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.view.list;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
-
 
 import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.business.BookmarkBC;
 import br.gov.frameworkdemoiselle.archetype.fuselage.bookmark.domain.Bookmark;
@@ -25,21 +23,7 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 
 	@Override
 	protected List<Bookmark> handleResultList(QueryConfig<Bookmark> queryConfig) {
-		return bc.find(getResultFilter());
-	}
-
-	public void deleteSelection() {
-		boolean delete;
-		for (Iterator<Long> iter = getSelection().keySet().iterator(); iter.hasNext();) {
-			Long id = iter.next();
-			delete = getSelection().get(id);
-
-			if (delete) {
-				bc.delete(id);
-				iter.remove();
-			}
-		}
-
+		return bc.find(getResultFilter(), getSelectedMenu());
 	}
 
 	public List<String> getCategories() {

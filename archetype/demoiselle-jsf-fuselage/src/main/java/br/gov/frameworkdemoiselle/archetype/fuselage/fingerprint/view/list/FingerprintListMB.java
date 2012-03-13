@@ -1,11 +1,9 @@
 package br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.view.list;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
-
 
 import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.business.FingerprintBC;
 import br.gov.frameworkdemoiselle.archetype.fuselage.fingerprint.domain.Fingerprint;
@@ -25,21 +23,7 @@ public class FingerprintListMB extends AbstractListPageBean<Fingerprint, Long> {
 
 	@Override
 	protected List<Fingerprint> handleResultList(QueryConfig<Fingerprint> queryConfig) {
-		return bc.find(getResultFilter());
-	}
-
-	public void deleteSelection() {
-		boolean delete;
-		for (Iterator<Long> iter = getSelection().keySet().iterator(); iter.hasNext();) {
-			Long id = iter.next();
-			delete = getSelection().get(id);
-
-			if (delete) {
-				bc.delete(id);
-				iter.remove();
-			}
-		}
-
+		return bc.find(getResultFilter(), getSelectedMenu());
 	}
 
 	public List<String> getCategories() {

@@ -34,14 +34,14 @@ public class FingerprintBC extends DelegateCrud<Fingerprint, Long, FingerprintDA
 		}
 	}
 
-	public List<Fingerprint> find(String search) {
-		if (Strings.isNotBlank(search) && !"Todos".equals(getSelectedMenu()))
-			return getDelegate().findByCategory(getSelectedMenu(), search);
+	public List<Fingerprint> find(String search, String category) {
+		if (Strings.isNotBlank(search) && !"Todos".equals(category))
+			return getDelegate().findByCategory(category, search);
 
 		QueryConfig<Fingerprint> queryConfig = getQueryConfig();
 		if (Strings.isBlank(search)) {
-			if (!"Todos".equals(getSelectedMenu()))
-				queryConfig.getFilter().put("category", getSelectedMenu());
+			if (!"Todos".equals(category))
+				queryConfig.getFilter().put("category", category);
 			return findAll();
 		}
 
