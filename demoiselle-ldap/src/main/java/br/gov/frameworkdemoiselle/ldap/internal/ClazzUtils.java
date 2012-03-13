@@ -36,6 +36,7 @@ import br.gov.frameworkdemoiselle.ldap.annotation.DistinguishedName;
 import br.gov.frameworkdemoiselle.ldap.annotation.Id;
 import br.gov.frameworkdemoiselle.ldap.annotation.LDAPEntry;
 import br.gov.frameworkdemoiselle.ldap.annotation.ParentDN;
+import br.gov.frameworkdemoiselle.ldap.annotation.RemoveOnMerge;
 import br.gov.frameworkdemoiselle.ldap.core.EntryManager;
 import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -100,12 +101,18 @@ public class ClazzUtils {
 			if (field.isAnnotationPresent(DistinguishedName.class) || field.isAnnotationPresent(Ignore.class)
 					|| field.isAnnotationPresent(ParentDN.class))
 				continue;
-			if (map.containsKey(field.getName()))
+			// Ignore override attributes
+			if (map.containsKey(getFieldName(field)))
 				continue;
 			Object value = Reflections.getFieldValue(field, entry);
 			if (value == null)
 				continue;
-			map.put(field.getName(), getObjectAsSupportedType(value));
+			if (field.isAnnotationPresent(RemoveOnMerge.class)) {
+				map.put("@RemoveOnMerge", value);
+				Reflections.setFieldValue(field, entry, null);
+				continue;
+			}
+			map.put(getFieldName(field), getObjectAsSupportedType(value));
 		}
 		return map;
 	}
@@ -174,7 +181,7 @@ public class ClazzUtils {
 		T entry = Beans.getReference(clazz);
 		Field[] fields = getSuperClassesFields(entry.getClass());
 		for (Field field : fields) {
-			if (field.isAnnotationPresent(Ignore.class))
+			if (field.isAnnotationPresent(Ignore.class) || field.isAnnotationPresent(RemoveOnMerge.class))
 				continue;
 
 			if (field.isAnnotationPresent(ParentDN.class)) {
@@ -258,8 +265,7 @@ public class ClazzUtils {
 	 * @return Array of Super Classes Fields
 	 */
 	public static Field[] getSuperClassesFields(Class<?> entryClass) {
-		Field[] fieldArray = null;
-		fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entryClass.getDeclaredFields());
+		Field[] fieldArray = entryClass.getDeclaredFields();
 		Class<?> superClazz = entryClass.getSuperclass();
 		while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
 			fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());

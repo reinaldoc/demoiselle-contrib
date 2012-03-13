@@ -99,9 +99,18 @@ public class EntryCoreMap implements Serializable {
 		loggerArgs(entry, dn);
 		try {
 			List<LDAPModification> modList = new ArrayList<LDAPModification>();
+
 			for (Map.Entry<String, Object> mapEntry : entry.entrySet()) {
-				loggerEntry(mapEntry.getKey(), mapEntry.getValue());
-				modList.add(new LDAPModification(LDAPModification.REPLACE, getAttribute(mapEntry, dn)));
+				if ("@RemoveOnMerge".equals(mapEntry.getKey())) {
+					if (mapEntry.getValue() instanceof String[])
+						for (String attr : (String[]) mapEntry.getValue()) {
+							loggerEntry("-" + attr, null);
+							modList.add(new LDAPModification(LDAPModification.DELETE, new LDAPAttribute(attr)));
+						}
+				} else {
+					loggerEntry(mapEntry.getKey(), mapEntry.getValue());
+					modList.add(new LDAPModification(LDAPModification.REPLACE, getAttribute(mapEntry, dn)));
+				}
 			}
 			LDAPModification[] modsList = modList.toArray(new LDAPModification[0]);
 			getConnection().modify(dn, modsList);

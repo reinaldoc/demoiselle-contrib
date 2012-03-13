@@ -83,7 +83,7 @@ public abstract class Entry {
 	}
 
 	public void removeAttribute(String attribute) {
-		ArrayUtils.add(removeOnMerge, attribute);
+		removeOnMerge = (String[]) ArrayUtils.add(removeOnMerge, attribute);
 	}
 
 }
