@@ -35,7 +35,7 @@ public class ProfileBC extends DelegateCrud<SecurityProfile, Long, ProfileDAO> {
 	public List<SecurityProfile> findProfilesExceptList(List<SecurityProfile> securityProfiles) {
 		QueryConfig<SecurityProfile> queryConfig = getQueryConfig();
 		queryConfig.setSorting("name");
-		if (securityProfiles != null) {
+		if (securityProfiles != null && securityProfiles.size() > 0) {
 			Long[] ids = new Long[securityProfiles.size()];
 			for (int i = 0; i != securityProfiles.size(); i++)
 				ids[i] = securityProfiles.get(i).getId();
