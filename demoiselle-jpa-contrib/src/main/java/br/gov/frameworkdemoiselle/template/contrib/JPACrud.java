@@ -118,7 +118,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		return this.entityManager;
 	}
 
-	protected QueryConfig<T> setQueryConfig() {
+	protected QueryConfig<T> getQueryConfig() {
 		if (queryConfig == null) {
 			queryConfig = queryContext.get().getQueryConfig(getBeanClass());
 		}
@@ -255,7 +255,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	public List<T> findAll() {
 		CriteriaQuery<T> criteria = getCriteria();
 
-		setQueryConfig();
+		getQueryConfig();
 		if (queryConfig != null) {
 			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
 				criteria.where(getWhere());
@@ -291,6 +291,26 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			criteria.where(getWhere());
 
 		return getEntityManager().createQuery(criteria).getSingleResult().intValue();
+	}
+
+	/**
+	 * Retrieves the number of persisted objects type by hql and parameters
+	 * (name and value). Examples:
+	 * 
+	 * countAll("from User u where u.city = :city order by u.name", "city",
+	 * "New York")
+	 * 
+	 * Starts with "from Entity e" is required for create "select count(e)";
+	 * 
+	 * @return the row count
+	 */
+	protected Long countAll(String hql, Object... parameters) {
+		Query query = createQuery("select count(" + hql.split(" ")[2] + ") " + hql);
+		for (int i = 0; i < parameters.length; i++) {
+			query.setParameter((String) parameters[i], parameters[i + 1]);
+			i++;
+		}
+		return (Long) query.getSingleResult();
 	}
 
 }
