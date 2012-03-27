@@ -171,6 +171,7 @@ public class ConnectionManager implements Serializable {
 			bindpwutf = bindpw.getBytes("UTF8");
 		} catch (Exception e) {
 			loggerInfo("Exception raised at bind()");
+			e.printStackTrace();
 			return false;
 		}
 		return bind(binddn, bindpwutf, protocol);
@@ -191,11 +192,8 @@ public class ConnectionManager implements Serializable {
 		try {
 			bind();
 			return true;
-		} catch (LDAPException e) {
-			loggerInfo("LDAPException raised at bind()");
-			return false;
-		} catch (URISyntaxException e) {
-			loggerInfo("URISyntaxException raised at bind()");
+		} catch (Exception e) {
+			loggerInfo("Bind failed for dn: " + binddn);
 			return false;
 		}
 	}
@@ -214,9 +212,8 @@ public class ConnectionManager implements Serializable {
 				disconnect();
 				getConnection().bind(protocol, binddn, bindpw);
 			}
-		} else {
+		} else
 			getConnection().bind(protocol, binddn, bindpw);
-		}
 	}
 
 	/**
@@ -270,9 +267,8 @@ public class ConnectionManager implements Serializable {
 	}
 
 	private void loggerInfo(String msg) {
-		if (verbose) {
+		if (verbose)
 			this.logger.info(msg);
-		}
 	}
 
 	public boolean isVerbose() {
