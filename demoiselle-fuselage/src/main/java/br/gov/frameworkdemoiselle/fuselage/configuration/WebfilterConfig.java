@@ -10,7 +10,7 @@ public class WebfilterConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("webfilter.enabled")
+	@Name("enabled")
 	private boolean webfilter = true;
 
 	@Name("login.page")
