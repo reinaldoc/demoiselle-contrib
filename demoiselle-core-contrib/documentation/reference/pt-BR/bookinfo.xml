@@ -1,13 +1,19 @@
 <?xml version='1.0' encoding="utf-8"?>
-<bookinfo xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="pt-br">
+<info xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="pt-br"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 
 	<title>Guia Demoiselle Core Contrib</title>
+
 	<subtitle>Demoiselle Core Contrib</subtitle>
 
-	<abstract>Guia para uso do Demoiselle Core Contrib</abstract>
+	<abstract>
+		<para>Guia para uso do Demoiselle Core Contrib</para>
+	</abstract>
+
 	<titleabbrev>Guia Demoiselle Core Contrib</titleabbrev>
 
-	<xi:include href="revhistory.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
-	<xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+	<xi:include href="revhistory.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-</bookinfo>
+</info>
