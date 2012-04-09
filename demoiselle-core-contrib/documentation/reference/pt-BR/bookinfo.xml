@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding="utf-8"?>
 <info xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="pt-br"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 
 	<title>Guia Demoiselle Core Contrib</title>
@@ -13,7 +13,7 @@
 
 	<titleabbrev>Guia Demoiselle Core Contrib</titleabbrev>
 
-	<xi:include href="revhistory.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="revhistory.xml" />
+	<xi:include href="authorgroup.xml" />
 
 </info>
