@@ -51,6 +51,8 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class Faces extends br.gov.frameworkdemoiselle.util.Faces {
 
+	private static final String REPORT_SUFFIX_PATH = "WEB-INF/classes/reports/";
+
 	public static FacesContext getFacesContext() {
 		return Beans.getReference(FacesContext.class);
 	}
@@ -109,6 +111,10 @@ public class Faces extends br.gov.frameworkdemoiselle.util.Faces {
 	public static <T> T getManagedProperty(String expression, Class<T> expectedType) {
 		FacesContext context = getFacesContext();
 		return (T) context.getApplication().evaluateExpressionGet(context, expression, expectedType);
+	}
+
+	public static String getReportPath(String relativePath) {
+		return getFacesContext().getExternalContext().getRealPath(REPORT_SUFFIX_PATH + relativePath);
 	}
 
 }
