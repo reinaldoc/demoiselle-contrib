@@ -172,9 +172,9 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		for (String sortAtrr : queryConfig.getSorting())
 			if (sortAtrr != null)
 				if (queryConfig.isSortOrder())
-					orderList.add(this.cBuilder.asc(this.cRoot.get(sortAtrr)));
+					orderList.add(this.cBuilder.asc(getAttributeExpression(sortAtrr)));
 				else
-					orderList.add(this.cBuilder.desc(this.cRoot.get(sortAtrr)));
+					orderList.add(this.cBuilder.desc(getAttributeExpression(sortAtrr)));
 		return orderList.toArray(new Order[] {});
 	}
 
@@ -304,13 +304,37 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * 
 	 * @return the row count
 	 */
-	protected Long countAll(String hql, Object... parameters) {
+	protected int countAll(String hql, Object... parameters) {
 		Query query = createQuery("select count(" + hql.split(" ")[2] + ") " + hql);
+		setQueryParameters(query, parameters);
+		return ((Long) query.getSingleResult()).intValue();
+	}
+
+	protected Query createQuery(String ql, Object... parameters) {
+		Query query = createQuery(ql);
+		setQueryParameters(query, parameters);
+		setQueryPagination(query, ql, parameters);
+		return query;
+	}
+
+	private void setQueryParameters(Query query, Object... parameters) {
+		if (parameters.length % 2 != 0)
+			throw new IllegalArgumentException();
 		for (int i = 0; i < parameters.length; i++) {
 			query.setParameter((String) parameters[i], parameters[i + 1]);
 			i++;
 		}
-		return (Long) query.getSingleResult();
+	}
+
+	private void setQueryPagination(Query query, String ql, Object... parameters) {
+		getQueryConfig();
+		if (queryConfig != null) {
+			queryConfig.setTotalResults(countAll(ql, parameters));
+			if (queryConfig.getMaxResults() > 0) {
+				query.setFirstResult(queryConfig.getFirstResult());
+				query.setMaxResults(queryConfig.getMaxResults());
+			}
+		}
 	}
 
 }
