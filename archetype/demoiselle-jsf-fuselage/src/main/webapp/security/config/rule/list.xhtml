@@ -38,8 +38,8 @@
 			</h:panelGroup>
 
 			<p:dataTable id="faa-profileByRule-list-datatable-id" widgetVar="faa_profileByRule_dt_wv" emptyMessage="Não há regras"
-				value="#{profileByRuleListMB.lazyDataModel}" var="faa_profileByRule_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{profileByRuleListMB.lazyDataModel}" var="faa_profileByRule_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-profileByRule">
 					<h:outputText value="Rule" />

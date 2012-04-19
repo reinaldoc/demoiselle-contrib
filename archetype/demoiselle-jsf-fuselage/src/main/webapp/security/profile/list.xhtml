@@ -16,8 +16,8 @@
 		<h:panelGroup id="faa-profile-list-id">
 
 			<p:dataTable id="faa-profile-list-datatable-id" widgetVar="faa_profile_dt_wv" emptyMessage="Não há registros"
-				value="#{profileListMB.lazyDataModel}" var="faa_profile_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{profileListMB.lazyDataModel}" var="faa_profile_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-profile">
 					<h:outputText value="Profile" />

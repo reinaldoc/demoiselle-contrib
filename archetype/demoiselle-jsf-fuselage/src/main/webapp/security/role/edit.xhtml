@@ -40,7 +40,7 @@
 
 						<p:dataTable id="faa-role-edit-datatable-resource-id" widgetVar="faa_role_dt_resource_wv" emptyMessage="Não há recursos selecionados"
 							value="#{roleEditMB.bean.resources}" var="faa_role_dt_resource_row" rows="6" paginator="true" paginatorAlwaysVisible="true"
-							pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
+							pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
 
 							<p:column headerText="Recursos:" sortBy="#{faa_role_dt_resource_row.name}">
 								<h:panelGroup layout="block" style="width: 130px;">
@@ -85,7 +85,7 @@
 
 					<p:dataTable id="faa-role-edit-datatable-resource-select-id" widgetVar="faa_role_dt_resource_select_wv"
 						emptyMessage="Não há recursos disponíveis" value="#{roleEditMB.resourceList}" var="faa_role_dt_resource_select_row" rows="10"
-						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
 						styleClass="dialog-datatable dialog-datatable-small" selection="#{roleEditMB.resourceArray}"
 						rowKey="#{faa_role_dt_resource_select_row.id}">
 

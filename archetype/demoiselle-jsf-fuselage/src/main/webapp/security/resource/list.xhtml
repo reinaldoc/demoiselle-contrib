@@ -16,8 +16,8 @@
 		<h:panelGroup id="faa-resource-list-id">
 
 			<p:dataTable id="faa-resource-list-datatable-id" widgetVar="faa_resource_dt_wv" emptyMessage="Não há registros"
-				value="#{resourceListMB.lazyDataModel}" var="faa_resource_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{resourceListMB.lazyDataModel}" var="faa_resource_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-resource">
 					<h:outputText value="Resource" />

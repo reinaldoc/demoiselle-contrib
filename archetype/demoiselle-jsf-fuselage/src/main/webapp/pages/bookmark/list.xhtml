@@ -16,8 +16,8 @@
 		<h:panelGroup id="myapp-bookmark-list-panel-id">
 
 			<p:dataTable id="myapp-bookmark-list-datatable-id" widgetVar="myapp_bookmark_list_datatable" emptyMessage="Não há registros"
-				value="#{bookmarkListMB.resultList}" var="bookmark" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{bookmarkListMB.resultList}" var="bookmark" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column headerText="Id" sortBy="#{bookmark.id}">
 

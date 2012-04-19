@@ -9,7 +9,7 @@ import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
 @ViewController
-public class AuthMB implements Serializable {
+public class AuthenticatorMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

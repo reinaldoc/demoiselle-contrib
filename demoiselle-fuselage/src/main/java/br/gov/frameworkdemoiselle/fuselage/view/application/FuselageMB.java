@@ -5,12 +5,13 @@ import java.io.Serializable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @Named
-public class ProxyMB implements Serializable {
+public class FuselageMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,10 +31,20 @@ public class ProxyMB implements Serializable {
 
 	public String getUserNameProperCase() {
 		try {
-			return Strings.capitalize(this.securityContext.getUser().getId().toLowerCase());
+			return Strings.capitalize(securityContext.getUser().getId().toLowerCase());
 		} catch (Exception e) {
 			return "null";
 		}
+	}
+	
+	public String getUsername() {
+		try {
+			if (securityContext.isLoggedIn())
+				return ((SecurityUser) securityContext.getUser().getAttribute("user")).getLogin();
+		} catch (Exception e) {
+			return "null";
+		}
+		return null;
 	}
 
 }

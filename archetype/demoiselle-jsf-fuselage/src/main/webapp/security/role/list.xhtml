@@ -16,8 +16,8 @@
 		<h:panelGroup id="faa-role-list-id">
 
 			<p:dataTable id="faa-role-list-datatable-id" widgetVar="faa_role_dt_wv" emptyMessage="Não há registros"
-				value="#{roleListMB.lazyDataModel}" var="faa_role_dt_row" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{roleListMB.lazyDataModel}" var="faa_role_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-role">
 					<h:outputText value="Role" />

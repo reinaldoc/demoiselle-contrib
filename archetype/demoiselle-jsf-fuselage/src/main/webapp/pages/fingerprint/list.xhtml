@@ -16,8 +16,8 @@
 		<h:panelGroup id="myapp-fingerprint-list-panel-id">
 
 			<p:dataTable id="myapp-fingerprint-list-datatable-id" widgetVar="myapp_fingerprint_list_datatable" emptyMessage="Não há registros"
-				value="#{fingerprintListMB.resultList}" var="fingerprint" rows="#{proxyMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{proxyMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{fingerprintListMB.resultList}" var="fingerprint" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column headerText="Id" sortBy="#{fingerprint.id}">
 
