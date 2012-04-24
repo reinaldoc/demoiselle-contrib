@@ -3,7 +3,7 @@ package br.gov.frameworkdemoiselle.fuselage.view.app;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -12,7 +12,7 @@ import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @Named
-@ApplicationScoped
+@SessionScoped
 public class FuselageMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
