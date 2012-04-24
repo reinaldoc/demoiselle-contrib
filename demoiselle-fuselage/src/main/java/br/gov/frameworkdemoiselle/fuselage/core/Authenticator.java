@@ -65,6 +65,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		if (authResults.isLoggedIn()) {
 			user = new User();
 			user.setAttribute("user", authResults.getSecurityUser());
+			user.setAttribute("user_detail", authResults.getGenericResults());
 			user.setId(authResults.getSecurityUser().getName());
 			setUserPermissions(authResults.getSecurityUser());
 			return true;
