@@ -1,33 +1,24 @@
-package br.gov.frameworkdemoiselle.fuselage.view.application;
+package br.gov.frameworkdemoiselle.fuselage.view.app;
 
 import java.io.Serializable;
+import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
-import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @Named
+@ApplicationScoped
 public class FuselageMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private PaginationConfig paginationConfig;
-
-	@Inject
 	private SecurityContext securityContext;
-
-	public PaginationConfig getPaginationConfig() {
-		return paginationConfig;
-	}
-
-	public void setPaginationConfig(PaginationConfig paginationConfig) {
-		this.paginationConfig = paginationConfig;
-	}
 
 	public String getUserNameProperCase() {
 		try {
@@ -36,7 +27,7 @@ public class FuselageMB implements Serializable {
 			return "null";
 		}
 	}
-	
+
 	public String getUsername() {
 		try {
 			if (securityContext.isLoggedIn())
@@ -45,6 +36,15 @@ public class FuselageMB implements Serializable {
 			return "null";
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getDn() {
+		try {
+			return ((Map<String, String>) securityContext.getUser().getAttribute("user_detail")).get("dn");
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
