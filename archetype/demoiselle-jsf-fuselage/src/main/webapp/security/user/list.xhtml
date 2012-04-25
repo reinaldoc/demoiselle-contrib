@@ -32,8 +32,8 @@
 		<h:panelGroup id="faa-user-list-id">
 
 			<p:dataTable id="faa-user-list-datatable-id" widgetVar="faa_user_dt_wv" emptyMessage="Não há registros"
-				value="#{userListMB.lazyDataModel}" var="faa_user_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{userListMB.lazyDataModel}" var="faa_user_dt_row" rows="#{paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-user">
 					<h:outputText value="User" />
@@ -62,13 +62,13 @@
 
 						<p:commandButton icon="ui-icon-search" immediate="true" update="faa-user-edit-dlg-body-id, faa-user-edit-dlg-buttons-id"
 							action="#{userEditMB.editById(faa_user_dt_row.id)}" oncomplete="faa_user_edit_dlg.show()" title="Editar Informações"
-							styleClass="margin" />
+							styleClass="forItems" />
 
 						<p:commandButton icon="#{!faa_user_dt_row.enabled ? 'ui-icon-locked' : 'ui-icon-unlocked' }" immediate="true"
 							update="faa-user-status-dlg-id" action="#{userEditMB.editById(faa_user_dt_row.id)}" oncomplete="faa_user_status_dlg.show()"
-							title="#{!faa_user_dt_row.enabled ? 'Ativar' : 'Desativar' } Usuário" styleClass="margin" />
+							title="#{!faa_user_dt_row.enabled ? 'Ativar' : 'Desativar' } Usuário" styleClass="forItems" />
 
-						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-user-delete-dlg-id" styleClass="margin"
+						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-user-delete-dlg-id" styleClass="forItems"
 							action="#{userEditMB.editById(faa_user_dt_row.id)}" oncomplete="faa_user_delete_dlg.show()" title="Excluir Usuário" />
 
 					</h:panelGroup>

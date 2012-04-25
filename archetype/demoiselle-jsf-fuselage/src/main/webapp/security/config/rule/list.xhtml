@@ -19,11 +19,11 @@
 
 			<p:commandButton value="Sim" oncomplete="faa_profileByRule_status_dlg.hide()" update="faa-profileByRule-list-datatable-id, faa-growl-id"
 				action="#{profileByRuleEditMB.disable}" actionListener="#{profileByRuleListMB.clearResultList}" style="margin-right: 20px;"
-				rendered="#{profileByRuleEditMB.bean.enabled}" styleClass="margin" />
+				rendered="#{profileByRuleEditMB.bean.enabled}" styleClass="forItems" />
 
 			<p:commandButton value="Sim" oncomplete="faa_profileByRule_status_dlg.hide()" update="faa-profileByRule-list-datatable-id, faa-growl-id"
 				action="#{profileByRuleEditMB.enable}" actionListener="#{profileByRuleListMB.clearResultList}" style="margin-right: 20px;"
-				rendered="#{!profileByRuleEditMB.bean.enabled}" styleClass="margin" />
+				rendered="#{!profileByRuleEditMB.bean.enabled}" styleClass="forItems" />
 
 			<p:commandButton value="Não" onclick="faa_profileByRule_status_dlg.hide()" type="button" style="margin-left: 20px;" />
 
@@ -38,8 +38,8 @@
 			</h:panelGroup>
 
 			<p:dataTable id="faa-profileByRule-list-datatable-id" widgetVar="faa_profileByRule_dt_wv" emptyMessage="Não há regras"
-				value="#{profileByRuleListMB.lazyDataModel}" var="faa_profileByRule_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{profileByRuleListMB.lazyDataModel}" var="faa_profileByRule_dt_row" rows="#{paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-profileByRule">
 					<h:outputText value="Rule" />
@@ -84,16 +84,16 @@
 						<p:commandButton icon="ui-icon-search" immediate="true"
 							update="faa-profileByRule-edit-dlg-body-id, faa-profileByRule-edit-dlg-buttons-id"
 							action="#{profileByRuleEditMB.editById(faa_profileByRule_dt_row.id)}" oncomplete="faa_profileByRule_edit_dlg.show()"
-							title="Editar Regra" styleClass="margin" />
+							title="Editar Regra" styleClass="forItems" />
 
 						<p:commandButton icon="#{!faa_profileByRule_dt_row.enabled ? 'ui-icon-locked' : 'ui-icon-unlocked' }" immediate="true"
-							update="faa-config-profileByRule-tabView-id:faa-profileByRule-status-dlg-id" styleClass="margin"
+							update="faa-config-profileByRule-tabView-id:faa-profileByRule-status-dlg-id" styleClass="forItems"
 							action="#{profileByRuleEditMB.editById(faa_profileByRule_dt_row.id)}" oncomplete="faa_profileByRule_status_dlg.show()"
 							title="#{!faa_profileByRule_dt_row.enabled ? 'Ativar' : 'Desativar' } Regra" />
 
 						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-config-profileByRule-tabView-id:faa-profileByRule-delete-dlg-id"
 							action="#{profileByRuleEditMB.editById(faa_profileByRule_dt_row.id)}" oncomplete="faa_profileByRule_delete_dlg.show()"
-							title="Excluir Regra" styleClass="margin" />
+							title="Excluir Regra" styleClass="forItems" />
 
 					</h:panelGroup>
 

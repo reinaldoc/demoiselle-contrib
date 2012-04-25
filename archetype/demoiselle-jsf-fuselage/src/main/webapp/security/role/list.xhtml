@@ -16,8 +16,8 @@
 		<h:panelGroup id="faa-role-list-id">
 
 			<p:dataTable id="faa-role-list-datatable-id" widgetVar="faa_role_dt_wv" emptyMessage="Não há registros"
-				value="#{roleListMB.lazyDataModel}" var="faa_role_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{roleListMB.lazyDataModel}" var="faa_role_dt_row" rows="#{paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-role">
 					<h:outputText value="Role" />
@@ -44,9 +44,9 @@
 				<p:column style="text-align: right; padding: 0px">
 					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
 						<p:commandButton icon="ui-icon-search" immediate="true" update="faa-role-edit-dlg-body-id, faa-role-edit-dlg-buttons-id"
-							styleClass="margin" action="#{roleEditMB.editById(faa_role_dt_row.id)}" oncomplete="faa_role_edit_dlg.show()"
+							styleClass="forItems" action="#{roleEditMB.editById(faa_role_dt_row.id)}" oncomplete="faa_role_edit_dlg.show()"
 							title="Editar Informações" />
-						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-role-delete-dlg-id" styleClass="margin"
+						<p:commandButton icon="ui-icon-trash" immediate="true" update="faa-role-delete-dlg-id" styleClass="forItems"
 							action="#{roleEditMB.editById(faa_role_dt_row.id)}" oncomplete="faa_role_delete_dlg.show()" title="Excluir Recurso" />
 					</h:panelGroup>
 				</p:column>

@@ -50,7 +50,7 @@
 
 						<p:dataTable id="faa-user-edit-datatable-profile-id" widgetVar="faa_user_dt_profile_wv" emptyMessage="Não há perfis selecionados"
 							value="#{userEditMB.bean.profiles}" var="faa_user_dt_profile_row" rows="9" paginator="true" paginatorAlwaysVisible="true"
-							pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
+							pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="top" styleClass="dialog-datatable dialog-datatable-small">
 
 							<p:column headerText="Perfis:" sortBy="#{faa_user_dt_profile_row.name}">
 
@@ -92,7 +92,7 @@
 
 					<p:dataTable id="faa-user-edit-datatable-profile-select-id" widgetVar="faa_user_dt_profile_select_wv"
 						emptyMessage="Não há perfis disponíveis" value="#{userEditMB.profileList}" var="faa_user_dt_profile_select_row" rows="10"
-						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						paginator="true" paginatorAlwaysVisible="true" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="top"
 						styleClass="dialog-datatable dialog-datatable-small" selection="#{userEditMB.profileArray}"
 						rowKey="#{faa_user_dt_profile_select_row.id}">
 

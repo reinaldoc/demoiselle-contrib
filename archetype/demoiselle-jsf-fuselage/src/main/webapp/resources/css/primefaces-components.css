@@ -2,8 +2,12 @@
 
 /* Font */
 .ui-widget {
-	font: small-caption !important;
-	font-size: 12px !important;
+	font-family: DroidSans;
+	font-size: 12.5px !important;
+	text-shadow: 1px 1px 9px #D6D6D6;
+}
+
+.ui-widget-header {
 	text-shadow: 1px 1px 9px #D6D6D6;
 }
 
@@ -22,8 +26,10 @@
 
 /* Buttons */
 button.ui-button,button.ui-button-text-only {
+	font-family: Arial, sans-serif;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.698);
 	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5),
-		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #74FFCC !important;
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #D6D6D6 !important;
 	border: 0px solid #DEE5F2 !important;
 	border-radius: 6px;
 	font-weight: bold !important;
@@ -31,8 +37,7 @@ button.ui-button,button.ui-button-text-only {
 }
 
 button.ui-button:hover {
-	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.3),
-		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #2EC890 !important;
+	background: repeat scroll 0 0 #5CC6C6 !important;
 	border: 0px;
 	border-radius: 6px;
 	font-weight: bold;
@@ -40,9 +45,18 @@ button.ui-button:hover {
 
 button.ui-button-icon-only,button.ui-button-icon-only.ui-state-default {
 	background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5),
-		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #74FFCC;
+		rgba(255, 255, 255, 0) ) repeat scroll 0 0 #D6D6D6;
 	height: 24px;
 	width: 24px;
+}
+
+div.ui-radiobutton div.ui-radiobutton-box {
+	height: 13px;
+	width: 13px;
+}
+
+span.ui-icon-bullet {
+	background-position: -82px -146px;
 }
 
 /*  DataTable  */
@@ -56,7 +70,7 @@ button.ui-button-icon-only,button.ui-button-icon-only.ui-state-default {
 
 .ui-datatable th.ui-state-default {
 	background: none;
-	background-color: #E8E8E8;
+	background-color: #E8E8EB;
 	border: 0px;
 	padding: 5px 10px;
 	text-align: left;
@@ -67,23 +81,28 @@ button.ui-button-icon-only,button.ui-button-icon-only.ui-state-default {
 	background-color: #E0E0E0 !important;
 }
 
-
 .ui-datatable th.ui-paginator {
 	text-align: center;
 }
 
+.ui-datatable td.ui-paginator {
+	background: none repeat scroll 0 0 #E8E8E8;
+	padding: 1px 4px !important;
+}
+
 .ui-datatable-odd {
-	background: none repeat scroll 0 0 #F9F9F9;
+	background: none repeat scroll 0 0 #EBEBF3;
 }
 
 .ui-datatable-even {
-	background: none repeat scroll 0 0 #F3F3F3;
+	background: none repeat scroll 0 0 #F9F9F9;
 }
 
 .ui-datatable td {
 	border: 0px !important;
 	border-bottom: 1px solid #D6D6D6 !important;
 	padding: 2px 4px 3px !important;
+	vertical-align: middle;
 }
 
 .ui-datatable-data-empty td {
@@ -97,11 +116,13 @@ button.ui-button-icon-only,button.ui-button-icon-only.ui-state-default {
 }
 
 .ui-datatable-data .ui-state-highlight {
-	background: #74FFCC;
-	text-shadow: 1px 1px 1px #AAAAAA;
+	color: #3F586D;
+	text-shadow: none;
+	background: #F9F9F9;
 }
 
 .ui-datatable-data-empty tr {
+	background-color: #F6F6F6;
 	border: 0px !important;
 	text-align: center !important;
 	height: 347px;
@@ -131,7 +152,7 @@ button.ui-button-icon-only,button.ui-button-icon-only.ui-state-default {
 	margin: 0px !important;
 	border: 0px !important;
 	background-image: none !important;
-	background-color: #2EC890;
+	background-color: #374140;
 	color: white;
 	padding: 0px 0px 5px 7px !important;
 	height: 19px;
@@ -166,7 +187,7 @@ input[type=text].ui-state-focus,input[type=password].ui-state-focus,textarea.ui-
 
 .ui-confirm-dialog .ui-dialog-content .ui-icon {
 	background-image:
-		url("/${artifactId}/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
+		url("/atius/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
 	height: 32px;
 	width: 32px;
 	margin-right: 20px;
@@ -184,7 +205,9 @@ div.ui-growl {
 }
 
 div.ui-growl .ui-widget-content {
-	background: none repeat scroll 0 0 #6EF8C0;
+	background: none repeat scroll 0 0 #F7F7F7;
+	opacity: 0.95;
+	box-shadow: 0 4px 8px #888888;
 	border: 1px solid #A8A8A8 !important;
 }
 
@@ -271,4 +294,14 @@ div.ui-autocomplete-panel {
 
 div.ui-autocomplete-panel ul.ui-autocomplete-list {
 	border: 1px solid #D6D6D6;
+}
+
+/* Select Bool Checkbox */
+div.ui-chkbox {
+	margin: 5px 5px 5px 10px;
+	vertical-align: middle;
+}
+
+div.ui-chkbox div.ui-chkbox-box {
+	background: transparent;
 }

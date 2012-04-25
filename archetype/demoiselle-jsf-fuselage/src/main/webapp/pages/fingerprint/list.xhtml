@@ -16,8 +16,8 @@
 		<h:panelGroup id="myapp-fingerprint-list-panel-id">
 
 			<p:dataTable id="myapp-fingerprint-list-datatable-id" widgetVar="myapp_fingerprint_list_datatable" emptyMessage="Não há registros"
-				value="#{fingerprintListMB.resultList}" var="fingerprint" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{fingerprintListMB.resultList}" var="fingerprint" rows="#{paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column headerText="Id" sortBy="#{fingerprint.id}">
 
@@ -55,7 +55,7 @@
 
 					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
 
-						<p:commandButton icon="ui-icon-search" title="Editar Informações" oncomplete="myapp_fingerprint_edit_dlg.show()" styleClass="margin"
+						<p:commandButton icon="ui-icon-search" title="Editar Informações" oncomplete="myapp_fingerprint_edit_dlg.show()" styleClass="forItems"
 							action="#{fingerprintEditMB.editById(fingerprint.id)}" update="myapp-fingerprint-edit-dlg-body-id, myapp-fingerprint-edit-dlg-buttons-id"
 							immediate="true" />
 

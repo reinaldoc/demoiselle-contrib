@@ -50,7 +50,7 @@
 
 						<p:dataTable id="faa-profileByRule-edit-datatable-profile-id" widgetVar="faa_profileByRule_dt_profile_wv"
 							emptyMessage="Não há perfis selecionados" value="#{profileByRuleEditMB.bean.profiles}" var="faa_profileByRule_dt_profile_row" rows="9"
-							paginator="true" paginatorAlwaysVisible="true" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+							paginator="true" paginatorAlwaysVisible="true" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="top"
 							styleClass="dialog-datatable dialog-datatable-small">
 
 							<p:column headerText="Perfis:" sortBy="#{faa_profileByRule_dt_profile_row.name}">
@@ -93,7 +93,7 @@
 
 					<p:dataTable id="faa-profileByRule-edit-datatable-profile-select-id" widgetVar="faa_profileByRule_dt_profile_select_wv"
 						emptyMessage="Não há perfis" value="#{profileByRuleEditMB.profileList}" var="faa_profileByRule_dt_profile_select_row" rows="10" paginator="true"
-						paginatorAlwaysVisible="true" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="top"
+						paginatorAlwaysVisible="true" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="top"
 						styleClass="dialog-datatable dialog-datatable-small" selection="#{profileByRuleEditMB.profileArray}"
 						rowKey="#{faa_profileByRule_dt_profile_select_row.id}">
 

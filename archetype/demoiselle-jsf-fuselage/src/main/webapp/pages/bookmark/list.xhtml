@@ -16,8 +16,8 @@
 		<h:panelGroup id="myapp-bookmark-list-panel-id">
 
 			<p:dataTable id="myapp-bookmark-list-datatable-id" widgetVar="myapp_bookmark_list_datatable" emptyMessage="Não há registros"
-				value="#{bookmarkListMB.resultList}" var="bookmark" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{bookmarkListMB.resultList}" var="bookmark" rows="#{paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column headerText="Id" sortBy="#{bookmark.id}">
 
@@ -55,7 +55,7 @@
 
 					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre">
 
-						<p:commandButton icon="ui-icon-search" title="Editar Informações" oncomplete="myapp_bookmark_edit_dlg.show()" styleClass="margin"
+						<p:commandButton icon="ui-icon-search" title="Editar Informações" oncomplete="myapp_bookmark_edit_dlg.show()" styleClass="forItems"
 							action="#{bookmarkEditMB.editById(bookmark.id)}" update="myapp-bookmark-edit-dlg-body-id, myapp-bookmark-edit-dlg-buttons-id"
 							immediate="true" />
 

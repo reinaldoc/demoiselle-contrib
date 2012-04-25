@@ -16,8 +16,8 @@
 		<h:panelGroup id="faa-resource-list-id">
 
 			<p:dataTable id="faa-resource-list-datatable-id" widgetVar="faa_resource_dt_wv" emptyMessage="Não há registros"
-				value="#{resourceListMB.lazyDataModel}" var="faa_resource_dt_row" rows="#{fuselageMB.paginationConfig.pageSize}" paginator="true"
-				paginatorAlwaysVisible="false" pageLinks="#{fuselageMB.paginationConfig.maxPageLinks}" paginatorPosition="bottom">
+				value="#{resourceListMB.lazyDataModel}" var="faa_resource_dt_row" rows="#{paginationConfig.pageSize}" paginator="true"
+				paginatorAlwaysVisible="false" pageLinks="#{paginationConfig.maxPageLinks}" paginatorPosition="bottom">
 
 				<p:column styleClass="faa-label faa-label-resource">
 					<h:outputText value="Resource" />
@@ -41,9 +41,9 @@
 
 						<p:commandButton icon="ui-icon-search" style="icon" immediate="true"
 							update="faa-resource-edit-dlg-body-id, faa-resource-edit-dlg-buttons-id" action="#{resourceEditMB.editBean(faa_resource_dt_row)}"
-							oncomplete="faa_resource_edit_dlg.show()" title="Editar Informações" styleClass="margin" />
+							oncomplete="faa_resource_edit_dlg.show()" title="Editar Informações" styleClass="forItems" />
 
-						<p:commandButton icon="ui-icon-trash" style="icon" immediate="true" update="faa-resource-delete-dlg-id" styleClass="margin"
+						<p:commandButton icon="ui-icon-trash" style="icon" immediate="true" update="faa-resource-delete-dlg-id" styleClass="forItems"
 							action="#{resourceEditMB.editBean(faa_resource_dt_row)}" oncomplete="faa_resource_delete_dlg.show()" title="Excluir Recurso" />
 
 					</h:panelGroup>

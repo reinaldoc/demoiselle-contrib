@@ -2,13 +2,56 @@
 /*
 	FAA - Fuselage Authorization and Authentication
 */
+@font-face {
+	font-family: DroidSans;
+	src: url("/atius/javax.faces.resource/DroidSans.eot.jsf?ln=css/fonts");
+}
 
+@font-face {
+	font-family: DroidSans;
+	src: url("/atius/javax.faces.resource/DroidSans-Bold.eot.jsf?ln=css/fonts");
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: DroidSans;
+	src: url("/atius/javax.faces.resource/DroidSans.ttf.jsf?ln=css/fonts");
+}
+
+@font-face {
+	font-family: DroidSans;
+	src: url("/atius/javax.faces.resource/DroidSans-Bold.ttf.jsf?ln=css/fonts");
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: ChanceryMediumItalic;
+	src:
+		url("/atius/javax.faces.resource/urw-chancery-l-medium-italic.eot.jsf?ln=css/fonts");
+}
+
+@font-face {
+	font-family: ChanceryMediumItalic;
+	src:
+		url("/atius/javax.faces.resource/urw-chancery-l-medium-italic.ttf.jsf?ln=css/fonts");
+}
+
+@font-face {
+	font-family: PalladioBold;
+	src:
+		url("/atius/javax.faces.resource/urw-palladio-l-bold.eot.jsf?ln=css/fonts");
+}
+
+@font-face {
+	font-family: PalladioBold;
+	src:
+		url("/atius/javax.faces.resource/urw-palladio-l-bold.ttf.jsf?ln=css/fonts");
+}
 
 /*	Layout	*/
 html {
-	font: small-caption;
-	font-size: 12px;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+	font-family: DroidSans;
+	font-size: 12.5px;
 }
 
 body {
@@ -21,12 +64,12 @@ body {
 	background-color: #E8E8E8;
 	height: 25px;
 	border-bottom: solid 1px #AFAFAF;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 #faa-top-id a {
 	color: #4F4F4F;
 	text-decoration: none;
-	font-weight: bold;
 	display: inline-block;
 	line-height: 25px;
 	padding-left: 10px;
@@ -45,11 +88,13 @@ body {
 	float: left;
 	width: 180px;
 	padding-top: 20px;
+	overflow: hidden;
 }
 
 #faa-body-left-id a {
 	color: black;
 	text-decoration: none;
+	text-shadow: 1px 1px 9px #D6D6D6;
 	display: block;
 	padding-top: 4px;
 	padding-left: 15px;
@@ -57,32 +102,52 @@ body {
 }
 
 #faa-body-left-id a:hover {
-	background-color: #74ffcc;
 	font-weight: bold;
 }
 
 #faa-body-left-id a.selected {
-	background-color: #2ec890;
+	box-shadow: 0 4px 8px #888888;
+	background-color: #374140;
 	color: white;
 }
 
 #faa-body-left-id a.selected:hover {
-	background-color: #2ec890;
+	background-color: #374140;
 	color: white;
 	font-weight: normal;
 }
 
 #faa-body-right-id {
-	margin-left: 180px;
+	margin-right: 3px;
 	right: 1px;
-	border: 3px solid #2ec890;
+	border: 1px solid #374140;
+	overflow: hidden;
+	box-shadow: 8px 10px 12px #CCCCDD;
 	min-height: 400px;
-	border-radius: 7px 7px 7px 7px;
+	border-radius: 10px 10px 10px 10px;
+	background: #F6F6F6;
 }
 
 /*	HTML tags	*/
 td.top {
 	vertical-align: top;
+}
+
+span.logo {
+	color: #374140;
+	font-family: ChanceryMediumItalic;
+	font-size: 64px;
+	text-decoration: none;
+	text-shadow: 2px 2px 2px #888888;
+}
+
+.logo {
+	margin-left: 10px;
+	margin-right: 18px;
+	display: inline-block;
+	text-decoration: none;
+	width: 151px;
+	height: 60px;
 }
 
 fieldset {
@@ -95,15 +160,55 @@ fieldset {
 }
 
 input[type=text].filter {
-	width: 270px;
+	width: 270px !important;
 	font-weight: bold;
-	border: 2px solid gray;
+	border: 1px solid gray;
+	border-radius: 3px 3px 3px 3px;
 	height: 22px;
 	margin-right: 3px;
 }
 
-button.margin {
+input[type=text].filter:focus {
+	background: transparent !important;
+}
+
+div.filter {
+	height: 28px;
+	border: 1px solid #BBC5CD;
+	display: inline-block;
+	margin-right: 3px;
+}
+
+div.filter input[type="text"] {
+	width: 270px !important;
+	font-weight: bold;
+	height: 22px;
+	border: none !important;
+	outline: none;
+}
+
+div.filter input[type="text"]:focus {
+	background: transparent;
+}
+
+div.filter button {
+	background: none !important;
+	border: none;
+	box-shadow: none !important;
+}
+
+div.filter button:hover {
+	background: none !important;
+	border: none;
+	box-shadow: none;
+}
+
+button.forItems {
 	margin-right: 12px;
+}
+
+button.forHeader {
+	margin-right: 45px;
 }
 
 /*	Dialog */
@@ -114,14 +219,6 @@ button.margin {
 	margin-bottom: 10px;
 }
 
-.dialog-body-role {
-	padding: 0;
-}
-
-.dialog-body-profile,.dialog-body-user,.dialog-body-profileByRule {
-	padding: 0 0 7px;
-}
-
 .dialog-body td {
 	padding-top: 4px;
 	color: #3F586D;
@@ -130,7 +227,8 @@ button.margin {
 	text-align: left;
 }
 
-.dialog-body input[type=text],input[type=password],textarea,select {
+.dialog-body input[type=text],.dialog-body input[type=password],.dialog-body textarea,.dialog-body select
+	{
 	width: 375px;
 	border: 1px solid #BBC5CD !important;
 	padding: 3px !important;
@@ -139,7 +237,21 @@ button.margin {
 	color: black;
 }
 
-.dialog-body input[type=text]:focus,input[type=password]:focus,textarea:focus,select:focus
+.dialog-body span.asInput {
+	border: 1px solid #BBC5CD;
+	display: block;
+	font-weight: normal;
+	line-height: 22px;
+	padding-left: 4px;
+	width: 378px;
+}
+
+.dialog-body-input input[type=text],.dialog-body-input input[type=password],.dialog-body-input textarea,.dialog-body-input select
+	{
+	width: 340px;
+}
+
+.dialog-body input[type=text]:focus,.dialog-body input[type=password]:focus,.dialog-body textarea:focus,.dialog-body select:focus
 	{
 	border: 1px solid #BBC5CD;
 	background-color: #FFFFE0;
@@ -162,14 +274,20 @@ button.margin {
 	border: 0px;
 }
 
-.dialog-body-role tbody tr td,.dialog-body-profile tbody tr td,.dialog-body-user tbody tr td,.dialog-body-profileByRule tbody tr td
-	{
-	width: 400px;
+.dialog-body-table .ui-widget-header {
+	background: none;
 }
 
-.dialog-body-role .ui-widget-header,.dialog-body-profile .ui-widget-header,.dialog-body-user .ui-widget-header,.dialog-body-profileByRule .ui-widget-header
-	{
-	background: none;
+.dialog-body-table {
+	padding: 0 0 7px;
+}
+
+.dialog-body-tableOnRight .ui-datatable th.ui-state-default {
+	padding-left: 0px;
+}
+
+.dialog-body-tableOnRight tbody tr td {
+	width: 400px;
 }
 
 .dialog-selectonemenu {
@@ -205,11 +323,8 @@ ul.dialog-messages li {
 .dialog-message-success {
 	color: black;
 	font-weight: bold;
-	padding-left: 20px;
 	margin-left: 3px;
 	background-repeat: no-repeat;
-	background-image:
-		url('/${artifactId}/javax.faces.resource/faa-success.gif.jsf?ln=images');
 }
 
 .dialog-close-link {
@@ -228,7 +343,7 @@ ul.dialog-messages li {
 	font-weight: bold;
 	background-repeat: no-repeat;
 	background-image:
-		url('/${artifactId}/javax.faces.resource/faa-wait.gif.jsf?ln=images');
+		url('/atius/javax.faces.resource/faa-wait.gif.jsf?ln=images');
 }
 
 .dialog-datatable td {
@@ -258,7 +373,15 @@ ul.dialog-messages li {
 	height: 175px;
 }
 
+.dialog-datatable-small td {
+	font-weight: normal;
+}
+
 /*	Fuselage	*/
+tbody tr td.faa-label {
+	width: 80px;
+}
+
 tbody tr td.faa-label .ui-dt-c {
 	text-align: center;
 	font-size: 10px;
@@ -285,6 +408,10 @@ tbody tr td.faa-label-role .ui-dt-c {
 	border-color: #6FA8DC;
 }
 
+tbody tr td.faa-label-resource {
+	width: 100px;
+}
+
 tbody tr td.faa-label-resource .ui-dt-c {
 	background-color: #dc9f68;
 	border-color: #dc9f68;
@@ -296,7 +423,73 @@ tbody tr td.faa-label-profileByRule .ui-dt-c {
 	border-color: #aaaaaa;
 }
 
-.faa-header-items td {
-	padding-right: 45px;
+div.panel {
+	font-family: PalladioBold;
+	font-size: 14px;
+	letter-spacing: 1px;
+	background-color: #374140;
+	color: #E0E0E0;
+	box-shadow: 4px 4px 8px #888888;
+	border: 1px solid #BBC5CD;
+	display: block;
+	background-color: #374140;
+	padding: 5px 10px;
 }
 
+div.panel-menu {
+	border: none;
+	padding: 0px 0px 0px 5px;
+	margin: 0px 10px 10px 10px;
+	line-height: 25px;
+}
+
+div.panel button.transparent {
+	background: none !important;
+	border: none;
+	box-shadow: none;
+}
+
+div.panel form {
+	display: inline-block;
+	float: right;
+	margin-top: -5px;
+}
+
+div.panel form button.ui-button .ui-icon {
+	background-color: #BBCCCC;
+}
+
+div.panel form button.ui-button:hover .ui-icon {
+	background-color: #5CC6C6;
+}
+
+div.asTable {
+	margin-top: 10px;
+	color: #3F586D;
+}
+
+div.asRow {
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #D6D6D6;
+	padding-left: 3px;
+	border-bottom-width: 1px;
+}
+
+div.asRowOdd {
+	background-color: #F9F9F9;
+}
+
+div.asRowEven {
+	background-color: #EBEBF3;
+}
+
+div.asColumn {
+	line-height: 28px;
+	min-height: 28px;
+}
+
+div.asColumnLeft {
+	float: left;
+	width: 170px;
+}
