@@ -8,7 +8,7 @@
 			<p:dialog id="faa-user-edit-dlg-id" header="FAA - Cadastro de Usuários" widgetVar="faa_user_edit_dlg" modal="true" width="800"
 				resizable="false" closable="false">
 
-				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-user" id="faa-user-edit-dlg-body-id">
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-table dialog-body-tableOnRight" id="faa-user-edit-dlg-body-id">
 
 					<h:panelGrid columns="1">
 
@@ -88,7 +88,7 @@
 			<p:dialog id="faa-user-edit-profile-dlg-id" header="FAA - Seleção de Perfis" widgetVar="faa_user_edit_profile_dlg" modal="true"
 				width="600" resizable="false" closable="false">
 
-				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-user">
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-table">
 
 					<p:dataTable id="faa-user-edit-datatable-profile-select-id" widgetVar="faa_user_dt_profile_select_wv"
 						emptyMessage="Não há perfis disponíveis" value="#{userEditMB.profileList}" var="faa_user_dt_profile_select_row" rows="10"

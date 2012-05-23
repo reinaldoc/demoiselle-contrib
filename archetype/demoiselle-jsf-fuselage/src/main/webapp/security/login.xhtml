@@ -55,7 +55,7 @@
 
 .loginBody {
 	background-image:
-		url(/atius/javax.faces.resource/faa-bg.png.jsf?ln=images);
+		url(/${artifactId}/javax.faces.resource/faa-bg.png.jsf?ln=images);
 	background-repeat: repeat-x;
 }
 
@@ -124,13 +124,13 @@ function getEngine() {
 <h:body styleClass="loginBody" onload="setLoginFocus('faa-input-username', 'faa-input-password');">
 	<h:form prependId="false" onsubmit="if (!requireIE8()) return false;">
 		<h:panelGrid columns="1" styleClass="loginTable" rowClasses="loginRowCenter,loginRowPadding,,loginRowPadding,,,">
-			<h:graphicImage library="images" name="logo.png" styleClass="loginLogo" alt="ATIUS" />
+			<h:graphicImage library="images" name="logo.png" styleClass="loginLogo" alt="Demoiselle Fuselage" />
 			<h:outputText styleClass="loginText" value="Usuário:" />
 			<h:inputText styleClass="loginInput" value="#{credential.username}" id="faa-input-username" autocomplete="off" />
 			<h:outputText styleClass="loginText" value="Senha:" />
 			<h:panelGroup>
 				<h:inputSecret styleClass="loginInput" value="#{credential.password}" id="faa-input-password" />
-				<h:commandButton styleClass="loginButton" value="Entrar" action="#{authenticatorMB.login}" />
+				<h:commandButton styleClass="loginButton" value="Entrar" action="#{securityContext.login}" />
 			</h:panelGroup>
 			<br />
 		</h:panelGrid>

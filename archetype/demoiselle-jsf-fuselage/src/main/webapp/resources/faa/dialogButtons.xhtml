@@ -37,8 +37,8 @@
 				oncomplete="completeSave(xhr,status, args, '#{cc.attrs.dialogId}', '#{cc.clientId}')" />
 
 			<!-- Fechar -->
-			<p:commandLink value="Fechar" immediate="true" ajax="#{cc.attrs.closeAjax}" update="#{cc.attrs.updateOnClose}"
-				styleClass="dialog-close-link" action="#{cc.attrs.actionCloser}" process="@this"
+			<p:commandLink value="Fechar" immediate="true" ajax="#{cc.attrs.closeAjax}" styleClass="dialog-close-link"
+				action="#{cc.attrs.actionCloser}" process="@this"
 				onclick="hideNotification('#{cc.clientId}'); hideDialog(#{cc.attrs.dialogWidgetVar}); #{cc.attrs.onClickClose}" />
 
 		</h:panelGroup>
@@ -50,10 +50,11 @@
 
 		<!-- Barra de Sucesso -->
 		<h:panelGroup id="success-bar" style="display: none; line-height: 20px;">
+			<h:outputText styleClass="ui-button-icon-left ui-icon ui-icon-circle-check" style="float: left; margin-top: 2px;" />
 			<h:outputText value="Dados cadastrados com sucesso!" styleClass="dialog-message-success" />
 			<!-- Fechar -->
-			<p:commandLink value="Fechar" immediate="true" ajax="#{cc.attrs.closeAjax}" update="#{cc.attrs.updateOnClose}"
-				styleClass="dialog-close-link" action="#{cc.attrs.actionCloser}" process="@this"
+			<p:commandLink value="Fechar" immediate="true" ajax="#{cc.attrs.closeAjax}" styleClass="dialog-close-link"
+				action="#{cc.attrs.actionCloser}" process="@this" update="#{cc.attrs.updateOnClose}"
 				onclick="hideNotification('#{cc.clientId}'); hideDialog(#{cc.attrs.dialogWidgetVar}); #{cc.attrs.onClickClose}" />
 		</h:panelGroup>
 

@@ -20,7 +20,7 @@
 
 	<p:growl id="faa-growl-id" showDetail="false" life="9000" />
 
-	<div id="faa-top-id">
+	<h:panelGroup id="faa-top-id" layout="block" style="display: block;">
 
 		<ui:insert name="faa-top-ui">
 
@@ -29,82 +29,75 @@
 
 		</ui:insert>
 
-	</div>
+	</h:panelGroup>
 
-	<h:panelGroup id="faa-header-id">
+
+	<h:panelGroup id="faa-header-id" layout="block" style="display: block;">
 
 		<ui:insert name="faa-header-ui">
 
 			<!-- Begin @Header  -->
-			<h:panelGrid columns="2" style="margin-bottom: 5px;">
+			<h:panelGroup layout="block" style="display: block;">
 
-				<h:panelGroup>
+				<h:panelGroup id="faa-header-left-id" layout="block" style="display: inline-block; vertical-align: middle;">
 
-					<div id="faa-header-left-id">
+					<ui:insert name="faa-header-left-ui">
 
-						<ui:insert name="faa-header-left-ui">
+						<!-- Begin @HeaderLeft  -->
+						<h:form prependId="false">
 
-							<!-- Begin @HeaderLeft  -->
-							<h:form prependId="false">
-
-								<p:commandLink actionListener="#{menuContext.select('TopMenu', 'Sites')}" ajax="false" immediate="true" action="/index.jsf">
+								<p:commandLink actionListener="#{menuContext.select('TopMenu', 'Bookmark')}" ajax="false" immediate="true" action="/index.jsf">
 
 									<h:graphicImage library="images" name="logo.png" width="165px" height="44px" alt="#{messages['main.app.title']}"
 										style="border: 0px; margin-left: 0px; margin-top: 5px; margin-right: 8px;" />
 
 								</p:commandLink>
 
-							</h:form>
-							<!-- End @HeaderLeft  -->
+						</h:form>
+						<!-- End @HeaderLeft  -->
 
-						</ui:insert>
-
-					</div>
+					</ui:insert>
 
 				</h:panelGroup>
 
-				<h:panelGroup>
+				<h:panelGroup id="faa-header-right-id" layout="block" style="display: inline-block;">
 
-					<div id="faa-header-right-id">
-
-						<ui:insert name="faa-header-right-ui">
-							<!-- @HeaderRight  -->
-						</ui:insert>
-
-					</div>
+					<ui:insert name="faa-header-right-ui">
+						<!-- @HeaderRight  -->
+					</ui:insert>
 
 				</h:panelGroup>
 
-			</h:panelGrid>
+			</h:panelGroup>
 			<!-- End @Header  -->
 
 		</ui:insert>
 
 	</h:panelGroup>
 
-	<h:panelGroup id="faa-body-id">
+	<h:panelGroup id="faa-body-id" layout="block" style="display: block;">
 
 		<ui:insert name="faa-body-ui">
 
 			<!-- Begin @Body  -->
-			<div id="faa-body-left-id">
+			<h:panelGroup id="faa-body-left-id" layout="block" style="display: block;">
 				<ui:insert name="faa-body-left-ui">
 					<!-- @BodyLeft -->
 				</ui:insert>
-			</div>
+			</h:panelGroup>
 
-			<div id="faa-body-right-id">
+			<h:panelGroup id="faa-body-right-id" layout="block" style="display: block;">
 				<ui:insert name="faa-body-right-ui">
 					<!-- @BodyRight -->
 				</ui:insert>
-			</div>
+			</h:panelGroup>
 			<!-- End @Body  -->
 
 		</ui:insert>
 
 	</h:panelGroup>
 
-	<h:panelGroup id="faa-footer-id">
+	<h:panelGroup id="faa-footer-id" layout="block" style="display: block;">
 
 		<ui:insert name="faa-footer-ui">
 			<!-- @Footer  -->

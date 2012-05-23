@@ -1,30 +1,18 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
-	<h:panelGrid columns="2">
+	<h:form prependId="false">
 
-		<h:form prependId="false">
+		<h:inputText id="myapp-bookmark-search-domain" value="#{bookmarkListMB.resultFilter}" autocomplete="off" styleClass="filter" />
 
-			<h:panelGrid columns="2" styleClass="faa-header-items">
+		<p:commandButton icon="ui-icon-search" value="Buscar" action="#{bookmarkListMB.clearResultList}" update="myapp-bookmark-list-datatable-id"
+			process="myapp-bookmark-search-domain, @this" style="margin-right: 45px" />
 
-				<h:panelGroup layout="block">
+		<p:commandButton icon="ui-icon-plusthick" value="Novo Bookmark" immediate="true" action="#{bookmarkEditMB.editBean}"
+			update="myapp-bookmark-edit-dlg-body-id, myapp-bookmark-edit-dlg-buttons-id" oncomplete="myapp_bookmark_edit_dlg.show()" />
 
-					<h:inputText id="myapp-bookmark-search-domain" value="#{bookmarkListMB.resultFilter}" autocomplete="off" styleClass="filter" />
+	</h:form>
 
-					<p:commandButton icon="ui-icon-search" value="Buscar" action="#{bookmarkListMB.clearResultList}"
-						update="myapp-bookmark-list-datatable-id" process="myapp-bookmark-search-domain, @this" />
-
-				</h:panelGroup>
-
-				<p:commandButton icon="ui-icon-plusthick" value="Novo Bookmark" immediate="true" action="#{bookmarkEditMB.editBean}"
-					update="myapp-bookmark-edit-dlg-body-id, myapp-bookmark-edit-dlg-buttons-id" oncomplete="myapp_bookmark_edit_dlg.show()" />
-
-			</h:panelGrid>
-
-		</h:form>
-
-		<ui:include src="edit.xhtml" />
-
-	</h:panelGrid>
+	<ui:include src="edit.xhtml" />
 
 </ui:composition>

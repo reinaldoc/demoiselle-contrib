@@ -11,7 +11,7 @@ function openWindow(URL) {
 }
 
 function openReport(reportPath, reportId) {
-	openWindow("/atius/" + reportPath + "/report?id=" + reportId);
+	openWindow("/appName/" + reportPath + "/report?id=" + reportId);
 }
 
 /**

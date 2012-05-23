@@ -1,70 +1,67 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
-	<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+	<h:form prependId="false">
 
-		<h:form prependId="false">
+		<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'User')}">
 
-			<h:panelGrid columns="3" styleClass="faa-header-items">
+			<h:inputText id="faa-header-userFilter-id" value="#{userListMB.resultFilter}" autocomplete="off" styleClass="filter" />
 
-				<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'User')}">
+			<p:commandButton icon="ui-icon-search" value="Buscar" action="#{userListMB.clearResultList}" update="faa-user-list-datatable-id"
+				process="faa-header-userFilter-id, @this" />
 
-					<h:inputText id="faa-header-userFilter-id" value="#{userListMB.resultFilter}" autocomplete="off" styleClass="filter" />
-					<p:commandButton icon="ui-icon-search" value="Buscar" action="#{userListMB.clearResultList}" update="faa-user-list-datatable-id"
-						process="faa-header-userFilter-id, @this" />
+		</h:panelGroup>
 
-				</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'Profile')}">
 
-				<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'Profile')}">
+			<h:inputText id="faa-header-profileFilter-id" value="#{profileListMB.resultFilter}" autocomplete="off" styleClass="filter" />
 
-					<h:inputText id="faa-header-profileFilter-id" value="#{profileListMB.resultFilter}" autocomplete="off" styleClass="filter" />
-					<p:commandButton icon="ui-icon-search" value="Buscar" action="#{profileListMB.clearResultList}" update="faa-profile-list-datatable-id"
-						process="faa-header-profileFilter-id, @this" />
+			<p:commandButton icon="ui-icon-search" value="Buscar" action="#{profileListMB.clearResultList}" update="faa-profile-list-datatable-id"
+				process="faa-header-profileFilter-id, @this" />
 
-				</h:panelGroup>
+		</h:panelGroup>
 
-				<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'Role')}">
+		<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'Role')}">
 
-					<h:inputText id="faa-header-roleFilter-id" value="#{roleListMB.resultFilter}" autocomplete="off" styleClass="filter" />
-					<p:commandButton icon="ui-icon-search" value="Buscar" action="#{roleListMB.clearResultList}" update="faa-role-list-datatable-id"
-						process="faa-header-roleFilter-id, @this" />
+			<h:inputText id="faa-header-roleFilter-id" value="#{roleListMB.resultFilter}" autocomplete="off" styleClass="filter" />
 
-				</h:panelGroup>
+			<p:commandButton icon="ui-icon-search" value="Buscar" action="#{roleListMB.clearResultList}" update="faa-role-list-datatable-id"
+				process="faa-header-roleFilter-id, @this" />
 
-				<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'Resource')}">
+		</h:panelGroup>
 
-					<h:inputText id="faa-header-resourceFilter-id" value="#{resourceListMB.resultFilter}" autocomplete="off" styleClass="filter" />
-					<p:commandButton icon="ui-icon-search" value="Buscar" action="#{resourceListMB.clearResultList}" update="faa-resource-list-datatable-id"
-						process="faa-header-resourceFilter-id, @this" />
+		<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'Resource')}">
 
-				</h:panelGroup>
+			<h:inputText id="faa-header-resourceFilter-id" value="#{resourceListMB.resultFilter}" autocomplete="off" styleClass="filter" />
 
-				<p:menuButton value="Novo" effectDuration="20">
+			<p:commandButton icon="ui-icon-search" value="Buscar" action="#{resourceListMB.clearResultList}" update="faa-resource-list-datatable-id"
+				process="faa-header-resourceFilter-id, @this" />
 
-					<p:menuitem value="Usuário" oncomplete="faa_user_edit_dlg.show()" action="#{userEditMB.editBean()}" immediate="true"
-						actionListener="#{menuContext.select('Security', 'User')}" update="faa-body-id, faa-header-id" />
+		</h:panelGroup>
 
-					<p:menuitem value="Perfil" oncomplete="faa_profile_edit_dlg.show()" action="#{profileEditMB.editBean()}" immediate="true"
-						actionListener="#{menuContext.select('Security', 'Profile')}" update="faa-body-id, faa-header-id" />
+		<p:menuButton value="Novo" effectDuration="20" style="margin-left: 45px">
 
-					<p:menuitem value="Papel" oncomplete="faa_role_edit_dlg.show()" action="#{roleEditMB.editBean()}" immediate="true"
-						actionListener="#{menuContext.select('Security', 'Role')}" update="faa-body-id, faa-header-id" />
+			<p:menuitem value="Usuário" oncomplete="faa_user_edit_dlg.show()" action="#{userEditMB.editBean()}" immediate="true"
+				actionListener="#{menuContext.select('Security', 'User')}" update="faa-body-id, faa-header-id" />
 
-					<p:menuitem value="Recurso" oncomplete="faa_resource_edit_dlg.show()" action="#{resourceEditMB.editBean()}" immediate="true"
-						actionListener="#{menuContext.select('Security', 'Resource')}" update="faa-body-id, faa-header-id" />
+			<p:menuitem value="Perfil" oncomplete="faa_profile_edit_dlg.show()" action="#{profileEditMB.editBean()}" immediate="true"
+				actionListener="#{menuContext.select('Security', 'Profile')}" update="faa-body-id, faa-header-id" />
 
-				</p:menuButton>
+			<p:menuitem value="Papel" oncomplete="faa_role_edit_dlg.show()" action="#{roleEditMB.editBean()}" immediate="true"
+				actionListener="#{menuContext.select('Security', 'Role')}" update="faa-body-id, faa-header-id" />
 
-				<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'User')}">
+			<p:menuitem value="Recurso" oncomplete="faa_resource_edit_dlg.show()" action="#{resourceEditMB.editBean()}" immediate="true"
+				actionListener="#{menuContext.select('Security', 'Resource')}" update="faa-body-id, faa-header-id" />
 
-					<p:commandButton icon="ui-icon-print" value="Imprimir" action="#{userListMB.print}" process="@this" ajax="false" />
+		</p:menuButton>
 
-				</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{menuContext.isSelected('Security', 'User')}">
 
-			</h:panelGrid>
+			<p:commandButton icon="ui-icon-print" value="Imprimir" action="#{userListMB.print}" process="@this" ajax="false"
+				style="margin-left: 45px" />
 
-		</h:form>
+		</h:panelGroup>
 
-	</h:panelGrid>
+	</h:form>
 
 </ui:composition>

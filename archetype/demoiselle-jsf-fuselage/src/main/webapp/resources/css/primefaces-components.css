@@ -91,7 +91,7 @@ span.ui-icon-bullet {
 }
 
 .ui-datatable-odd {
-	background: none repeat scroll 0 0 #EBEBF3;
+	background: none repeat scroll 0 0 #EBEBEF;
 }
 
 .ui-datatable-even {
@@ -187,7 +187,7 @@ input[type=text].ui-state-focus,input[type=password].ui-state-focus,textarea.ui-
 
 .ui-confirm-dialog .ui-dialog-content .ui-icon {
 	background-image:
-		url("/atius/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
+		url("/${artifactId}/javax.faces.resource/growl/images/info.png.jsf?ln=primefaces");
 	height: 32px;
 	width: 32px;
 	margin-right: 20px;
@@ -219,12 +219,12 @@ div.ui-growl-message {
 .ui-menu {
 	background: #FAFAFA;
 	border-radius: 6px;
-	border: 2px solid #74ffcc;
-	box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+	border: 1px solid #374140;
+	box-shadow: 2px 3px 12px #CCCCDD;
 }
 
 .ui-menu .ui-menu-list .ui-state-hover {
-	background-color: #74ffcc !important;
+	background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)) repeat scroll 0 0 #85B2CB !important;
 	color: white;
 	font-weight: bold;
 }

@@ -4,48 +4,48 @@
 */
 @font-face {
 	font-family: DroidSans;
-	src: url("/atius/javax.faces.resource/DroidSans.eot.jsf?ln=css/fonts");
+	src: url("/${artifactId}/javax.faces.resource/DroidSans.eot.jsf?ln=css/fonts");
 }
 
 @font-face {
 	font-family: DroidSans;
-	src: url("/atius/javax.faces.resource/DroidSans-Bold.eot.jsf?ln=css/fonts");
+	src: url("/${artifactId}/javax.faces.resource/DroidSans-Bold.eot.jsf?ln=css/fonts");
 	font-weight: bold;
 }
 
 @font-face {
 	font-family: DroidSans;
-	src: url("/atius/javax.faces.resource/DroidSans.ttf.jsf?ln=css/fonts");
+	src: url("/${artifactId}/javax.faces.resource/DroidSans.ttf.jsf?ln=css/fonts");
 }
 
 @font-face {
 	font-family: DroidSans;
-	src: url("/atius/javax.faces.resource/DroidSans-Bold.ttf.jsf?ln=css/fonts");
+	src: url("/${artifactId}/javax.faces.resource/DroidSans-Bold.ttf.jsf?ln=css/fonts");
 	font-weight: bold;
 }
 
 @font-face {
 	font-family: ChanceryMediumItalic;
 	src:
-		url("/atius/javax.faces.resource/urw-chancery-l-medium-italic.eot.jsf?ln=css/fonts");
+		url("/${artifactId}/javax.faces.resource/urw-chancery-l-medium-italic.eot.jsf?ln=css/fonts");
 }
 
 @font-face {
 	font-family: ChanceryMediumItalic;
 	src:
-		url("/atius/javax.faces.resource/urw-chancery-l-medium-italic.ttf.jsf?ln=css/fonts");
+		url("/${artifactId}/javax.faces.resource/urw-chancery-l-medium-italic.ttf.jsf?ln=css/fonts");
 }
 
 @font-face {
 	font-family: PalladioBold;
 	src:
-		url("/atius/javax.faces.resource/urw-palladio-l-bold.eot.jsf?ln=css/fonts");
+		url("/${artifactId}/javax.faces.resource/urw-palladio-l-bold.eot.jsf?ln=css/fonts");
 }
 
 @font-face {
 	font-family: PalladioBold;
 	src:
-		url("/atius/javax.faces.resource/urw-palladio-l-bold.ttf.jsf?ln=css/fonts");
+		url("/${artifactId}/javax.faces.resource/urw-palladio-l-bold.ttf.jsf?ln=css/fonts");
 }
 
 /*	Layout	*/
@@ -343,7 +343,7 @@ ul.dialog-messages li {
 	font-weight: bold;
 	background-repeat: no-repeat;
 	background-image:
-		url('/atius/javax.faces.resource/faa-wait.gif.jsf?ln=images');
+		url('/${artifactId}/javax.faces.resource/faa-wait.gif.jsf?ln=images');
 }
 
 .dialog-datatable td {

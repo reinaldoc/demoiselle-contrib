@@ -24,19 +24,19 @@
 				</p:column>
 
 				<p:column headerText="Nome" sortBy="#{faa_role_dt_row.name}">
-					<h:panelGroup layout="block" style="width: 200px; overflow: hidden; white-space: pre">
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre; margin-right: -120px; width: 200px;">
 						<h:outputText value="#{faa_role_dt_row.name}" title="#{faa_role_dt_row.shortDescription}" />
 					</h:panelGroup>
 				</p:column>
 
 				<p:column headerText="Descrição" sortBy="#{faa_role_dt_row.description}">
-					<h:panelGroup layout="block" style="width: 500px; overflow: hidden; white-space: pre">
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre; margin-right: -120px;">
 						<h:outputText value="#{faa_role_dt_row.description}" title="#{faa_role_dt_row.description}" />
 					</h:panelGroup>
 				</p:column>
 
 				<p:column headerText="Restritiva">
-					<h:panelGroup layout="block" style="width: 50px; overflow: hidden; white-space: pre">
+					<h:panelGroup layout="block" style="overflow: hidden; white-space: pre; margin-right: -120px;">
 						<h:outputText value="#{faa_role_dt_row.restriction ? 'Sim' : '' }" />
 					</h:panelGroup>
 				</p:column>

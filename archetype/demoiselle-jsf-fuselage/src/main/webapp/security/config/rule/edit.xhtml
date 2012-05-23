@@ -8,7 +8,7 @@
 			<p:dialog id="faa-profileByRule-edit-dlg-id" header="FAA - Cadastro de Regras de Perfil" widgetVar="faa_profileByRule_edit_dlg" modal="true"
 				width="800" resizable="false" closable="false">
 
-				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-profileByRule" id="faa-profileByRule-edit-dlg-body-id">
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-table dialog-body-tableOnRight" id="faa-profileByRule-edit-dlg-body-id">
 
 					<h:panelGrid columns="1">
 
@@ -89,7 +89,7 @@
 			<p:dialog id="faa-profileByRule-edit-profile-dlg-id" header="FAA - Seleção de Perfis" widgetVar="faa_profileByRule_edit_profile_dlg" modal="true"
 				width="600" resizable="false" closable="false">
 
-				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-profileByRule">
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-table">
 
 					<p:dataTable id="faa-profileByRule-edit-datatable-profile-select-id" widgetVar="faa_profileByRule_dt_profile_select_wv"
 						emptyMessage="Não há perfis" value="#{profileByRuleEditMB.profileList}" var="faa_profileByRule_dt_profile_select_row" rows="10" paginator="true"

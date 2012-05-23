@@ -8,7 +8,7 @@
 			<p:dialog id="faa-profile-edit-dlg-id" header="FAA - Cadastro de Perfis" widgetVar="faa_profile_edit_dlg" modal="true" width="800"
 				resizable="false" closable="false">
 
-				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-profile" id="faa-profile-edit-dlg-body-id">
+				<h:panelGrid columns="2" styleClass="dialog-body dialog-body-table dialog-body-tableOnRight" id="faa-profile-edit-dlg-body-id">
 
 					<h:panelGrid columns="1">
 
@@ -86,7 +86,7 @@
 			<p:dialog id="faa-profile-edit-role-dlg-id" header="FAA - Seleção de Papéis" widgetVar="faa_profile_edit_role_dlg" modal="true"
 				width="600" resizable="false" closable="false">
 
-				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-profile">
+				<h:panelGrid columns="1" styleClass="dialog-body dialog-body-table">
 
 					<p:dataTable id="faa-profile-edit-datatable-role-select-id" widgetVar="faa_profile_dt_role_select_wv"
 						emptyMessage="Não há papéis disponíveis" value="#{profileEditMB.roleList}" var="faa_profile_dt_role_select_row" rows="10"
