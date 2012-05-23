@@ -41,7 +41,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-jsf-parent</artifactId>
-		<version>2.2.1</version>
+		<version>2.2.2</version>
 	</parent>
 
 	<groupId>demoiselle-contrib</groupId>
@@ -50,7 +50,7 @@
 
 	<name>demoiselle-jsf-contrib</name>
 	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
-	<description>Component que evolui a extensão demoiselle-jsf</description>
+	<description>Componente que evolui a extensão demoiselle-jsf</description>
 
 	<properties>
 		<category>Outros</category>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-util</artifactId>
-			<version>2.2.1</version>
+			<version>2.2.2</version>
 		</dependency>
 
 		<!-- Support Tools -->
