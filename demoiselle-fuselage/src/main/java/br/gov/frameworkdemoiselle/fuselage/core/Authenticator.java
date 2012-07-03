@@ -209,7 +209,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			Long lastWelcomePriotiry = (Long) user.getAttribute("welcome_page_priority");
 
 			if (welcomePriority != null && welcomePriority.intValue() > 0)
-				if (lastWelcomePriotiry == null || lastWelcomePriotiry.intValue() < welcomePriority.intValue())
+				if (lastWelcomePriotiry == null || lastWelcomePriotiry.intValue() > welcomePriority.intValue())
 					if (profile.getWelcomePage() != null && profile.getWelcomePage().getValue() != null)
 						if (profile.getWelcomePage().getName() != null && profile.getWelcomePage().getName().contains("url")) {
 							user.setAttribute("welcome_page_priority", welcomePriority);
@@ -217,5 +217,4 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 						}
 		}
 	}
-
 }
