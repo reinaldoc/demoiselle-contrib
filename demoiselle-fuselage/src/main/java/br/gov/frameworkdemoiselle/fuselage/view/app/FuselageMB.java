@@ -7,16 +7,25 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.fuselage.configuration.WebfilterConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Redirector;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
+import br.gov.frameworkdemoiselle.util.core.MenuContext;
 
 @Named
 @SessionScoped
 public class FuselageMB implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private WebfilterConfig config;
+	
+	@Inject
+	private MenuContext menuContext;
 
 	@Inject
 	private SecurityContext securityContext;
@@ -50,7 +59,12 @@ public class FuselageMB implements Serializable {
 
 	public String redirectToWelcomePage() {
 		try {
-			Redirector.redirect((String) securityContext.getUser().getAttribute("welcome_page"));
+			String welcome = (String) securityContext.getUser().getAttribute("welcome_page");
+			if (welcome == null)
+				welcome = Faces.getFacesContext().getExternalContext().getRequestContextPath() + config.getLoginPage();
+			else
+				menuContext.select("URL", welcome);
+			Redirector.redirect(welcome);
 		} catch (Exception e) {
 		}
 		return null;
