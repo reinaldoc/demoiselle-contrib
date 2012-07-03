@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Redirector;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @Named
@@ -45,6 +46,14 @@ public class FuselageMB implements Serializable {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public String redirectToWelcomePage() {
+		try {
+			Redirector.redirect((String) securityContext.getUser().getAttribute("welcome_page"));
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 }
