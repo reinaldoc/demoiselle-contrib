@@ -111,6 +111,11 @@ public interface QueryConfig<T> {
 	int getFirstResult();
 
 	/**
+	 * Returns true is setSorting was applied;
+	 */
+	boolean hasSorting();
+	
+	/**
 	 * Returns the attributes names for sorting query, means
 	 * "sort by attr1, attr2, ..."
 	 */

@@ -221,6 +221,12 @@ public class QueryConfigImpl<T> implements Serializable, QueryConfig<T> {
 		return sorting;
 	}
 
+	public boolean hasSorting() {
+		if (sorting == null || sorting.length == 0 || sorting[0] == null)
+			return false;
+		return true;
+	}
+	
 	public void setSorting(String... sorting) {
 		this.sorting = sorting;
 	}
