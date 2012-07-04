@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
+import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
 import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
@@ -15,6 +17,7 @@ import br.gov.frameworkdemoiselle.stereotype.ViewController;
 import br.gov.frameworkdemoiselle.template.contrib.AbstractListPageBean;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.contrib.Faces;
+import br.gov.frameworkdemoiselle.util.contrib.Strings;
 
 @ViewController
 public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByRule, Long> {
@@ -29,7 +32,19 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 	@Override
 	protected List<SecurityProfileByRule> handleResultList(QueryConfig<SecurityProfileByRule> queryConfig) {
 		try {
-			queryConfig.setSorting("name");
+			if (Strings.isNotBlank(getResultFilter())) {
+				queryConfig.getFilter().put("name", getResultFilter());
+				queryConfig.getFilter().put("description", getResultFilter());
+				queryConfig.getFilter().put("implementation", getResultFilter());
+				queryConfig.getFilter().put("keyname", getResultFilter());
+				queryConfig.getFilter().put("value", getResultFilter());
+				queryConfig.getFilter().put("valuenotation", getResultFilter());
+				queryConfig.setFilterComparison(Comparison.CONTAINS);
+				queryConfig.setFilterLogic(Logic.OR);
+				queryConfig.setFilterCaseInsensitive(true);
+			}
+			if (!queryConfig.hasSorting())
+				queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

@@ -33,8 +33,10 @@ public class ResourceListMB extends AbstractListPageBean<SecurityResource, Long>
 				queryConfig.getFilter().put("description", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
+				queryConfig.setFilterCaseInsensitive(true);
 			}
-			queryConfig.setSorting("name");
+			if (!queryConfig.hasSorting())
+				queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

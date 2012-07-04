@@ -32,8 +32,10 @@ public class RoleListMB extends AbstractListPageBean<SecurityRole, Long> {
 				queryConfig.getFilter().put("shortDescription", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
+				queryConfig.setFilterCaseInsensitive(true);
 			}
-			queryConfig.setSorting("name");
+			if (!queryConfig.hasSorting())
+				queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

@@ -31,10 +31,13 @@ public class ProfileListMB extends AbstractListPageBean<SecurityProfile, Long> {
 				queryConfig.getFilter().put("name", getResultFilter());
 				queryConfig.getFilter().put("description", getResultFilter());
 				queryConfig.getFilter().put("shortDescription", getResultFilter());
+				queryConfig.getFilter().put("welcomePage.value", getResultFilter());
 				queryConfig.setFilterComparison(Comparison.CONTAINS);
 				queryConfig.setFilterLogic(Logic.OR);
+				queryConfig.setFilterCaseInsensitive(true);
 			}
-			queryConfig.setSorting("name");
+			if (!queryConfig.hasSorting())
+				queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();

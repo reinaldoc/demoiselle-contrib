@@ -49,7 +49,8 @@ public class UserListMB extends AbstractListPageBean<SecurityUser, Long> {
 				queryConfig.setFilterLogic(Logic.OR);
 				queryConfig.setFilterCaseInsensitive(true);
 			}
-			queryConfig.setSorting("name");
+			if (!queryConfig.hasSorting())
+				queryConfig.setSorting("name");
 			return bc.findAll();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
