@@ -42,7 +42,6 @@ import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
@@ -74,12 +73,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author SERPRO
  * @see Crud
  */
-public class JPACrud<T, I> implements Crud<T, I> {
+public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T, I> {
 
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private EntityManager entityManager;
 
 	@Inject
 	private Instance<QueryContext> queryContext;
@@ -112,10 +108,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	protected CriteriaBuilder getCriteriaBuilder() {
 		return getEntityManager().getCriteriaBuilder();
-	}
-
-	protected EntityManager getEntityManager() {
-		return this.entityManager;
 	}
 
 	protected QueryConfig<T> getQueryConfig() {
