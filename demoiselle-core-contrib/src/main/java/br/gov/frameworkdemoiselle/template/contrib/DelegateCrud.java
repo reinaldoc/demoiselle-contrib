@@ -36,80 +36,21 @@
  */
 package br.gov.frameworkdemoiselle.template.contrib;
 
-import java.util.List;
-import java.util.ListIterator;
-
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.query.contrib.QueryContext;
 import br.gov.frameworkdemoiselle.template.Crud;
-import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
+public class DelegateCrud<T, I, C extends Crud<T, I>> extends br.gov.frameworkdemoiselle.template.DelegateCrud<T, I, C> {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private QueryContext queryContext;
 
-	private Class<C> delegateClass;
-
-	private C delegate;
-
 	private Class<T> beanClass;
-
-	@Override
-	@Transactional
-	public void delete(final I id) {
-		this.getDelegate().delete(id);
-	}
-
-	@Transactional
-	public void delete(final List<I> idList) {
-		ListIterator<I> iter = idList.listIterator();
-		while (iter.hasNext()) {
-			this.delete(iter.next());
-		}
-	}
-
-	@Override
-	public List<T> findAll() {
-		return getDelegate().findAll();
-	}
-
-	@Override
-	@Transactional
-	public void insert(final T bean) {
-		getDelegate().insert(bean);
-	}
-
-	@Override
-	public T load(final I id) {
-		return getDelegate().load(id);
-	}
-
-	@Override
-	@Transactional
-	public void update(final T bean) {
-		getDelegate().update(bean);
-	}
-
-	protected C getDelegate() {
-		if (this.delegate == null) {
-			this.delegate = Beans.getReference(getDelegateClass());
-		}
-		return this.delegate;
-	}
-
-	protected Class<C> getDelegateClass() {
-		if (this.delegateClass == null) {
-			this.delegateClass = Reflections.getGenericTypeArgument(this.getClass(), 2);
-		}
-		return this.delegateClass;
-	}
 
 	protected Class<T> getBeanClass() {
 		if (this.beanClass == null) {
