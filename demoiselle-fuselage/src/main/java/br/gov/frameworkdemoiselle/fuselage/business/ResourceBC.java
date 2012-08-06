@@ -7,9 +7,11 @@ import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.persistence.ResourceDAO;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
+@BusinessController
 public class ResourceBC extends DelegateCrud<SecurityResource, Long, ResourceDAO> {
 
 	private static final long serialVersionUID = 1L;

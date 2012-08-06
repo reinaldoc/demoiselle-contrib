@@ -11,8 +11,10 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.fuselage.persistence.ProfileDAO;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 
+@BusinessController
 public class ProfileBC extends DelegateCrud<SecurityProfile, Long, ProfileDAO> {
 	private static final long serialVersionUID = 1L;
 

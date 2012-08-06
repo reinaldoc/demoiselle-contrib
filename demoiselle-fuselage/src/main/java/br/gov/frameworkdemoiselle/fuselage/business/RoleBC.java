@@ -9,8 +9,10 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityRole;
 import br.gov.frameworkdemoiselle.fuselage.persistence.RoleDAO;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
+import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
 
+@BusinessController
 public class RoleBC extends DelegateCrud<SecurityRole, Long, RoleDAO> {
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +25,7 @@ public class RoleBC extends DelegateCrud<SecurityRole, Long, RoleDAO> {
 	public List<SecurityRole> findRolesExceptList(List<SecurityRole> securityRoles) {
 		QueryConfig<SecurityRole> queryConfig = getQueryConfig();
 		queryConfig.setSorting("name");
-		if (securityRoles != null  && securityRoles.size() > 0) {
+		if (securityRoles != null && securityRoles.size() > 0) {
 			Long[] ids = new Long[securityRoles.size()];
 			for (int i = 0; i != securityRoles.size(); i++)
 				ids[i] = securityRoles.get(i).getId();
