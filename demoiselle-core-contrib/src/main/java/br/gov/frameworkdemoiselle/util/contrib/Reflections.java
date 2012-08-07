@@ -36,7 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.util.contrib;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -56,6 +58,35 @@ public class Reflections extends br.gov.frameworkdemoiselle.util.Reflections {
 			superClazz = superClazz.getSuperclass();
 		}
 		return fieldArray;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] getAnnotatedValues(Collection<?> collection, Class<? extends Annotation> aclazz, Class<T> T) {
+		T[] values = null;
+		if (collection != null)
+			for (Object item : collection)
+				try {
+					values = (T[]) ArrayUtils.add(values, (T) getAnnotatedValue(item, aclazz, true));
+				} catch (Exception e) {
+				}
+		return values;
+	}
+
+	public static Object getAnnotatedValue(Object entry, Class<? extends Annotation> aclazz, boolean required) throws Exception {
+		Field field = getAnnotatedField(entry.getClass(), aclazz, required);
+		if (field != null)
+			return getFieldValue(field, entry);
+		return null;
+	}
+
+	public static Field getAnnotatedField(Class<?> clazz, Class<? extends Annotation> aclazz, boolean required) throws Exception {
+		for (Field field : getSuperClassesFields(clazz))
+			if (field.isAnnotationPresent(aclazz))
+				return field;
+		if (required)
+			throw new Exception("Field with @" + aclazz.getSimpleName() + " not found on class " + clazz.getSimpleName());
+		else
+			return null;
 	}
 
 }
