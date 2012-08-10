@@ -46,15 +46,16 @@
 
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-fuselage</artifactId>
+	<version>2.2.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
 	<name>demoiselle-fuselage</name>
 	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
 	<description>Componente que implementa o contexto de segurança</description>
 
 	<properties>
 		<category>Segurança</category>
-		<primefaces.version>3.0.1</primefaces.version>
+		<demoiselle.report.version>2.0.4</demoiselle.report.version>
+		<primefaces.version>3.3</primefaces.version>
 		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
 	</properties>
 
@@ -64,25 +65,24 @@
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-primefaces</artifactId>
-			<version>2.2.2</version>
+			<version>2.2.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-jpa-contrib</artifactId>
-			<version>2.2.2</version>
+			<version>2.2.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-ldap</artifactId>
-			<version>2.2.2</version>
+			<version>2.2.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle.component</groupId>
 			<artifactId>demoiselle-report</artifactId>
-			<version>2.0.3</version><!--$NO-MVN-MAN-VER$ -->
 			<scope>compile</scope>
 		</dependency>
 

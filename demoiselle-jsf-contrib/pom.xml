@@ -36,21 +36,21 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>demoiselle-contrib</groupId>
+	<artifactId>demoiselle-jsf-contrib</artifactId>
+	<version>2.2.3-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>demoiselle-jsf-contrib</name>
+	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
+	<description>Componente que evolui a extensão demoiselle-jsf</description>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-jsf-parent</artifactId>
 		<version>2.2.2</version>
 	</parent>
-
-	<groupId>demoiselle-contrib</groupId>
-	<artifactId>demoiselle-jsf-contrib</artifactId>
-	<packaging>jar</packaging>
-
-	<name>demoiselle-jsf-contrib</name>
-	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
-	<description>Componente que evolui a extensão demoiselle-jsf</description>
 
 	<properties>
 		<category>Outros</category>
@@ -61,8 +61,8 @@
 		<!-- Major Libraries -->
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
-			<artifactId>demoiselle-util</artifactId>
-			<version>2.2.2</version>
+			<artifactId>demoiselle-menu</artifactId>
+			<version>2.2.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Support Tools -->

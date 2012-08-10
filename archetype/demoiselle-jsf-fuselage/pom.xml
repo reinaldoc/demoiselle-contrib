@@ -4,14 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-jsf-fuselage</artifactId>
+	<version>2.2.3-SNAPSHOT</version>
 	<packaging>war</packaging>
-
-	<name></name>
-	<description></description>
-	<url></url>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
@@ -19,11 +15,20 @@
 		<version>2.2.2</version>
 	</parent>
 
+	<properties>
+		<demoiselle.report.version>2.0.4</demoiselle.report.version>
+		<primefaces.version>3.3</primefaces.version>
+	</properties>
+
+	<name></name>
+	<description></description>
+	<url></url>
+
 	<dependencies>
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-fuselage</artifactId>
-			<version>2.2.2</version>
+			<version>2.2.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -39,13 +44,11 @@
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle.component</groupId>
 			<artifactId>demoiselle-report</artifactId>
-			<version>2.0.3</version><!--$NO-MVN-MAN-VER$-->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>3.0.1</version><!--$NO-MVN-MAN-VER$ -->
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
