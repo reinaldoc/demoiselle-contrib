@@ -9,11 +9,11 @@ import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.fuselage.configuration.WebfilterConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
+import br.gov.frameworkdemoiselle.menu.core.MenuContext;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Redirector;
 import br.gov.frameworkdemoiselle.util.contrib.Faces;
 import br.gov.frameworkdemoiselle.util.contrib.Strings;
-import br.gov.frameworkdemoiselle.util.core.MenuContext;
 
 @Named
 @SessionScoped

@@ -5,6 +5,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+import br.gov.frameworkdemoiselle.menu.core.MenuContext;
 import br.gov.frameworkdemoiselle.util.Parameter;
 
 @SessionScoped

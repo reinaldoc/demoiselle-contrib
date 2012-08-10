@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.util.configuration;
+package br.gov.frameworkdemoiselle.menu.configuration;
 
 import java.io.Serializable;
 import java.util.ArrayList;

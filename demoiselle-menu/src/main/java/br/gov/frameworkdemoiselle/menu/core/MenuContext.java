@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.util.core;
+package br.gov.frameworkdemoiselle.menu.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.util.configuration.MenuContextConfig;
+import br.gov.frameworkdemoiselle.menu.configuration.MenuContextConfig;
 
 @Named
 @SessionScoped
