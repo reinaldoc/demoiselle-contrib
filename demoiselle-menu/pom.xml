@@ -45,10 +45,10 @@
 	</parent>
 
 	<groupId>demoiselle-contrib</groupId>
-	<artifactId>demoiselle-util</artifactId>
+	<artifactId>demoiselle-menu</artifactId>
 	<packaging>jar</packaging>
 
-	<name>demoiselle-util</name>
+	<name>demoiselle-menu</name>
 	<url>http://demoiselle.sourceforge.net/component/${project.artifactId}/${project.version}</url>
 	<description>Componente com utilitários para o demoiselle</description>
 
