@@ -28,18 +28,17 @@ public class MenuContextConfig implements Serializable {
 	@Name("permitUnselect")
 	private boolean permitUnselect = false;
 
+	@Name("filter.menuName")
+	private String filterMenuName = "URL";
+
 	/**
-	 * The list of menu items that will be seleteds on startup
-	 * For each selectItems property like
-	 * 		menuName:menuItem:true:false
+	 * The list of menu items that will be seleteds on startup For each
+	 * selectItems property like menuName:menuItem:true:false
 	 * 
-	 * The return is a String[] with four elements:
-	 *		[1] menuName
-	 *		[2] menuItem
-	 *		[3] singleSelect - default is true
-	 *		[4] permitUnselect - default is false
+	 * The return is a String[] with four elements: [1] menuName [2] menuItem
+	 * [3] singleSelect - default is true [4] permitUnselect - default is false
 	 * 
-	 * @return util.menucontext.selectItems property;
+	 * @return menucontext.selectItems property;
 	 */
 	public List<String[]> getSelectItems() {
 		if (selectItemsList == null && selectItems != null) {
@@ -62,7 +61,7 @@ public class MenuContextConfig implements Serializable {
 	/**
 	 * The default styleClass for select menu item
 	 * 
-	 * @return util.menucontext.selectedStyleClass property;
+	 * @return menucontext.selectedStyleClass property;
 	 */
 	public String getSelectedStyleClass() {
 		return selectedStyleClass;
@@ -71,7 +70,7 @@ public class MenuContextConfig implements Serializable {
 	/**
 	 * The default behavior for multiselect support
 	 * 
-	 * @return util.menucontext.singleSelect property;
+	 * @return menucontext.singleSelect property;
 	 */
 	public boolean isSingleSelect() {
 		return singleSelect;
@@ -80,10 +79,19 @@ public class MenuContextConfig implements Serializable {
 	/**
 	 * The default behavior for unselect support
 	 * 
-	 * @return util.menucontext.permitUnselect property;
+	 * @return menucontext.permitUnselect property;
 	 */
 	public boolean isPermitedUnselect() {
 		return permitUnselect;
+	}
+
+	/**
+	 * The menu name to set current URL
+	 * 
+	 * @return menucontext.filter.menu.name;
+	 */
+	public String getFilterMenuName() {
+		return filterMenuName;
 	}
 
 }

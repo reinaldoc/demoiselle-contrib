@@ -40,7 +40,7 @@
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-extension-parent</artifactId>
+		<artifactId>demoiselle-jsf-parent</artifactId>
 		<version>2.2.2</version>
 	</parent>
 
