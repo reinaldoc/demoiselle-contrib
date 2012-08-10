@@ -1,11 +1,10 @@
-package br.gov.frameworkdemoiselle.util.core;
+package br.gov.frameworkdemoiselle.menu.core;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.menu.core.MenuContext;
 import br.gov.frameworkdemoiselle.util.Parameter;
 
 @SessionScoped
