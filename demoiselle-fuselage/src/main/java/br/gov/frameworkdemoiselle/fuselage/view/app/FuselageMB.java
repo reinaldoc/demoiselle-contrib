@@ -23,12 +23,30 @@ public class FuselageMB implements Serializable {
 
 	@Inject
 	private WebfilterConfig config;
-	
+
 	@Inject
 	private MenuContext menuContext;
 
 	@Inject
 	private SecurityContext securityContext;
+
+	public SecurityUser getSecurityUser() {
+		try {
+			if (securityContext.isLoggedIn())
+				return (SecurityUser) securityContext.getUser().getAttribute("user");
+		} catch (Exception e) {
+		}
+		return null;
+	}
+
+	public String getUsername() {
+		try {
+			getSecurityUser().getLogin();
+		} catch (Exception e) {
+			return "null";
+		}
+		return null;
+	}
 
 	public String getUserNameProperCase() {
 		try {
@@ -36,16 +54,6 @@ public class FuselageMB implements Serializable {
 		} catch (Exception e) {
 			return "null";
 		}
-	}
-
-	public String getUsername() {
-		try {
-			if (securityContext.isLoggedIn())
-				return ((SecurityUser) securityContext.getUser().getAttribute("user")).getLogin();
-		} catch (Exception e) {
-			return "null";
-		}
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")
