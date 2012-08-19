@@ -217,6 +217,9 @@ public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T
 	}
 
 	protected Predicate getWhere() {
+		if (queryConfig.getFilter() == null || queryConfig.getFilter().isEmpty())
+			return null;
+
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		for (Map.Entry<String, Object> entry : queryConfig.getFilter().entrySet()) {
 			if (entry.getKey() == null || entry.getValue() == null)
@@ -226,17 +229,22 @@ public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T
 			if (entry.getValue().getClass().isArray()) {
 				values = (Object[]) entry.getValue();
 				if (values.length == 0)
-					throw new IllegalArgumentException("The filter for " + entry.getKey() + " have a empty array");
+					continue;
 			} else
 				values = new Object[] { entry.getValue() };
 
-			for (Object value : values)
+			for (Object value : values) {
+				if (value == null)
+					continue;
 				if (value instanceof String && queryConfig.getFilterComparison() != Comparison.EQUALS)
 					predicates.add(getPredicateForString(getAttributeExpression(entry.getKey()), (String) value));
 				else
 					predicates.add(getPredicate(getAttributeExpression(entry.getKey()), value));
+			}
 		}
 
+		if (predicates.size() == 0)
+			return null;
 		if (queryConfig.isFilterLogicConjunction())
 			return this.cBuilder.and(predicates.toArray(new Predicate[] {}));
 		else
@@ -249,8 +257,9 @@ public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T
 
 		getQueryConfig();
 		if (queryConfig != null) {
-			if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
-				criteria.where(getWhere());
+			Predicate predicate = getWhere();
+			if (predicate != null)
+				criteria.where(predicate);
 			if (queryConfig.getSorting() != null && queryConfig.getSorting().length != 0)
 				criteria.orderBy(getOrder());
 		}
@@ -279,8 +288,9 @@ public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T
 		criteria.from(getBeanClass());
 		criteria.select(this.cBuilder.count(this.cRoot));
 
-		if (queryConfig.getFilter() != null && !queryConfig.getFilter().isEmpty())
-			criteria.where(getWhere());
+		Predicate predicate = getWhere();
+		if (predicate != null)
+			criteria.where(predicate);
 
 		return getEntityManager().createQuery(criteria).getSingleResult().intValue();
 	}
