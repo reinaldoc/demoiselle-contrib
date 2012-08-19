@@ -2,7 +2,9 @@ package br.gov.frameworkdemoiselle.menu.configuration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -30,6 +32,23 @@ public class MenuContextConfig implements Serializable {
 
 	@Name("filter.menuName")
 	private String filterMenuName = "URL";
+
+	@Name("filter.menuItems")
+	private List<String> filterMenuItems;
+
+	@Ignore
+	private Map<String, String> filterMenuItemsMap;
+
+	public String getFilterMenuItem(String url) {
+		if (filterMenuItemsMap == null && filterMenuItems != null) {
+			filterMenuItemsMap = new HashMap<String, String>();
+			for (String item : filterMenuItems) {
+				String[] itemArray = item.split(":");
+				filterMenuItemsMap.put(itemArray[1], itemArray[0]);
+			}
+		}
+		return filterMenuItemsMap.get(url);
+	}
 
 	/**
 	 * The list of menu items that will be seleteds on startup For each

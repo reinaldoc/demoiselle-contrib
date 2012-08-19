@@ -38,7 +38,7 @@ public class SyncUrlMenu implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		String url = ((HttpServletRequest) request).getRequestURI().replaceAll("^/.+?/", "/");
-		menuContext.select(config.getFilterMenuName(), url);
+		menuContext.select(config.getFilterMenuName(), config.getFilterMenuItem(url));
 		chain.doFilter(request, response);
 	}
 
