@@ -30,6 +30,9 @@ public class MenuContextConfig implements Serializable {
 	@Name("permitUnselect")
 	private boolean permitUnselect = false;
 
+	@Name("filter.enabled")
+	private boolean filterEnabled = true;
+
 	@Name("filter.menuName")
 	private String filterMenuName = "URL";
 
@@ -38,6 +41,10 @@ public class MenuContextConfig implements Serializable {
 
 	@Ignore
 	private Map<String, String> filterMenuItemsMap;
+
+	public boolean isFilterEnabled() {
+		return filterEnabled;
+	}
 
 	public String getFilterMenuItem(String url) {
 		if (filterMenuItemsMap == null && filterMenuItems != null) {
