@@ -34,7 +34,7 @@ public class MenuContextConfig implements Serializable {
 	private String filterMenuName = "URL";
 
 	@Name("filter.menuItems")
-	private List<String> filterMenuItems;
+	private List<String> filterMenuItems = new ArrayList<String>();
 
 	@Ignore
 	private Map<String, String> filterMenuItemsMap;
