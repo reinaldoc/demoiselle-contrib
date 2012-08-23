@@ -41,11 +41,10 @@ public class FuselageMB implements Serializable {
 
 	public String getUsername() {
 		try {
-			getSecurityUser().getLogin();
+			return getSecurityUser().getLogin();
 		} catch (Exception e) {
-			return "null";
+			return null;
 		}
-		return null;
 	}
 
 	public String getUserNameProperCase() {
