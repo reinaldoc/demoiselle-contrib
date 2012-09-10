@@ -100,14 +100,29 @@ public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T
 	}
 
 	protected CriteriaQuery<T> getCriteria() {
-		this.cBuilder = getCriteriaBuilder();
+		this.cBuilder = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<T> criteria = this.cBuilder.createQuery(getBeanClass());
 		this.cRoot = criteria.from(getBeanClass());
 		return criteria;
 	}
 
+	protected <C> CriteriaQuery<C> getCriteria(Class<C> clazz) {
+		this.cBuilder = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<C> criteria = this.cBuilder.createQuery(clazz);
+		this.cRoot = criteria.from(getBeanClass());
+		return criteria;
+	}
+
 	protected CriteriaBuilder getCriteriaBuilder() {
-		return getEntityManager().getCriteriaBuilder();
+		if (this.cBuilder == null)
+			throw new RuntimeException("Criteria is not initialized. Please use getCriteria() first.");
+		return this.cBuilder;
+	}
+
+	protected Root<T> getCriteriaRoot() {
+		if (this.cRoot == null)
+			throw new RuntimeException("Criteria is not initialized. Please use getCriteria() first.");
+		return this.cRoot;
 	}
 
 	protected QueryConfig<T> getQueryConfig() {
@@ -115,10 +130,6 @@ public class JPACrud<T, I> extends br.gov.frameworkdemoiselle.template.JPACrud<T
 			queryConfig = queryContext.get().getQueryConfig(getBeanClass());
 		}
 		return queryConfig;
-	}
-
-	protected CriteriaQuery<T> createCriteriaQuery() {
-		return getCriteriaBuilder().createQuery(getBeanClass());
 	}
 
 	protected Query createQuery(final String ql) {
