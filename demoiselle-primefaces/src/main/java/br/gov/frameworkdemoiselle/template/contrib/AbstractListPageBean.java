@@ -61,22 +61,66 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	private static final long serialVersionUID = 1L;
 
-	private List<T> resultList;
+	/**
+	 * Generic's Integration;
+	 */
+	private Class<T> beanClass;
 
-	private String resultFilter;
+	protected Class<T> getBeanClass() {
+		if (this.beanClass == null)
+			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
+		return this.beanClass;
+	}
 
+	/**
+	 * Cache DataModel;
+	 */
 	private transient DataModel<T> dataModel;
 
-	private Map<I, Boolean> selection = new HashMap<I, Boolean>();
+	@Override
+	public DataModel<T> getDataModel() {
+		if (this.dataModel == null)
+			this.dataModel = new ListDataModel<T>(this.getResultList());
+		return this.dataModel;
+	}
 
+	/**
+	 * Cache Result List;
+	 */
+	protected abstract List<T> handleResultList(QueryConfig<T> queryConfig);
+
+	private List<T> resultList;
+
+	@Override
+	public List<T> getResultList() {
+		if (this.resultList == null)
+			this.resultList = handleResultList(getQueryConfig());
+		return this.resultList;
+	}
+
+	/**
+	 * Clean Result List and DataModel;
+	 */
+	@Override
+	public String list() {
+		this.dataModel = null;
+		this.resultList = null;
+		return getCurrentView();
+	}
+
+	/**
+	 * QueryConfig Integration;
+	 */
 	@Inject
 	private QueryContext queryContext;
 
-	@Inject
-	private MenuContext menuContext;
+	public QueryConfig<T> getQueryConfig() {
+		return queryContext.getQueryConfig(getBeanClass(), true);
+	}
 
-	protected abstract List<T> handleResultList(QueryConfig<T> queryConfig);
-
+	/**
+	 * LazyDataModel with QueryConfig Integration;
+	 */
 	private LazyDataModel<T> lazyDataModel = new LazyDataModel<T>() {
 		private static final long serialVersionUID = 1L;
 
@@ -97,56 +141,19 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	};
 
-	public void clearResultList() {
-		this.dataModel = null;
-		this.resultList = null;
+	public LazyDataModel<T> getLazyDataModel() {
+		return lazyDataModel;
 	}
 
-	public String clearValidation() {
-		Faces.resetValidation();
-		clearResultList();
-		return null;
+	public void setLazyDataModel(LazyDataModel<T> lazyDataModel) {
+		this.lazyDataModel = lazyDataModel;
 	}
 
-	private Class<T> beanClass;
-
-	protected Class<T> getBeanClass() {
-		if (this.beanClass == null)
-			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
-		return this.beanClass;
-	}
-
-	@Override
-	public DataModel<T> getDataModel() {
-		if (this.dataModel == null)
-			this.dataModel = new ListDataModel<T>(this.getResultList());
-		return this.dataModel;
-	}
-
-	@Override
-	public List<T> getResultList() {
-		if (this.resultList == null)
-			this.resultList = handleResultList(getQueryConfig());
-		return this.resultList;
-	}
-
-	@Override
-	public String list() {
-		clearResultList();
-		return getCurrentView();
-	}
-
-	public Map<I, Boolean> getSelection() {
-		return selection;
-	}
-
-	public void setSelection(Map<I, Boolean> selection) {
-		this.selection = selection;
-	}
-
-	public QueryConfig<T> getQueryConfig() {
-		return queryContext.getQueryConfig(getBeanClass(), true);
-	}
+	/**
+	 * MenuContext Integration;
+	 */
+	@Inject
+	private MenuContext menuContext;
 
 	public MenuContext getMenuContext() {
 		return menuContext;
@@ -160,29 +167,10 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		menuContext.select(getBeanClass().getSimpleName(), itemName);
 	}
 
-	public void clearSelection() {
-		setSelection(new HashMap<I, Boolean>());
-	}
-
-	public List<I> getSelectedList() {
-		List<I> selectedList = new ArrayList<I>();
-		Iterator<I> iter = getSelection().keySet().iterator();
-		while (iter.hasNext()) {
-			I id = iter.next();
-			if (getSelection().get(id)) {
-				selectedList.add(id);
-			}
-		}
-		return selectedList;
-	}
-
-	public LazyDataModel<T> getLazyDataModel() {
-		return lazyDataModel;
-	}
-
-	public void setLazyDataModel(LazyDataModel<T> lazyDataModel) {
-		this.lazyDataModel = lazyDataModel;
-	}
+	/**
+	 * Simple filter attribute
+	 */
+	private String resultFilter;
 
 	public String getResultFilter() {
 		return resultFilter;
@@ -190,13 +178,50 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	public void setResultFilter(String resultFilter) {
 		if (this.resultFilter == null || !this.resultFilter.equals(resultFilter))
-			clearResultList();
+			list();
 		this.resultFilter = resultFilter;
 	}
 
 	public void clearResultFilter() {
 		resultFilter = null;
-		clearResultList();
+		list();
+	}
+
+	/**
+	 * Selected IDS from ListPageBean.class;
+	 */
+	private Map<I, Boolean> selection = new HashMap<I, Boolean>();
+
+	public void setSelection(Map<I, Boolean> selection) {
+		this.selection = selection;
+	}
+
+	public void clearSelection() {
+		setSelection(new HashMap<I, Boolean>());
+	}
+
+	public Map<I, Boolean> getSelection() {
+		return selection;
+	}
+
+	public List<I> getSelectedList() {
+		List<I> selectedList = new ArrayList<I>();
+		Iterator<I> iter = getSelection().keySet().iterator();
+		while (iter.hasNext()) {
+			I id = iter.next();
+			if (getSelection().get(id))
+				selectedList.add(id);
+		}
+		return selectedList;
+	}
+
+	/**
+	 * Deprecated
+	 */
+	public String clearValidation() {
+		Faces.resetValidation();
+		list();
+		return null;
 	}
 
 }
