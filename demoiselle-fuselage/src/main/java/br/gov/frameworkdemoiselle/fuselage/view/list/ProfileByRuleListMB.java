@@ -57,7 +57,7 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 	public String deleteSelection() {
 		try {
 			bc.delete(getSelectedList());
-			clearSelection();
+			initSelection();
 		} catch (RuntimeException e) {
 			Faces.validationFailed();
 			Faces.addI18nMessage("fuselage.generic.business.error", SeverityType.ERROR);
