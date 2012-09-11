@@ -105,7 +105,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	public String list() {
 		this.dataModel = null;
 		this.resultList = null;
-		return getCurrentView();
+		return null;
 	}
 
 	/**
