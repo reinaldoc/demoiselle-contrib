@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -192,8 +193,23 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	 */
 	private Map<I, Boolean> selection = new HashMap<I, Boolean>();
 
+	private boolean selectionAll = false;
+
+	public boolean isSelectionAll() {
+		return selectionAll;
+	}
+
+	public void setSelectionAll(boolean selectionAll) {
+		this.selectionAll = selectionAll;
+	}
+
 	public void setSelection(Map<I, Boolean> selection) {
 		this.selection = selection;
+	}
+
+	public void selectionReverse() {
+		for (Entry<I, Boolean> entry : selection.entrySet())
+			entry.setValue(selectionAll);
 	}
 
 	public void clearSelection() {
