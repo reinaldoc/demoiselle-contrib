@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
@@ -188,20 +189,36 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	/**
-	 * Selected IDS from ListPageBean.class;
+	 * Improve selection from ListPageBean.class;
 	 */
-	private Map<I, Boolean> selection = new HashMap<I, Boolean>();
+	private boolean selectionAll = false;
+
+	private Map<I, Boolean> selection = new SelectionMap<I>(this.selectionAll);
+
+	public boolean isSelectionAll() {
+		return selectionAll;
+	}
+
+	public void setSelectionAll(boolean selectionAll) {
+		this.selectionAll = selectionAll;
+		this.selection = new SelectionMap<I>(this.selectionAll, this.selection);
+	}
 
 	public void setSelection(Map<I, Boolean> selection) {
 		this.selection = selection;
 	}
 
-	public void clearSelection() {
-		setSelection(new HashMap<I, Boolean>());
-	}
-
 	public Map<I, Boolean> getSelection() {
 		return selection;
+	}
+
+	public void selectionReverse() {
+		for (Entry<I, Boolean> entry : selection.entrySet())
+			entry.setValue(selectionAll);
+	}
+
+	public void initSelection() {
+		selection = new SelectionMap<I>(this.selectionAll);
 	}
 
 	public List<I> getSelectedList() {
@@ -222,6 +239,34 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		Faces.resetValidation();
 		list();
 		return null;
+	}
+
+}
+
+class SelectionMap<I> extends HashMap<I, Boolean> {
+
+	private static final long serialVersionUID = 1L;
+
+	private boolean defaultvalue;
+
+	public SelectionMap(boolean defaultValue) {
+		this.defaultvalue = defaultValue;
+	}
+
+	public SelectionMap(boolean defaultValue, Map<I, Boolean> map) {
+		this.defaultvalue = defaultValue;
+		this.putAll(map);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Boolean get(Object id) {
+		Boolean value = super.get(id);
+		if (value == null) {
+			this.put((I) id, defaultvalue);
+			return defaultvalue;
+		}
+		return value;
 	}
 
 }
