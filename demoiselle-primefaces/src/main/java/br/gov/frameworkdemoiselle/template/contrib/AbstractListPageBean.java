@@ -212,7 +212,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		return selection;
 	}
 
-	public void selectionReverse() {
+	public void selectionToggle() {
 		for (Entry<I, Boolean> entry : selection.entrySet())
 			entry.setValue(selectionAll);
 	}
