@@ -92,11 +92,19 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	private List<T> resultList;
 
+	private Integer resultSize = 0;
+
 	@Override
 	public List<T> getResultList() {
 		if (this.resultList == null)
 			this.resultList = handleResultList(getQueryConfig());
+		if (this.resultList != null)
+			this.resultSize = this.resultList.size();
 		return this.resultList;
+	}
+
+	public Integer getResultSize() {
+		return this.resultSize;
 	}
 
 	/**
@@ -106,6 +114,8 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	public String list() {
 		this.dataModel = null;
 		this.resultList = null;
+		resultSize = 0;
+		getQueryConfig().setTotalResults(0);
 		return null;
 	}
 
@@ -134,8 +144,8 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 			queryConfig.setFilterStr(filters);
 
 			List<T> t = handleResultList(queryConfig);
-			this.setRowCount(queryConfig.getTotalResults());
-			this.setPageSize(pageSize);
+			resultSize = queryConfig.getTotalResults();
+			this.setRowCount(resultSize);
 
 			return t;
 		}
@@ -178,6 +188,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	public void setResultFilter(String resultFilter) {
+		System.out.println("===> " + resultFilter);
 		if (this.resultFilter == null || !this.resultFilter.equals(resultFilter))
 			list();
 		this.resultFilter = resultFilter;
