@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
-import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
+import br.gov.frameworkdemoiselle.fuselage.configuration.FuselageConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
@@ -24,7 +24,7 @@ public class ProfileByRuleListMB extends AbstractListPageBean<SecurityProfileByR
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private ViewConfig viewConfig;
+	private FuselageConfig viewConfig;
 
 	@Inject
 	private ProfileByRuleBC bc;

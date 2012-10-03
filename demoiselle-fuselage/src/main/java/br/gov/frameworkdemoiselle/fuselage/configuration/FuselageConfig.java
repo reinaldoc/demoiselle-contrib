@@ -1,6 +1,7 @@
 package br.gov.frameworkdemoiselle.fuselage.configuration;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,19 +10,33 @@ import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "demoiselle", prefix = "fuselage.view")
-public class ViewConfig implements Serializable {
+@Configuration(resource = "demoiselle", prefix = "fuselage")
+public class FuselageConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("resource.namesuggestions")
+	@Name("filter.public.urls.equals")
+	private List<String> urlsEquals = new ArrayList<String>();
+
+	@Name("filter.public.urls.startswith")
+	private List<String> urlsStartswith = new ArrayList<String>();
+
+	@Name("view.resource.namesuggestions")
 	private List<String> namesuggestions;
 
-	@Name("profiledetect.implementations")
+	@Name("view.profiledetect.implementations")
 	private List<String> implementationList;
 
 	@Ignore
 	private Map<String, String> implementations;
+
+	public List<String> getUrlsEquals() {
+		return new ArrayList<String>(urlsEquals);
+	}
+
+	public List<String> getUrlsStartswith() {
+		return new ArrayList<String>(urlsStartswith);
+	}
 
 	public List<String> getNamesuggestions() {
 		return namesuggestions;

@@ -5,7 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.fuselage.business.ResourceBC;
-import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
+import br.gov.frameworkdemoiselle.fuselage.configuration.FuselageConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
@@ -21,7 +21,7 @@ public class ResourceEditMB extends AbstractEditPageBean<SecurityResource, Long>
 	private ResourceBC bc;
 
 	@Inject
-	private ViewConfig viewConfig;
+	private FuselageConfig viewConfig;
 
 	@Override
 	public String insert() {

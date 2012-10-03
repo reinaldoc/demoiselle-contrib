@@ -7,7 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.fuselage.business.ProfileByRuleBC;
-import br.gov.frameworkdemoiselle.fuselage.configuration.ViewConfig;
+import br.gov.frameworkdemoiselle.fuselage.configuration.FuselageConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfileByRule;
 import br.gov.frameworkdemoiselle.message.SeverityType;
@@ -28,7 +28,7 @@ public class ProfileByRuleEditMB extends AbstractEditPageBean<SecurityProfileByR
 	private List<SecurityProfile> selectedProfiles = new ArrayList<SecurityProfile>();
 
 	@Inject
-	private ViewConfig viewConfig;
+	private FuselageConfig viewConfig;
 
 	@Override
 	public String insert() {
