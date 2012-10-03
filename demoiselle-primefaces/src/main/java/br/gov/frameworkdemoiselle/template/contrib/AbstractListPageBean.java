@@ -37,6 +37,8 @@
 package br.gov.frameworkdemoiselle.template.contrib;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -94,10 +96,17 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	private Integer resultSize = 0;
 
+	private Long resultTime = 0L;
+
 	@Override
 	public List<T> getResultList() {
-		if (this.resultList == null)
+		if (this.resultList == null) {
+			Calendar handleStart = new GregorianCalendar();
 			this.resultList = handleResultList(getQueryConfig());
+			Calendar handleStop = new GregorianCalendar();
+			resultTime = (handleStart.getTimeInMillis() - handleStop.getTimeInMillis());
+
+		}
 		if (this.resultList != null)
 			this.resultSize = this.resultList.size();
 		return this.resultList;
@@ -105,6 +114,10 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	public Integer getResultSize() {
 		return this.resultSize;
+	}
+
+	public Long getResultTime() {
+		return this.resultTime;
 	}
 
 	/**
@@ -115,6 +128,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		this.dataModel = null;
 		this.resultList = null;
 		resultSize = 0;
+		resultTime = 0L;
 		getQueryConfig().setTotalResults(0);
 		return null;
 	}
@@ -143,7 +157,11 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 			queryConfig.setSortOrder(sortOrder.equals(SortOrder.ASCENDING));
 			queryConfig.setFilterStr(filters);
 
+			Calendar handleStart = new GregorianCalendar();
 			List<T> t = handleResultList(queryConfig);
+			Calendar handleStop = new GregorianCalendar();
+			resultTime = (handleStart.getTimeInMillis() - handleStop.getTimeInMillis());
+
 			resultSize = queryConfig.getTotalResults();
 			this.setRowCount(resultSize);
 
