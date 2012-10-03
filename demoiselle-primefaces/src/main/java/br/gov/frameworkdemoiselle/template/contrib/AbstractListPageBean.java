@@ -104,7 +104,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 			Calendar handleStart = new GregorianCalendar();
 			this.resultList = handleResultList(getQueryConfig());
 			Calendar handleStop = new GregorianCalendar();
-			resultTime = (handleStart.getTimeInMillis() - handleStop.getTimeInMillis());
+			resultTime = (handleStop.getTimeInMillis() - handleStart.getTimeInMillis());
 
 		}
 		if (this.resultList != null)
@@ -116,8 +116,8 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		return this.resultSize;
 	}
 
-	public Long getResultTime() {
-		return this.resultTime;
+	public Double getResultTime() {
+		return this.resultTime / 1000d;
 	}
 
 	/**
@@ -160,7 +160,7 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 			Calendar handleStart = new GregorianCalendar();
 			List<T> t = handleResultList(queryConfig);
 			Calendar handleStop = new GregorianCalendar();
-			resultTime = (handleStart.getTimeInMillis() - handleStop.getTimeInMillis());
+			resultTime = (handleStop.getTimeInMillis() - handleStart.getTimeInMillis());
 
 			resultSize = queryConfig.getTotalResults();
 			this.setRowCount(resultSize);
