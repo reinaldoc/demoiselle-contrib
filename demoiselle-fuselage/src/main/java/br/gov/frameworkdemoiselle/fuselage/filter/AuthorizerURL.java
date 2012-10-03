@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.enumeration.contrib.Comparison;
 import br.gov.frameworkdemoiselle.fuselage.configuration.WebfilterConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
@@ -65,10 +64,10 @@ public class AuthorizerURL implements Filter {
 	}
 
 	private boolean isPublicURL(String url) {
-		if (publicResources.hasPermission("public_url", url, Comparison.EQUALS) || url.equals(config.getLoginPage())) {
+		if (publicResources.hasPermissionEquals(url)) {
 			info("permitted by public_url", url);
 			return true;
-		} else if (publicResources.hasPermission("public_url_startswith", url, Comparison.STARTSWITH)) {
+		} else if (publicResources.hasPermissionStartswith(url)) {
 			info("permitted by public_url_startswith", url);
 			return true;
 		}
