@@ -188,8 +188,12 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	public void setResultFilter(String resultFilter) {
-		if (this.resultFilter == null || !this.resultFilter.equals(resultFilter))
+		if (resultFilter == null || resultFilter.trim().isEmpty())
+			resultFilter = null;
+
+		if (resultFilter == null || !resultFilter.equals(this.resultFilter))
 			list();
+
 		this.resultFilter = resultFilter;
 	}
 
