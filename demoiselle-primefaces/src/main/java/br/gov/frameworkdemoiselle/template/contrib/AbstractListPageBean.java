@@ -188,7 +188,6 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	public void setResultFilter(String resultFilter) {
-		System.out.println("===> " + resultFilter);
 		if (this.resultFilter == null || !this.resultFilter.equals(resultFilter))
 			list();
 		this.resultFilter = resultFilter;
