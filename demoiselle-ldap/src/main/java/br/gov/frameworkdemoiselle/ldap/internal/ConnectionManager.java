@@ -66,12 +66,12 @@ public class ConnectionManager implements Serializable {
 
 	private boolean verbose = false;
 
-	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() throws URISyntaxException {
 		if (entryManagerConfig.isVerbose())
 			verbose = true;
-		connURI = new ConnectionURI(entryManagerConfig.getServer(), entryManagerConfig.isStarttls());
+		connURI = new ConnectionURI(entryManagerConfig.getServer(),
+				entryManagerConfig.isStarttls());
 		binddn = entryManagerConfig.getBinddn();
 		bindpw = entryManagerConfig.getBindpwInBytes();
 		referrals = entryManagerConfig.isReferrals();
@@ -140,7 +140,8 @@ public class ConnectionManager implements Serializable {
 	 * @throws LDAPException
 	 * @throws URISyntaxException
 	 */
-	private LDAPConnection getConnection() throws LDAPException, URISyntaxException {
+	private LDAPConnection getConnection() throws LDAPException,
+			URISyntaxException {
 		if (lc == null || !lc.isConnected()) {
 			connect();
 		}
@@ -242,7 +243,8 @@ public class ConnectionManager implements Serializable {
 	public boolean authenticate(String binddn, String bindpw, int protocol) {
 		authenticateDnResults = null;
 		if (binddn != null && !binddn.contains("=")) {
-			queryMap.setSearchFilter(authenticateFilter.replaceAll("%u", binddn));
+			queryMap.setSearchFilter(authenticateFilter
+					.replaceAll("%u", binddn));
 			binddn = queryMap.getSingleDn();
 		}
 

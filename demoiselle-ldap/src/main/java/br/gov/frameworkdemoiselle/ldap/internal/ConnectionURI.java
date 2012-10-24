@@ -41,13 +41,13 @@ public class ConnectionURI implements Serializable {
 
 	private TlsEnum useTLS;
 
-	public ConnectionURI(String serverURI, boolean starttls) throws URISyntaxException {
+	public ConnectionURI(String serverURI, boolean starttls)
+			throws URISyntaxException {
 		this.serverURI = new URI(serverURI);
 		this.starttls = starttls;
 		setUseTLS();
 	}
 
-	@SuppressWarnings("unused")
 	@PostConstruct
 	private void init() throws URISyntaxException {
 		this.serverURI = new URI(entryManagerConfig.getServer());
