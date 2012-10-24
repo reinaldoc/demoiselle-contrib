@@ -1,13 +1,18 @@
 <?xml version='1.0' encoding="utf-8"?>
-<bookinfo xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="pt-br">
+<info xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="pt-br" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
 
-	<title>Guia Demoiselle Util</title>
-	<subtitle>Demoiselle Util</subtitle>
+	<title>Guia Demoiselle Menu</title>
 
-	<abstract>Guia para uso do Demoiselle Util</abstract>
-	<titleabbrev>Guia Demoiselle Util</titleabbrev>
+	<subtitle>Demoiselle Menu</subtitle>
 
-	<xi:include href="revhistory.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<abstract>
+		<para>Guia para uso do Demoiselle Menu</para>
+	</abstract>
 
-</bookinfo>
+	<titleabbrev>Guia Demoiselle Menu</titleabbrev>
+
+	<xi:include href="revhistory.xml" />
+	<xi:include href="authorgroup.xml" />
+
+</info>

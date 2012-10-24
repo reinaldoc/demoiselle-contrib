@@ -1,16 +1,17 @@
 <?xml version='1.0' encoding="utf-8"?>
-<part xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="pt-br" id="fuselage-master">
+<part xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd"
+	version="5.0" xml:lang="pt-br">
 
 	<title>Demoiselle Fuselage</title>
 
 	<partintro>
-		<para>
-			Para que serve? o que faz?
-		</para>
+		<para> Para que serve? o que faz? </para>
 	</partintro>
 
 	<!-- capítulos -->
-	<xi:include href="config.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
-	<xi:include href="using.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+	<xi:include href="config.xml" />
+	<xi:include href="using.xml" />
 
 </part>
