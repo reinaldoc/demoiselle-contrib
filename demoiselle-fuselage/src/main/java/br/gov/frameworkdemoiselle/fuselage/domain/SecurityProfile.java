@@ -13,11 +13,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
+@Table(name="SECURITYPROFILE")
 public class SecurityProfile implements Serializable {
 
 	private static final long serialVersionUID = 1L;
