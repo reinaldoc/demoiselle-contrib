@@ -113,6 +113,10 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	public Integer getResultSize() {
+		//   When getResultSize is used on JSF rendered attribute
+		// it will be called before value attribute. Then we must
+		// run getResultList to update resultSize properly;
+		getResultList();
 		return this.resultSize;
 	}
 
