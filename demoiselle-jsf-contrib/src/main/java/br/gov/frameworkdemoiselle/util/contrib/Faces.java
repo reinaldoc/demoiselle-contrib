@@ -108,11 +108,6 @@ public class Faces extends br.gov.frameworkdemoiselle.util.Faces {
 		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params), type));
 	}
 
-	public static <T> T getManagedProperty(String expression, Class<T> expectedType) {
-		FacesContext context = getFacesContext();
-		return (T) context.getApplication().evaluateExpressionGet(context, expression, expectedType);
-	}
-
 	public static String getReportPath(String relativePath) {
 		return getFacesContext().getExternalContext().getRealPath(REPORT_SUFFIX_PATH + relativePath);
 	}
