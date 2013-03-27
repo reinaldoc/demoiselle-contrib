@@ -5,7 +5,7 @@ import java.io.Serializable;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(prefix = "frameworkdemoiselle.security")
+@Configuration(prefix = "frameworkdemoiselle.security.")
 public class WebfilterConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;

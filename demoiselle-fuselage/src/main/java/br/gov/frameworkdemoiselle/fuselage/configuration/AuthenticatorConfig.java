@@ -7,7 +7,7 @@ import java.util.List;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "demoiselle", prefix = "fuselage.authenticators")
+@Configuration(resource = "demoiselle", prefix = "fuselage.authenticators.")
 public class AuthenticatorConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;

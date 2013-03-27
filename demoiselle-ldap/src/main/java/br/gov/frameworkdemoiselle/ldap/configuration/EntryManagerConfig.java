@@ -21,7 +21,7 @@ import java.util.List;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "demoiselle", prefix = "EntryManager")
+@Configuration(resource = "demoiselle", prefix = "EntryManager.")
 public class EntryManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;

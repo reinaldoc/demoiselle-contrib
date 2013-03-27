@@ -10,7 +10,7 @@ import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(resource = "demoiselle", prefix = "fuselage")
+@Configuration(resource = "demoiselle", prefix = "fuselage.")
 public class FuselageConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
