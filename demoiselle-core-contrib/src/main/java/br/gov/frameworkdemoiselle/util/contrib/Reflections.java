@@ -42,7 +42,7 @@ import java.util.Collection;
 
 import org.apache.commons.lang.ArrayUtils;
 
-public class Reflections extends br.gov.frameworkdemoiselle.util.Reflections {
+public class Reflections {
 
 	/**
 	 * Build a array of super classes fields
@@ -87,6 +87,10 @@ public class Reflections extends br.gov.frameworkdemoiselle.util.Reflections {
 			throw new Exception("Field with @" + aclazz.getSimpleName() + " not found on class " + clazz.getSimpleName());
 		else
 			return null;
+	}
+
+	public static Object getFieldValue(Field field, Object object) {
+		return br.gov.frameworkdemoiselle.util.Reflections.getFieldValue(field, object);
 	}
 
 }
