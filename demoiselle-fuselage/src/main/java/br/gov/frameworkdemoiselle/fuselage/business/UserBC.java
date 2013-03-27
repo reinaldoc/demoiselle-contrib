@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityProfile;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.fuselage.persistence.UserDAO;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;

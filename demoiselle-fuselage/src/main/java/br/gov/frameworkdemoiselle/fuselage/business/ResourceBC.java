@@ -2,10 +2,10 @@ package br.gov.frameworkdemoiselle.fuselage.business;
 
 import java.util.List;
 
-import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.enumeration.contrib.Logic;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityResource;
 import br.gov.frameworkdemoiselle.fuselage.persistence.ResourceDAO;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 import br.gov.frameworkdemoiselle.query.contrib.QueryConfig;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.contrib.DelegateCrud;
