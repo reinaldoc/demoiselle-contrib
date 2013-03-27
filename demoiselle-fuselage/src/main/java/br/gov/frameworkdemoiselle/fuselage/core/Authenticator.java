@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Alternative
+@SessionScoped
 public class Authenticator implements br.gov.frameworkdemoiselle.security.Authenticator {
 
 	private static final long serialVersionUID = 1L;

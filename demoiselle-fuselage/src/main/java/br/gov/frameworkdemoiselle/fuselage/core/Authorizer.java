@@ -3,12 +3,12 @@ package br.gov.frameworkdemoiselle.fuselage.core;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 
-@Alternative
+@SessionScoped
 public class Authorizer implements br.gov.frameworkdemoiselle.security.Authorizer {
 
 	private static final long serialVersionUID = 1L;
