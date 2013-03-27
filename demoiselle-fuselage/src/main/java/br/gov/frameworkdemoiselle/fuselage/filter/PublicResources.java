@@ -30,7 +30,7 @@ public class PublicResources implements Serializable {
 	@Inject
 	private ResourceBC bc;
 
-	Map<String, List<String>> resourceMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> resourceMap = new HashMap<String, List<String>>();
 
 	@PostConstruct
 	protected void init() {
