@@ -42,12 +42,12 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-jsf-parent</artifactId>
-		<version>2.2.2</version>
+		<version>2.3.2</version>
 	</parent>
 
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-primefaces</artifactId>
-	<version>2.2.3-SNAPSHOT</version>
+	<version>2.3.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-primefaces</name>
@@ -56,8 +56,8 @@
 
 	<properties>
 		<category>Outros</category>
-		<primefaces.version>3.3</primefaces.version>
 		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
+		<primefaces.version>3.5</primefaces.version>
 	</properties>
 
 	<dependencies>
@@ -66,13 +66,13 @@
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-core-contrib</artifactId>
-			<version>2.2.3-SNAPSHOT</version>
+			<version>2.3.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-jsf-contrib</artifactId>
-			<version>2.2.3-SNAPSHOT</version>
+			<version>2.3.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
