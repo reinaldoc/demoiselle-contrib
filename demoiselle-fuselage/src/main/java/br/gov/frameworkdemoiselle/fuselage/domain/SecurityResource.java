@@ -34,8 +34,8 @@ public class SecurityResource implements Serializable {
 	private String name;
 
 	@Column(unique = true)
-	@NotBlank(message = "Especifique melhor o valor do recurso")
-	@Size(min = 1, max = 255, message = "Especifique melhor o valor do recurso")
+	@NotBlank(message = "Melhore o valor do recurso")
+	@Size(min = 1, max = 255, message = "Melhore o valor do recurso")
 	private String value;
 
 	@Column
