@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name="SECURITYPROFILE")
+@Table(name = "SECURITYPROFILE")
 public class SecurityProfile implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -54,7 +55,7 @@ public class SecurityProfile implements Serializable {
 	@JoinTable(name = "SECURITYUSER_PROFILE", joinColumns = { @JoinColumn(name = "PROFILE_ID") }, inverseJoinColumns = { @JoinColumn(name = "USER_ID") })
 	private List<SecurityUser> users;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "SECURITYPROFILE_ROLE", joinColumns = { @JoinColumn(name = "PROFILE_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
 	private List<SecurityRole> roles;
 
