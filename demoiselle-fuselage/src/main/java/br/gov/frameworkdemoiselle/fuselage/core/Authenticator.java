@@ -23,6 +23,7 @@ import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.contrib.Faces;
 
 @SessionScoped
 public class Authenticator implements br.gov.frameworkdemoiselle.security.Authenticator {
@@ -70,6 +71,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			setUserPermissions(authResults.getSecurityUser());
 			return true;
 		}
+		Faces.validationFailed();
 		return false;
 	}
 
