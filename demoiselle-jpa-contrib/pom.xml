@@ -42,12 +42,12 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-extension-parent</artifactId>
-		<version>2.3.2</version>
+		<version>2.3.3</version>
 	</parent>
 
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-jpa-contrib</artifactId>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-jpa-contrib</name>
@@ -56,15 +56,15 @@
 
 	<properties>
 		<category>Outros</category>
-		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
 	</properties>
 
 	<dependencies>
+
 		<!-- Major Libraries -->
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-core-contrib</artifactId>
-			<version>2.3.2-SNAPSHOT</version>
+			<version>2.3.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -73,35 +73,13 @@
 			<scope>compile</scope>
 		</dependency>
 		
-		<!-- Support Tools -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>${maven.install.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-install</id>
-						<configuration>
-							<createChecksum>true</createChecksum>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<repositories>
 		<repository>
 			<id>reinaldoc-repo</id>
 			<name>Reinaldo Github Maven Repository</name>
-			<url>http://reinaldoc.github.com/maven</url>
+			<url>http://reinaldoc.github.io/maven</url>
 		</repository>
 	</repositories>
 

@@ -47,7 +47,7 @@
 
 	<groupId>demoiselle-contrib</groupId>
 	<artifactId>demoiselle-fuselage</artifactId>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>demoiselle-fuselage</name>
@@ -56,7 +56,6 @@
 
 	<properties>
 		<category>Segurança</category>
-		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -65,19 +64,19 @@
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-primefaces</artifactId>
-			<version>2.3.2-SNAPSHOT</version>
+			<version>2.3.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-jpa-contrib</artifactId>
-			<version>2.3.2-SNAPSHOT</version>
+			<version>2.3.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>demoiselle-contrib</groupId>
 			<artifactId>demoiselle-ldap</artifactId>
-			<version>2.3.2-SNAPSHOT</version>
+			<version>2.3.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -137,7 +136,7 @@
 		<repository>
 			<id>reinaldoc-repo</id>
 			<name>Reinaldo Github Maven Repository</name>
-			<url>http://reinaldoc.github.com/maven</url>
+			<url>http://reinaldoc.github.io/maven</url>
 		</repository>
 
 	</repositories>
