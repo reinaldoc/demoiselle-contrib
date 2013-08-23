@@ -27,7 +27,7 @@ public class SecurityProfile implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "system-uuid")
-	@SequenceGenerator(name = "system-uuid", sequenceName = "guid")
+	@SequenceGenerator(name = "system-uuid", sequenceName = "SQ_ATIUS", allocationSize = 1)
 	private Long id;
 
 	@Column
