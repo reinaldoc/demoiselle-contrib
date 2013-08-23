@@ -1,6 +1,7 @@
 package br.gov.frameworkdemoiselle.fuselage.view.app;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
@@ -10,6 +11,7 @@ import javax.inject.Named;
 import br.gov.frameworkdemoiselle.fuselage.configuration.WebfilterConfig;
 import br.gov.frameworkdemoiselle.fuselage.domain.SecurityUser;
 import br.gov.frameworkdemoiselle.menu.core.MenuContext;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Redirector;
 import br.gov.frameworkdemoiselle.util.contrib.Faces;
@@ -29,6 +31,29 @@ public class FuselageMB implements Serializable {
 
 	@Inject
 	private SecurityContext securityContext;
+
+	public boolean hasRole(String role) {
+		try {
+			return securityContext.hasRole(role);
+		} catch (NotLoggedInException e) {
+			return false;
+		}
+	}
+
+	public boolean hasRole(Collection<String> roles) {
+		for (String role : roles)
+			if (hasRole(role))
+				return true;
+		return false;
+	}
+
+	public boolean hasResource(String operation, String resource) {
+		try {
+			return securityContext.hasPermission(operation, resource);
+		} catch (NotLoggedInException e) {
+			return false;
+		}
+	}
 
 	public SecurityUser getSecurityUser() {
 		try {
@@ -58,7 +83,7 @@ public class FuselageMB implements Serializable {
 	@SuppressWarnings("unchecked")
 	public String getDn() {
 		try {
-			return ((Map<String, String>) securityContext.getUser().getAttribute("user_detail")).get("dn");
+			return ((String[]) ((Map<String, Object>) securityContext.getUser().getAttribute("user_detail")).get("dn"))[0];
 		} catch (Exception e) {
 			return null;
 		}
