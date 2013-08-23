@@ -56,7 +56,7 @@ public class LocalAuthenticator extends AbstractAuthenticatorModule<LocalAuthent
 
 	private void validateAdmin(String username) {
 		if (config.getAdmins().contains(username))
-			results.getGenericResults().put("admin", "true");
+			results.getAttribute().put("admin", "true");
 	}
 
 }

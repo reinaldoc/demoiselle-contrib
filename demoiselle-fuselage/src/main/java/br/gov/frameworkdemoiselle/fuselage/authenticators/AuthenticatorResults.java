@@ -15,7 +15,7 @@ public class AuthenticatorResults {
 
 	public boolean userUnavailable = false;
 
-	public Map<String, String> genericResults = new HashMap<String, String>();
+	public Map<String, Object> attribute = new HashMap<String, Object>();
 
 	public String getAuthenticatorModuleName() {
 		return authenticatorModuleName;
@@ -49,12 +49,12 @@ public class AuthenticatorResults {
 		this.userUnavailable = userUnavailable;
 	}
 
-	public Map<String, String> getGenericResults() {
-		return genericResults;
+	public Map<String, Object> getAttribute() {
+		return attribute;
 	}
 
-	public void setGenericResults(Map<String, String> genericResults) {
-		this.genericResults = genericResults;
+	public void setAttribute(Map<String, Object> attribute) {
+		this.attribute = attribute;
 	}
 
 }

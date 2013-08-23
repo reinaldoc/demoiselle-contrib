@@ -65,18 +65,25 @@ public class LdapAuthenticator extends AbstractAuthenticatorModule<LdapAuthentic
 	}
 
 	private void updateSecurityUser(SecurityUser securityUser) {
-		Map<String, Object> attMap = entryManager.createQueryMap(ldapAuthConfig.getUserSearchFilter(securityUser.getLogin()))
-				.getSingleAttributesResult();
-
-		securityUser.setName((String) attMap.get(ldapAuthConfig.getCnAttr()));
-		securityUser.setOrgunit((String) attMap.get(ldapAuthConfig.getOuAttr()));
-		securityUser.setDescription((String) attMap.get(ldapAuthConfig.getDescriptionAttr()));
+		Map<String, Object> entry = entryManager.createQueryMap(ldapAuthConfig.getUserSearchFilter(securityUser.getLogin()))
+				.getSingleResult();
+		securityUser.setName(getStringAttribute(entry, ldapAuthConfig.getCnAttr()));
+		securityUser.setOrgunit(getStringAttribute(entry, ldapAuthConfig.getOuAttr()));
+		securityUser.setDescription(getStringAttribute(entry, ldapAuthConfig.getDescriptionAttr()));
 		results.setSecurityUser(securityUser);
-
+		results.setAttribute(entry);
 		userBC.insertOrUpdate(securityUser);
+	}
 
-		for (Map.Entry<String, Object> attribute : attMap.entrySet())
-			results.getGenericResults().put(attribute.getKey().toLowerCase(), (String) attribute.getValue());
+	private String getStringAttribute(Map<String, Object> entry, String attribute) {
+		Object value = entry.get(attribute);
+		String result = "";
+		if (value instanceof String[]) {
+			String[] strArray = (String[]) value;
+			if (strArray.length > 0)
+				result = strArray[0];
+		}
+		return result;
 	}
 
 }

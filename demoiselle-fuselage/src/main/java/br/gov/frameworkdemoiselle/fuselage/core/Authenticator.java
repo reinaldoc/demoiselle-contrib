@@ -66,7 +66,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		if (authResults.isLoggedIn()) {
 			user = new User();
 			user.setAttribute("user", authResults.getSecurityUser());
-			user.setAttribute("user_detail", authResults.getGenericResults());
+			user.setAttribute("user_detail", authResults.getAttribute());
 			user.setId(authResults.getSecurityUser().getName());
 			setUserPermissions(authResults.getSecurityUser());
 			return true;
@@ -108,7 +108,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 		/*
 		 * Set all profiles to admin
 		 */
-		if (authResults.getGenericResults().containsKey("admin")) {
+		if (authResults.getAttribute().containsKey("admin")) {
 			setPermissionsByProfiles(profileByRuleBC.getProfiles(), false);
 			return;
 		}
@@ -139,10 +139,10 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 					if (profileDetect.getKeyname() != null && profileDetect.getValue() != null && profileDetect.getValuenotation() != null) {
 						if (profileDetect.getValuenotation().equalsIgnoreCase("EXACT")) {
 							if (profileDetect.getValue().equalsIgnoreCase(
-									authResults.getGenericResults().get(profileDetect.getKeyname().toLowerCase())))
+									((String[]) authResults.getAttribute().get(profileDetect.getKeyname().toLowerCase()))[0]))
 								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						} else if (profileDetect.getValuenotation().equalsIgnoreCase("CONTAINS")) {
-							String value = authResults.getGenericResults().get(profileDetect.getKeyname().toLowerCase());
+							String value = ((String[]) authResults.getAttribute().get(profileDetect.getKeyname().toLowerCase()))[0];
 							if (value != null && value.toLowerCase().contains(profileDetect.getValue().toLowerCase()))
 								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						} else
@@ -156,7 +156,7 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			 * SecurityProfileDetect.implementation.LDAP-USER-DN
 			 */
 			List<SecurityProfileByRule> ldapUserDn = profileByRuleBC.findByImplementation("LDAP-USER-DN");
-			String dn = authResults.getGenericResults().get("dn");
+			String dn = ((String[]) authResults.getAttribute().get("dn"))[0];
 			if (ldapUserDn != null && dn != null)
 				for (SecurityProfileByRule profileDetect : ldapUserDn)
 					if (profileDetect.getValue() != null && profileDetect.getValuenotation() != null)
@@ -167,6 +167,19 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 							if (dn.contains(profileDetect.getValue()))
 								setPermissionsByProfiles(profileDetect.getProfiles(), true);
 						}
+
+			/*
+			 * Add LDAP User groups as Role: LDAP-GROUP:GROUPNAME
+			 */
+			Set<String> roles = new HashSet<String>();
+			String[] member = (String[]) authResults.getAttribute().get("memberOf");
+			if (member != null) {
+				for (String group : member) {
+					roles.add("LDAPGROUP:"+group.split(",")[0].split("=")[1]);
+					System.out.println("===> " + group.split(",")[0].split("=")[1]);
+				}
+				user.addAllAttribute("roles", roles);
+			}
 
 		}
 	}
