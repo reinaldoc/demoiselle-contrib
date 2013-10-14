@@ -40,10 +40,11 @@ public class FuselageMB implements Serializable {
 		}
 	}
 
-	public boolean hasRole(Collection<String> roles) {
-		for (String role : roles)
-			if (hasRole(role))
-				return true;
+	public boolean hasOneOfRoles(Collection<String> roles) {
+		if (roles != null)
+			for (String role : roles)
+				if (hasRole(role))
+					return true;
 		return false;
 	}
 
