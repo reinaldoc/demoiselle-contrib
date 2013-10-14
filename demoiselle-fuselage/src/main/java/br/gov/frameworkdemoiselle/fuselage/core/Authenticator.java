@@ -176,7 +176,6 @@ public class Authenticator implements br.gov.frameworkdemoiselle.security.Authen
 			if (member != null) {
 				for (String group : member) {
 					roles.add("LDAPGROUP:"+group.split(",")[0].split("=")[1]);
-					System.out.println("===> " + group.split(",")[0].split("=")[1]);
 				}
 				user.addAllAttribute("roles", roles);
 			}
