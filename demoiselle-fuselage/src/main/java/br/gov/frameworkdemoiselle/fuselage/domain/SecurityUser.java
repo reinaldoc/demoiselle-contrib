@@ -21,14 +21,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name="SECURITYUSER")
+@Table(name = "SECURITYUSER")
 public class SecurityUser implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "system-uuid")
-	@SequenceGenerator(name = "system-uuid", sequenceName = "SQ_ATIUS", allocationSize = 1)
+	@SequenceGenerator(name = "ATIUS_ID", sequenceName = "SQ_ATIUS", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ATIUS_ID")
 	private Long id;
 
 	@Column
